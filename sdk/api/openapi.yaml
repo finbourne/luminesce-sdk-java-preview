@@ -1,0 +1,4218 @@
+openapi: 3.0.1
+info:
+  contact:
+    email: info@finbourne.com
+    name: FINBOURNE Technology
+    url: https://www.finbourne.com
+  termsOfService: https://www.finbourne.com/legal/terms-conditions
+  title: FINBOURNE Honeycomb Web API
+  version: 1.7.42
+  x-logo:
+    url: https://www.lusid.com/app/assets/logo_white.png
+    backgroundColor: '#415464'
+servers:
+- url: https://www.lusid.com/honeycomb
+security:
+- {}
+tags:
+- description: Metadata about the application
+  name: Application Metadata
+- description: Shows Table and Field level information on Providers that are currently
+    running that you have access to.
+  name: Current Table/Field Catalog
+- description: Shows queries executed at some point and details about them
+  name: Historically Executed Queries
+- description: This executes a series of internally defined HoneycombSql statements
+    in the background
+  name: Multi-Query Execution
+- description: This executes HoneycombSql and allows monitoring its completion
+  name: Sql Background Execution
+- description: This executes HoneycombSql synchronously, allows for returning the
+    resulting data in various formats and for pretty-printing of sql.
+  name: Sql Execution
+paths:
+  /api/Catalog:
+    get:
+      description: "\nThe following HoneycombSql is executed to return this information:\n\
+        \n```sql\nselect\n    coalesce(f.TableName, r.Name) as TableName,\n    coalesce(f.FieldName,\
+        \ 'N/A') as FieldName,\n    f.DataType,\n    f.FieldType,\n    f.IsPrimaryKey,\n\
+        \    f.IsMain,\n    case \n        when f.TableName is not null \n       \
+        \     then f.Description\n        else\n            r.Name || ' returns a\
+        \ different set of columns depending on use.'\n        end as Description,\n\
+        \    f.ParamDefaultValue,\n    f.TableParamColumns,\n    min(r.Description)\
+        \ as ProviderDescription\nfrom\n    Sys.Registration r\n    left outer join\
+        \ Sys.Field f\n        on r.Name = f.TableName\nwhere\n    r.Type in ('DirectProvider',\
+        \ 'DataProvider')\n    and \n    r.ShowAll = false\ngroup by\n    1, 2, 3,\
+        \ 4, 5, 6, 8, 9\norder by\n    1, 5 desc, 6 desc, 2\n   \n```\n\nThe following\
+        \ error codes are to be anticipated with standard Problem Detail reports:\n\
+        - 401 Unauthorized\n"
+      operationId: GetCatalog
+      parameters:
+      - description: Limit the catalog to only things in some way dealing with the
+          passed in text string
+        explode: true
+        in: query
+        name: freeTextSearch
+        required: false
+        schema:
+          description: Limit the catalog to only things in some way dealing with the
+            passed in text string
+          nullable: true
+          type: string
+        style: form
+      - description: Should this be text/json (not json-encoded-as-a-string)
+        explode: true
+        in: query
+        name: jsonProper
+        required: false
+        schema:
+          default: false
+          description: Should this be text/json (not json-encoded-as-a-string)
+          type: boolean
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] GetCatalog: Shows Table and Field level information
+        on Providers that are currently running that you have access to (in Json format)'
+      tags:
+      - Current Table/Field Catalog
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/History:
+    get:
+      description: |2
+
+        Starts to load the historical query logs for a certain time range, search criteria, etc.
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 401 Unauthorized
+      operationId: GetHistory
+      parameters:
+      - description: Date time to start the search from.  Will default to Now - 1
+          Day
+        explode: true
+        in: query
+        name: startAt
+        required: false
+        schema:
+          description: Date time to start the search from.  Will default to Now -
+            1 Day
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+        x-nullable: true
+      - description: Date time to end the search at.  Defaults to now.
+        explode: true
+        in: query
+        name: endAt
+        required: false
+        schema:
+          description: Date time to end the search at.  Defaults to now.
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+        x-nullable: true
+      - description: Some test that must be in at least one field returned.
+        explode: true
+        in: query
+        name: freeTextSearch
+        required: false
+        schema:
+          description: Some test that must be in at least one field returned.
+          nullable: true
+          type: string
+        style: form
+      - description: For users with extra permissions, they may optionally see other
+          users' queries.
+        explode: true
+        in: query
+        name: showAll
+        required: false
+        schema:
+          default: false
+          description: For users with extra permissions, they may optionally see other
+            users' queries.
+          type: boolean
+        style: form
+        x-nullable: true
+      responses:
+        "202":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryResponse'
+          description: Success
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] GetHistory: Shows queries executed in a given historical
+        time window (in Json format).'
+      tags:
+      - Historically Executed Queries
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/History/{executionId}:
+    delete:
+      description: |
+        Cancel the query (if still running) / clear the data (if already returned)
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't exist and is not running.
+      operationId: CancelHistory
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryCancelResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryCancelResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryCancelResponse'
+          description: Success
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] CancelHistory: Cancels (if running) or clears the data
+        from (if completed) a previously started History query'
+      tags:
+      - Historically Executed Queries
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+    get:
+      description: |-
+        View progress information (up until this point) of previously started History query
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't exist and is not running.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: GetProgressOfHistory
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryProgressResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryProgressResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryProgressResponse'
+          description: Success
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] GetProgressOfHistory: View progress information (up
+        until this point) of a history query'
+      tags:
+      - Historically Executed Queries
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/History/{executionId}/histogram:
+    get:
+      description: |-
+        Fetch the data in Json format (if available, or if not simply being informed it is not yet ready)
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't (yet) exist.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: FetchQueryResultHistogram
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      - description: Optional histogram bucket width.  If not provided a set number
+          of buckets between start/end range will be generated.
+        explode: true
+        in: query
+        name: bucketSize
+        required: false
+        schema:
+          description: Optional histogram bucket width.  If not provided a set number
+            of buckets between start/end range will be generated.
+          format: date-span
+          nullable: true
+          type: string
+        style: form
+      - description: An ODATA filter per Finbourne.Filtering syntax.
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          description: An ODATA filter per Finbourne.Filtering syntax.
+          nullable: true
+          type: string
+        style: form
+      - description: Should this be text/json (not json-encoded-as-a-string)
+        explode: true
+        in: query
+        name: jsonProper
+        required: false
+        schema:
+          default: false
+          description: Should this be text/json (not json-encoded-as-a-string)
+          type: boolean
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] FetchQueryResultHistogram: Fetches the result from
+        a previously started query, converts it to a histogram (counts in buckets).'
+      tags:
+      - Historically Executed Queries
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/History/{executionId}/json:
+    get:
+      description: |-
+        Fetch the data in Json format (if available, or if not simply being informed it is not yet ready)
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't (yet) exist.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: FetchHistoryResultJson
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      - description: "Order the results by these fields.\r\n            Use the `-`\
+          \ sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+          \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted\
+          \ by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n\
+          \            Default is null, the sort order specified in the query itself."
+        explode: true
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          description: "Order the results by these fields.\r\n            Use the\
+            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
+            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
+            \n            Default is null, the sort order specified in the query itself."
+          nullable: true
+          type: string
+        style: form
+      - description: An ODATA filter per Finbourne.Filtering syntax.
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          description: An ODATA filter per Finbourne.Filtering syntax.
+          nullable: true
+          type: string
+        style: form
+      - description: "Default is null (meaning return all columns in the original\
+          \ query itself).\r\nThe values are in terms of the result column name from\
+          \ the original data set and are comma delimited.\r\nThe power of this comes\
+          \ in that you may aggregate the data if you wish\r\n(that is the main reason\
+          \ for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER\
+          \ (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify,\
+          \ with a nice column name)\r\n- `count(*)` (count the rows for the given\
+          \ group, that would produce a rather ugly column name, but  it works)\r\n\
+          - `count(distinct x) as numOfXs`\r\nIf there was an illegal character in\
+          \ a field you are selecting from, you are responsible for bracketing it\
+          \ with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column\
+          \ with space in name]) as nice_name`\r\n  where you would likely want to\
+          \ pass `1` as the `groupBy` also."
+        explode: true
+        in: query
+        name: select
+        required: false
+        schema:
+          description: "Default is null (meaning return all columns in the original\
+            \ query itself).\r\nThe values are in terms of the result column name\
+            \ from the original data set and are comma delimited.\r\nThe power of\
+            \ this comes in that you may aggregate the data if you wish\r\n(that is\
+            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
+            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
+            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
+            \ the rows for the given group, that would produce a rather ugly column\
+            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
+            \ was an illegal character in a field you are selecting from, you are\
+            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
+            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
+            \  where you would likely want to pass `1` as the `groupBy` also."
+          nullable: true
+          type: string
+        style: form
+      - description: "Groups by the specified fields.\r\n            A comma delimited\
+          \ list of: 1 based numeric indexes (cleaner), or repeats of the select expressions\
+          \ (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\
+          \n            Default is null (meaning no grouping will be performed on\
+          \ the selected columns).\r\n            This applies only over the result\
+          \ set being requested here, meaning indexes into the \"select\" parameter\
+          \ fields.\r\n            Only specify this if you are selecting aggregations\
+          \ in the \"select\" parameter."
+        explode: true
+        in: query
+        name: groupBy
+        required: false
+        schema:
+          description: "Groups by the specified fields.\r\n            A comma delimited\
+            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
+            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
+            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
+            \ will be performed on the selected columns).\r\n            This applies\
+            \ only over the result set being requested here, meaning indexes into\
+            \ the \"select\" parameter fields.\r\n            Only specify this if\
+            \ you are selecting aggregations in the \"select\" parameter."
+          nullable: true
+          type: string
+        style: form
+      - description: When paginating, only return this number of records, page should
+          also be specified.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 0
+          description: When paginating, only return this number of records, page should
+            also be specified.
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      - description: 0-N based on chunk sized determined by the limit, ignored if
+          limit < 1.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 0
+          description: 0-N based on chunk sized determined by the limit, ignored if
+            limit < 1.
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      - description: Should this be text/json (not json-encoded-as-a-string)
+        explode: true
+        in: query
+        name: jsonProper
+        required: false
+        schema:
+          default: false
+          description: Should this be text/json (not json-encoded-as-a-string)
+          type: boolean
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] FetchHistoryResultJson: Fetches the result from a previously
+        started query, in JSON format.'
+      tags:
+      - Historically Executed Queries
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/metadata/access/resources:
+    get:
+      description: Get the comprehensive set of resources that are available for access
+        control
+      operationId: GetServicesAsAccessControlledResources
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ResourceListOfAccessControlledResource'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceListOfAccessControlledResource'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ResourceListOfAccessControlledResource'
+          description: Success
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] GetServicesAsAccessControlledResources: Get resources
+        available for access control'
+      tags:
+      - Application Metadata
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/MultiQueryBackground:
+    put:
+      description: "\nAllow for starting a potentially long running query and getting\
+        \ back an immediate response with how to \n- fetch the data in various formats\
+        \ (if available, or if not simply being informed it is not yet ready), on\
+        \ a per result basis\n- view progress information (up until this point), for\
+        \ all results in one go\n- cancel the queries (if still running) / clear the\
+        \ data (if already returned)\n\nThe following error codes are to be anticipated\
+        \ with standard Problem Detail reports:\n- 400 BadRequest - there was something\
+        \ wrong with your query syntax (the issue was detected at parse-time)\n- 401\
+        \ Unauthorized\n"
+      operationId: StartQueries
+      parameters:
+      - description: An enum value defining the set of statements being executed
+        explode: true
+        in: query
+        name: type
+        required: true
+        schema:
+          $ref: '#/components/schemas/MultiQueryDefinitionType'
+        style: form
+      - description: The AsAt time used by any bitemporal provider in the queries.
+        explode: true
+        in: query
+        name: asAt
+        required: false
+        schema:
+          description: The AsAt time used by any bitemporal provider in the queries.
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+        x-nullable: true
+      - description: The EffectiveAt time used by any bitemporal provider in the queries.
+        explode: true
+        in: query
+        name: effectiveAt
+        required: false
+        schema:
+          description: The EffectiveAt time used by any bitemporal provider in the
+            queries.
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+        x-nullable: true
+      - description: A limit that is applied to first-level queries (e.g. Instruments
+          themselves)
+        explode: true
+        in: query
+        name: limit1
+        required: false
+        schema:
+          description: A limit that is applied to first-level queries (e.g. Instruments
+            themselves)
+          format: int32
+          nullable: true
+          type: integer
+        style: form
+        x-nullable: true
+      - description: A limit that is applied to second-level queries (e.g. Holdings
+          based on the set of Instruments found)
+        explode: true
+        in: query
+        name: limit2
+        required: false
+        schema:
+          description: A limit that is applied to second-level queries (e.g. Holdings
+            based on the set of Instruments found)
+          format: int32
+          nullable: true
+          type: integer
+        style: form
+        x-nullable: true
+      - description: "A value available to queries, these vary by 'type' and are only\
+          \ used by some types at all.\r\ne.g. a start-date of some sort"
+        explode: true
+        in: query
+        name: input1
+        required: false
+        schema:
+          description: "A value available to queries, these vary by 'type' and are\
+            \ only used by some types at all.\r\ne.g. a start-date of some sort"
+          nullable: true
+          type: string
+        style: form
+      - description: A second value available to queries, these vary by 'type' and
+          are only used by some types at all.
+        explode: true
+        in: query
+        name: input2
+        required: false
+        schema:
+          description: A second value available to queries, these vary by 'type' and
+            are only used by some types at all.
+          nullable: true
+          type: string
+        style: form
+      - description: A third value available to queries, these vary by 'type' and
+          are only used by some types at all.
+        explode: true
+        in: query
+        name: input3
+        required: false
+        schema:
+          description: A third value available to queries, these vary by 'type' and
+            are only used by some types at all.
+          nullable: true
+          type: string
+        style: form
+      - description: 'Maximum time the query may run for, in seconds: <0 → ∞, 0 →
+          1200s (20m)'
+        explode: true
+        in: query
+        name: timeoutSeconds
+        required: false
+        schema:
+          default: 0
+          description: 'Maximum time the query may run for, in seconds: <0 → ∞, 0
+            → 1200s (20m)'
+          example: 1200
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      - description: 'Maximum time the result may be kept for, in seconds: <0 → 1200
+          (20m), 0 → 28800 (8h), max = 2,678,400 (31d)'
+        explode: true
+        in: query
+        name: keepForSeconds
+        required: false
+        schema:
+          default: 0
+          description: 'Maximum time the result may be kept for, in seconds: <0 →
+            1200 (20m), 0 → 28800 (8h), max = 2,678,400 (31d)'
+          example: 7200
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              description: A search value (e.g. 'Apple' on an instrument search)
+              example: Apple
+              type: string
+        description: A search value (e.g. 'Apple' on an instrument search)
+        required: true
+      responses:
+        "202":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BackgroundMultiQueryResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundMultiQueryResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundMultiQueryResponse'
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] StartQueries: Starts to Execute the HoneycombSql statements
+        in the background.'
+      tags:
+      - Multi-Query Execution
+      x-fbn-apistatus: Experimental
+      x-contentType: text/plain
+      x-accepts: application/json
+  /api/MultiQueryBackground/{executionId}:
+    delete:
+      description: |
+        Cancel the query-set (if still running) / clear the data (if already returned)
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't exist and is not running.
+      operationId: CancelMultiQuery
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryCancelResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryCancelResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryCancelResponse'
+          description: Success
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] CancelMultiQuery: Cancels (if running) or clears the
+        data from (if completed) a previously started query-set'
+      tags:
+      - Multi-Query Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+    get:
+      description: |-
+        View progress information (up until this point) for the entire query-set
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't exist and is not running.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: GetProgressOfMultiQuery
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BackgroundMultiQueryProgressResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundMultiQueryProgressResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundMultiQueryProgressResponse'
+          description: Success
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] GetProgressOfMultiQuery: View progress information
+        (up until this point) for the entire query-set'
+      tags:
+      - Multi-Query Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/Sql/csv:
+    put:
+      description: |2
+
+        For more complex HoneycombSql a PUT will allow for longer Sql.
+        e.g.:
+        ```sql
+        @@cutoff = select #2020-02-01#;
+        @issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;
+
+        select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary
+        from @issues i
+        inner join Dev.Jira.Issue.Link li
+            on i.Id = li.IssueId
+        ```
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: PutByQueryCsv
+      parameters:
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+          example: Get tables/fields
+          nullable: true
+          type: string
+        style: form
+      - description: Makes this a file-download request (as opposed to returning the
+          data in the response-body)
+        explode: true
+        in: query
+        name: download
+        required: false
+        schema:
+          default: false
+          description: Makes this a file-download request (as opposed to returning
+            the data in the response-body)
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        explode: true
+        in: query
+        name: timeoutSeconds
+        required: false
+        schema:
+          default: 0
+          description: 'In seconds: <0 → ∞, 0 → 120s'
+          example: 120
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              description: HoneycombSql to Execute (may be multi-line)
+              example: select * from sys.field
+              type: string
+        description: HoneycombSql to Execute (may be multi-line)
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] PutByQueryCsv: Executes Sql, returned in CSV format,
+        where the sql is the post-body url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-contentType: text/plain
+      x-accepts: application/json
+  /api/Sql/csv/{query}:
+    get:
+      description: |2
+
+        For simple single-line query execution via the url.
+        e.g. `select ^ from Sys.Field order by 1, 2`
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: GetByQueryCsv
+      parameters:
+      - description: HoneycombSql to Execute (must be one line only)
+        explode: false
+        in: path
+        name: query
+        required: true
+        schema:
+          description: HoneycombSql to Execute (must be one line only)
+          example: select ^ from Sys.Field order by 1, 2
+          type: string
+        style: simple
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+          example: Get tables/fields
+          nullable: true
+          type: string
+        style: form
+      - description: Makes this a file-download request (as opposed to returning the
+          data in the response-body)
+        explode: true
+        in: query
+        name: download
+        required: false
+        schema:
+          default: false
+          description: Makes this a file-download request (as opposed to returning
+            the data in the response-body)
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        explode: true
+        in: query
+        name: timeout
+        required: false
+        schema:
+          default: 0
+          description: 'In seconds: <0 → ∞, 0 → 120s'
+          example: 120
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] GetByQueryCsv: Executes Sql, returned in CSV format,
+        where the sql is simply in the url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/Sql/excel:
+    put:
+      description: |2
+
+        For more complex HoneycombSql a PUT will allow for longer Sql.
+        e.g.:
+        ```sql
+        @@cutoff = select #2020-02-01#;
+        @issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;
+
+        select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary
+        from @issues i
+        inner join Dev.Jira.Issue.Link li
+            on i.Id = li.IssueId
+        ```
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: PutByQueryExcel
+      parameters:
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+          example: Get tables/fields
+          nullable: true
+          type: string
+        style: form
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        explode: true
+        in: query
+        name: timeoutSeconds
+        required: false
+        schema:
+          default: 0
+          description: 'In seconds: <0 → ∞, 0 → 120s'
+          example: 120
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              description: HoneycombSql to Execute (may be multi-line)
+              example: select * from sys.field
+              type: string
+        description: HoneycombSql to Execute (may be multi-line)
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] PutByQueryExcel: Executes Sql, returned in Excel (xlsx)
+        format (as a file to be downloaded), where the sql is the post-body url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-contentType: text/plain
+      x-accepts: application/json
+  /api/Sql/excel/{query}:
+    get:
+      description: |2
+
+        For simple single-line query execution via the url.
+        e.g. `select ^ from Sys.Field order by 1, 2`
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: GetByQueryExcel
+      parameters:
+      - description: HoneycombSql to Execute (must be one line only)
+        explode: false
+        in: path
+        name: query
+        required: true
+        schema:
+          description: HoneycombSql to Execute (must be one line only)
+          example: select ^ from Sys.Field order by 1, 2
+          type: string
+        style: simple
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+          example: Get tables/fields
+          nullable: true
+          type: string
+        style: form
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        explode: true
+        in: query
+        name: timeout
+        required: false
+        schema:
+          default: 0
+          description: 'In seconds: <0 → ∞, 0 → 120s'
+          example: 120
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] GetByQueryExcel: Executes Sql, returned in Excel (xlsx)
+        format (as a file to be downloaded) format, where the sql is simply in the
+        url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/Sql/json:
+    put:
+      description: |2
+
+        For more complex HoneycombSql a PUT will allow for longer Sql.
+        e.g.:
+        ```sql
+        @@cutoff = select #2020-02-01#;
+        @issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;
+
+        select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary
+        from @issues i
+        inner join Dev.Jira.Issue.Link li
+            on i.Id = li.IssueId
+        ```
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: PutByQueryJson
+      parameters:
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+          example: Get tables/fields
+          nullable: true
+          type: string
+        style: form
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        explode: true
+        in: query
+        name: timeoutSeconds
+        required: false
+        schema:
+          default: 0
+          description: 'In seconds: <0 → ∞, 0 → 120s'
+          example: 120
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      - description: Should this be text/json (not json-encoded-as-a-string)
+        explode: true
+        in: query
+        name: jsonProper
+        required: false
+        schema:
+          default: false
+          description: Should this be text/json (not json-encoded-as-a-string)
+          type: boolean
+        style: form
+        x-nullable: true
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              description: HoneycombSql to Execute (may be multi-line)
+              example: select * from sys.field
+              type: string
+        description: HoneycombSql to Execute (may be multi-line)
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] PutByQueryJson: Executes Sql, returned in JSON format,
+        where the sql is the post-body url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-contentType: text/plain
+      x-accepts: application/json
+  /api/Sql/json/{query}:
+    get:
+      description: |2
+
+        For simple single-line query execution via the url.
+        e.g. `select ^ from Sys.Field order by 1, 2`
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: GetByQueryJson
+      parameters:
+      - description: HoneycombSql to Execute (must be one line only)
+        explode: false
+        in: path
+        name: query
+        required: true
+        schema:
+          description: HoneycombSql to Execute (must be one line only)
+          example: select ^ from Sys.Field order by 1, 2
+          type: string
+        style: simple
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+          example: Get tables/fields
+          nullable: true
+          type: string
+        style: form
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        explode: true
+        in: query
+        name: timeout
+        required: false
+        schema:
+          default: 0
+          description: 'In seconds: <0 → ∞, 0 → 120s'
+          example: 120
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      - description: Should this be text/json (not json-encoded-as-a-string)
+        explode: true
+        in: query
+        name: jsonProper
+        required: false
+        schema:
+          default: false
+          description: Should this be text/json (not json-encoded-as-a-string)
+          type: boolean
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] GetByQueryJson: Executes Sql, returned in JSON format,
+        where the sql is simply in the url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/Sql/pipe:
+    put:
+      description: |2
+
+        For more complex HoneycombSql a PUT will allow for longer Sql.
+        e.g.:
+        ```sql
+        @@cutoff = select #2020-02-01#;
+        @issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;
+
+        select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary
+        from @issues i
+        inner join Dev.Jira.Issue.Link li
+            on i.Id = li.IssueId
+        ```
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: PutByQueryPipe
+      parameters:
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+          example: Get tables/fields
+          nullable: true
+          type: string
+        style: form
+      - description: Makes this a file-download request (as opposed to returning the
+          data in the response-body)
+        explode: true
+        in: query
+        name: download
+        required: false
+        schema:
+          default: false
+          description: Makes this a file-download request (as opposed to returning
+            the data in the response-body)
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        explode: true
+        in: query
+        name: timeoutSeconds
+        required: false
+        schema:
+          default: 0
+          description: 'In seconds: <0 → ∞, 0 → 120s'
+          example: 120
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              description: HoneycombSql to Execute (may be multi-line)
+              example: select * from sys.field
+              type: string
+        description: HoneycombSql to Execute (may be multi-line)
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] PutByQueryPipe: Executes Sql, returned in pipe-delimited
+        format, where the sql is the post-body url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-contentType: text/plain
+      x-accepts: application/json
+  /api/Sql/pipe/{query}:
+    get:
+      description: |2
+
+        For simple single-line query execution via the url.
+        e.g. `select ^ from Sys.Field order by 1, 2`
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: GetByQueryPipe
+      parameters:
+      - description: HoneycombSql to Execute (must be one line only)
+        explode: false
+        in: path
+        name: query
+        required: true
+        schema:
+          description: HoneycombSql to Execute (must be one line only)
+          example: select ^ from Sys.Field order by 1, 2
+          type: string
+        style: simple
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+          example: Get tables/fields
+          nullable: true
+          type: string
+        style: form
+      - description: Makes this a file-download request (as opposed to returning the
+          data in the response-body)
+        explode: true
+        in: query
+        name: download
+        required: false
+        schema:
+          default: false
+          description: Makes this a file-download request (as opposed to returning
+            the data in the response-body)
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        explode: true
+        in: query
+        name: timeout
+        required: false
+        schema:
+          default: 0
+          description: 'In seconds: <0 → ∞, 0 → 120s'
+          example: 120
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] GetByQueryPipe: Executes Sql, returned in pipe-delimited
+        format, where the sql is simply in the url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/Sql/pretty:
+    put:
+      description: |2
+
+        This formats SQL (given a set of options as to how to do so).
+        It takes some SQL (or a fragment thereof, it need not fully parse as yet and certainly need not execute correctly)
+        and returns the reformatted version.
+        e.g.
+        ```sql
+        select x,y,z from a inner join b on a.x=b.x where x>y or y!=z
+        ```
+        becomes
+        ```sql
+        select x, y, z
+        from a
+        inner join b
+           on a.x = b.x
+        where x > y
+           or y != z
+        ```
+      operationId: PutQueryToFormat
+      parameters:
+      - description: Should commas be after an expression (as opposed to before)
+        explode: true
+        in: query
+        name: trailingCommas
+        required: false
+        schema:
+          default: true
+          description: Should commas be after an expression (as opposed to before)
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: Should key words be capitalized
+        explode: true
+        in: query
+        name: uppercaseKeywords
+        required: false
+        schema:
+          default: false
+          description: Should key words be capitalized
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: Should clauses on joins be given line breaks?
+        explode: true
+        in: query
+        name: breakJoinOnSections
+        required: false
+        schema:
+          default: true
+          description: Should clauses on joins be given line breaks?
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: Should comma-lists have spaces after the commas?
+        explode: true
+        in: query
+        name: spaceAfterExpandedComma
+        required: false
+        schema:
+          default: true
+          description: Should comma-lists have spaces after the commas?
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: Should the "nicest" key words be used? (e.g. JOIN -> INNER JOIN)
+        explode: true
+        in: query
+        name: keywordStandardization
+        required: false
+        schema:
+          default: true
+          description: Should the "nicest" key words be used? (e.g. JOIN -> INNER
+            JOIN)
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: Should comma-lists (e.g. select a,b,c) have line breaks added?
+        explode: true
+        in: query
+        name: expandCommaLists
+        required: false
+        schema:
+          default: false
+          description: Should comma-lists (e.g. select a,b,c) have line breaks added?
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: Should IN-lists have line breaks added?
+        explode: true
+        in: query
+        name: expandInLists
+        required: false
+        schema:
+          default: false
+          description: Should IN-lists have line breaks added?
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: Should boolean expressions have line breaks added?
+        explode: true
+        in: query
+        name: expandBooleanExpressions
+        required: false
+        schema:
+          default: true
+          description: Should boolean expressions have line breaks added?
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: Should between conditions have line breaks added?
+        explode: true
+        in: query
+        name: expandBetweenConditions
+        required: false
+        schema:
+          default: true
+          description: Should between conditions have line breaks added?
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: Should case-statements have line breaks added?
+        explode: true
+        in: query
+        name: expandCaseStatements
+        required: false
+        schema:
+          default: true
+          description: Should case-statements have line breaks added?
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: Maximum number of characters to allow on one line (if possible)
+        explode: true
+        in: query
+        name: maxLineWidth
+        required: false
+        schema:
+          default: 120
+          description: Maximum number of characters to allow on one line (if possible)
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              description: HoneycombSql to Pretty-Print. Even if it doesn't parse
+                an attempt will be made to format it
+              example: select * from sys.field
+              type: string
+        description: HoneycombSql to Pretty-Print. Even if it doesn't parse an attempt
+          will be made to format it
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] PutQueryToFormat: Executes Sql, returned in JSON format,
+        where the sql is the post-body url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-contentType: text/plain
+      x-accepts: application/json
+  /api/Sql/sqlite:
+    put:
+      description: |2
+
+        For more complex HoneycombSql a PUT will allow for longer Sql.
+        e.g.:
+        ```sql
+        @@cutoff = select #2020-02-01#;
+        @issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;
+
+        select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary
+        from @issues i
+        inner join Dev.Jira.Issue.Link li
+            on i.Id = li.IssueId
+        ```
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: PutByQuerySqlite
+      parameters:
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+          example: Get tables/fields
+          nullable: true
+          type: string
+        style: form
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        explode: true
+        in: query
+        name: timeoutSeconds
+        required: false
+        schema:
+          default: 0
+          description: 'In seconds: <0 → ∞, 0 → 120s'
+          example: 120
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              description: HoneycombSql to Execute (may be multi-line)
+              example: select * from sys.field
+              type: string
+        description: HoneycombSql to Execute (may be multi-line)
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] PutByQuerySqlite: Executes Sql, returned in SqLite
+        DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body
+        url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-contentType: text/plain
+      x-accepts: application/json
+  /api/Sql/sqlite/{query}:
+    get:
+      description: |2
+
+        For simple single-line query execution via the url.
+        e.g. `select ^ from Sys.Field order by 1, 2`
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: GetByQuerySqlite
+      parameters:
+      - description: HoneycombSql to Execute (must be one line only)
+        explode: false
+        in: path
+        name: query
+        required: true
+        schema:
+          description: HoneycombSql to Execute (must be one line only)
+          example: select ^ from Sys.Field order by 1, 2
+          type: string
+        style: simple
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+          example: Get tables/fields
+          nullable: true
+          type: string
+        style: form
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        explode: true
+        in: query
+        name: timeout
+        required: false
+        schema:
+          default: 0
+          description: 'In seconds: <0 → ∞, 0 → 120s'
+          example: 120
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] GetByQuerySqlite: Executes Sql, returned in SqLite
+        DB (sqlite3) format (as a file to be downloaded) format, where the sql is
+        simply in the url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/SqlBackground:
+    put:
+      description: "\nAllow for starting a potentially long running query and getting\
+        \ back an immediate response with how to \n- fetch the data in various formats\
+        \ (if available, or if not simply being informed it is not yet ready)\n- view\
+        \ progress information (up until this point)\n- cancel the query (if still\
+        \ running) / clear the data (if already returned)\n\nThis can still error\
+        \ on things like an outright syntax error, but more runtime errors (e.g. from\
+        \ providers) will not\ncause this to error (that will happen when attempting\
+        \ to fetch data)\n\nHere is an example that intentionally takes one minute\
+        \ to run:\n\n```sql\nselect Str, Takes500Ms from Testing1K where UseLinq =\
+        \ true and [Int] <= 120\n```\n\nThe following error codes are to be anticipated\
+        \ with standard Problem Detail reports:\n- 400 BadRequest - there was something\
+        \ wrong with your query syntax (the issue was detected at parse-time)\n- 401\
+        \ Unauthorized\n"
+      operationId: StartQuery
+      parameters:
+      - description: A name for this query.  This goes into logs and is available
+          in `Sys.Logs.HcQueryStart`.
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          description: A name for this query.  This goes into logs and is available
+            in `Sys.Logs.HcQueryStart`.
+          example: Intentionally slow test query
+          nullable: true
+          type: string
+        style: form
+      - description: 'Maximum time the query may run for, in seconds: <0 → ∞, 0 →
+          7200 (2h)'
+        explode: true
+        in: query
+        name: timeoutSeconds
+        required: false
+        schema:
+          default: 0
+          description: 'Maximum time the query may run for, in seconds: <0 → ∞, 0
+            → 7200 (2h)'
+          example: 1200
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      - description: 'Maximum time the result may be kept for, in seconds: <0 → 1200
+          (20m), 0 → 28800 (8h), max = 2,678,400 (31d)'
+        explode: true
+        in: query
+        name: keepForSeconds
+        required: false
+        schema:
+          default: 0
+          description: 'Maximum time the result may be kept for, in seconds: <0 →
+            1200 (20m), 0 → 28800 (8h), max = 2,678,400 (31d)'
+          example: 7200
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              description: The HoneycombSql query to kick off.
+              example: select Str, Takes500Ms from Testing1K where UseLinq = true
+                and [Int] <= 120
+              type: string
+        description: The HoneycombSql query to kick off.
+        required: true
+      responses:
+        "202":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryResponse'
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] StartQuery: Starts to Execute HoneycombSql in the background.'
+      tags:
+      - Sql Background Execution
+      x-fbn-apistatus: Experimental
+      x-contentType: text/plain
+      x-accepts: application/json
+  /api/SqlBackground/{executionId}:
+    delete:
+      description: |
+        Cancel the query (if still running) / clear the data (if already returned)
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't exist and is not running.
+      operationId: CancelQuery
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryCancelResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryCancelResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryCancelResponse'
+          description: Success
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] CancelQuery: Cancels (if running) or clears the data
+        from (if completed) a previously started query'
+      tags:
+      - Sql Background Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+    get:
+      description: |-
+        View progress information (up until this point)
+        The following error codes are to be anticipated most with standard Problem Detail reports:
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't exist and is not running.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: GetProgressOf
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryProgressResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryProgressResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/BackgroundQueryProgressResponse'
+          description: Success
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] GetProgressOf: View progress information (up until
+        this point)'
+      tags:
+      - Sql Background Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/SqlBackground/{executionId}/csv:
+    get:
+      description: |-
+        Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)
+        The following error codes are to be anticipated most with standard Problem Detail reports:
+        - 400 BadRequest : Something failed with the execution of your query
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't (yet) exist.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: FetchQueryResultCsv
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      - description: Makes this a file-download request (as opposed to returning the
+          data in the response-body)
+        explode: true
+        in: query
+        name: download
+        required: false
+        schema:
+          default: false
+          description: Makes this a file-download request (as opposed to returning
+            the data in the response-body)
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: "Order the results by these fields.\r\n            Use the `-`\
+          \ sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+          \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted\
+          \ by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n\
+          \            Default is null, the sort order specified in the query itself."
+        explode: true
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          description: "Order the results by these fields.\r\n            Use the\
+            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
+            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
+            \n            Default is null, the sort order specified in the query itself."
+          nullable: true
+          type: string
+        style: form
+      - description: An ODATA filter per Finbourne.Filtering syntax.
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          description: An ODATA filter per Finbourne.Filtering syntax.
+          nullable: true
+          type: string
+        style: form
+      - description: "Default is null (meaning return all columns in the original\
+          \ query itself).\r\nThe values are in terms of the result column name from\
+          \ the original data set and are comma delimited.\r\nThe power of this comes\
+          \ in that you may aggregate the data if you wish\r\n(that is the main reason\
+          \ for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER\
+          \ (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify,\
+          \ with a nice column name)\r\n- `count(*)` (count the rows for the given\
+          \ group, that would produce a rather ugly column name, but  it works)\r\n\
+          - `count(distinct x) as numOfXs`\r\nIf there was an illegal character in\
+          \ a field you are selecting from, you are responsible for bracketing it\
+          \ with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column\
+          \ with space in name]) as nice_name`\r\n  where you would likely want to\
+          \ pass `1` as the `groupBy` also."
+        explode: true
+        in: query
+        name: select
+        required: false
+        schema:
+          description: "Default is null (meaning return all columns in the original\
+            \ query itself).\r\nThe values are in terms of the result column name\
+            \ from the original data set and are comma delimited.\r\nThe power of\
+            \ this comes in that you may aggregate the data if you wish\r\n(that is\
+            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
+            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
+            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
+            \ the rows for the given group, that would produce a rather ugly column\
+            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
+            \ was an illegal character in a field you are selecting from, you are\
+            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
+            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
+            \  where you would likely want to pass `1` as the `groupBy` also."
+          nullable: true
+          type: string
+        style: form
+      - description: "Groups by the specified fields.\r\n            A comma delimited\
+          \ list of: 1 based numeric indexes (cleaner), or repeats of the select expressions\
+          \ (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\
+          \n            Default is null (meaning no grouping will be performed on\
+          \ the selected columns).\r\n            This applies only over the result\
+          \ set being requested here, meaning indexes into the \"select\" parameter\
+          \ fields.\r\n            Only specify this if you are selecting aggregations\
+          \ in the \"select\" parameter."
+        explode: true
+        in: query
+        name: groupBy
+        required: false
+        schema:
+          description: "Groups by the specified fields.\r\n            A comma delimited\
+            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
+            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
+            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
+            \ will be performed on the selected columns).\r\n            This applies\
+            \ only over the result set being requested here, meaning indexes into\
+            \ the \"select\" parameter fields.\r\n            Only specify this if\
+            \ you are selecting aggregations in the \"select\" parameter."
+          nullable: true
+          type: string
+        style: form
+      - description: When paginating, only return this number of records, page should
+          also be specified.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 0
+          description: When paginating, only return this number of records, page should
+            also be specified.
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      - description: 0-N based on chunk sized determined by the limit, ignored if
+          limit < 1.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 0
+          description: 0-N based on chunk sized determined by the limit, ignored if
+            limit < 1.
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] FetchQueryResultCsv: Fetches the result from a previously
+        started query, in CSV format.'
+      tags:
+      - Sql Background Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/SqlBackground/{executionId}/excel:
+    get:
+      description: |-
+        Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)
+        The following error codes are to be anticipated most with standard Problem Detail reports:
+        - 400 BadRequest : Something failed with the execution of your query
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't (yet) exist.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: FetchQueryResultExcel
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      - description: "Order the results by these fields.\r\n            Use the `-`\
+          \ sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+          \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted\
+          \ by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n\
+          \            Default is null, the sort order specified in the query itself."
+        explode: true
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          description: "Order the results by these fields.\r\n            Use the\
+            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
+            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
+            \n            Default is null, the sort order specified in the query itself."
+          nullable: true
+          type: string
+        style: form
+      - description: An ODATA filter per Finbourne.Filtering syntax.
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          description: An ODATA filter per Finbourne.Filtering syntax.
+          nullable: true
+          type: string
+        style: form
+      - description: "Default is null (meaning return all columns in the original\
+          \ query itself).\r\nThe values are in terms of the result column name from\
+          \ the original data set and are comma delimited.\r\nThe power of this comes\
+          \ in that you may aggregate the data if you wish\r\n(that is the main reason\
+          \ for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER\
+          \ (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify,\
+          \ with a nice column name)\r\n- `count(*)` (count the rows for the given\
+          \ group, that would produce a rather ugly column name, but  it works)\r\n\
+          - `count(distinct x) as numOfXs`\r\nIf there was an illegal character in\
+          \ a field you are selecting from, you are responsible for bracketing it\
+          \ with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column\
+          \ with space in name]) as nice_name`\r\n  where you would likely want to\
+          \ pass `1` as the `groupBy` also."
+        explode: true
+        in: query
+        name: select
+        required: false
+        schema:
+          description: "Default is null (meaning return all columns in the original\
+            \ query itself).\r\nThe values are in terms of the result column name\
+            \ from the original data set and are comma delimited.\r\nThe power of\
+            \ this comes in that you may aggregate the data if you wish\r\n(that is\
+            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
+            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
+            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
+            \ the rows for the given group, that would produce a rather ugly column\
+            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
+            \ was an illegal character in a field you are selecting from, you are\
+            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
+            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
+            \  where you would likely want to pass `1` as the `groupBy` also."
+          nullable: true
+          type: string
+        style: form
+      - description: "Groups by the specified fields.\r\n            A comma delimited\
+          \ list of: 1 based numeric indexes (cleaner), or repeats of the select expressions\
+          \ (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\
+          \n            Default is null (meaning no grouping will be performed on\
+          \ the selected columns).\r\n            This applies only over the result\
+          \ set being requested here, meaning indexes into the \"select\" parameter\
+          \ fields.\r\n            Only specify this if you are selecting aggregations\
+          \ in the \"select\" parameter."
+        explode: true
+        in: query
+        name: groupBy
+        required: false
+        schema:
+          description: "Groups by the specified fields.\r\n            A comma delimited\
+            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
+            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
+            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
+            \ will be performed on the selected columns).\r\n            This applies\
+            \ only over the result set being requested here, meaning indexes into\
+            \ the \"select\" parameter fields.\r\n            Only specify this if\
+            \ you are selecting aggregations in the \"select\" parameter."
+          nullable: true
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] FetchQueryResultExcel: Fetches the result from a previously
+        started query, in Excel format.'
+      tags:
+      - Sql Background Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/SqlBackground/{executionId}/json:
+    get:
+      description: |-
+        Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)
+        The following error codes are to be anticipated most with standard Problem Detail reports:
+        - 400 BadRequest : Something failed with the execution of your query
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't (yet) exist.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: FetchQueryResultJson
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      - description: "Order the results by these fields.\r\n            Use the `-`\
+          \ sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+          \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted\
+          \ by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n\
+          \            Default is null, the sort order specified in the query itself."
+        explode: true
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          description: "Order the results by these fields.\r\n            Use the\
+            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
+            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
+            \n            Default is null, the sort order specified in the query itself."
+          nullable: true
+          type: string
+        style: form
+      - description: An ODATA filter per Finbourne.Filtering syntax.
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          description: An ODATA filter per Finbourne.Filtering syntax.
+          nullable: true
+          type: string
+        style: form
+      - description: "Default is null (meaning return all columns in the original\
+          \ query itself).\r\nThe values are in terms of the result column name from\
+          \ the original data set and are comma delimited.\r\nThe power of this comes\
+          \ in that you may aggregate the data if you wish\r\n(that is the main reason\
+          \ for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER\
+          \ (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify,\
+          \ with a nice column name)\r\n- `count(*)` (count the rows for the given\
+          \ group, that would produce a rather ugly column name, but  it works)\r\n\
+          - `count(distinct x) as numOfXs`\r\nIf there was an illegal character in\
+          \ a field you are selecting from, you are responsible for bracketing it\
+          \ with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column\
+          \ with space in name]) as nice_name`\r\n  where you would likely want to\
+          \ pass `1` as the `groupBy` also."
+        explode: true
+        in: query
+        name: select
+        required: false
+        schema:
+          description: "Default is null (meaning return all columns in the original\
+            \ query itself).\r\nThe values are in terms of the result column name\
+            \ from the original data set and are comma delimited.\r\nThe power of\
+            \ this comes in that you may aggregate the data if you wish\r\n(that is\
+            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
+            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
+            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
+            \ the rows for the given group, that would produce a rather ugly column\
+            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
+            \ was an illegal character in a field you are selecting from, you are\
+            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
+            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
+            \  where you would likely want to pass `1` as the `groupBy` also."
+          nullable: true
+          type: string
+        style: form
+      - description: "Groups by the specified fields.\r\n            A comma delimited\
+          \ list of: 1 based numeric indexes (cleaner), or repeats of the select expressions\
+          \ (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\
+          \n            Default is null (meaning no grouping will be performed on\
+          \ the selected columns).\r\n            This applies only over the result\
+          \ set being requested here, meaning indexes into the \"select\" parameter\
+          \ fields.\r\n            Only specify this if you are selecting aggregations\
+          \ in the \"select\" parameter."
+        explode: true
+        in: query
+        name: groupBy
+        required: false
+        schema:
+          description: "Groups by the specified fields.\r\n            A comma delimited\
+            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
+            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
+            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
+            \ will be performed on the selected columns).\r\n            This applies\
+            \ only over the result set being requested here, meaning indexes into\
+            \ the \"select\" parameter fields.\r\n            Only specify this if\
+            \ you are selecting aggregations in the \"select\" parameter."
+          nullable: true
+          type: string
+        style: form
+      - description: When paginating, only return this number of records, page should
+          also be specified.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 0
+          description: When paginating, only return this number of records, page should
+            also be specified.
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      - description: 0-N based on chunk sized determined by the limit, ignored if
+          limit < 1.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 0
+          description: 0-N based on chunk sized determined by the limit, ignored if
+            limit < 1.
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: "[EXPERIMENTAL] FetchQueryResultJson: Fetches the result from a previously\
+        \ started query, in JSON string format.\r\nPlease move to '/jsonProper' instead.\
+        \  This may be marked as Deprecated in the future."
+      tags:
+      - Sql Background Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/SqlBackground/{executionId}/jsonProper:
+    get:
+      description: |-
+        Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)
+        The following error codes are to be anticipated most with standard Problem Detail reports:
+        - 400 BadRequest : Something failed with the execution of your query
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't (yet) exist.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: FetchQueryResultJsonProper
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      - description: Makes this a file-download request (as opposed to returning the
+          data in the response-body)
+        explode: true
+        in: query
+        name: download
+        required: false
+        schema:
+          default: false
+          description: Makes this a file-download request (as opposed to returning
+            the data in the response-body)
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: "Order the results by these fields.\r\n            Use the `-`\
+          \ sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+          \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted\
+          \ by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n\
+          \            Default is null, the sort order specified in the query itself."
+        explode: true
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          description: "Order the results by these fields.\r\n            Use the\
+            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
+            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
+            \n            Default is null, the sort order specified in the query itself."
+          nullable: true
+          type: string
+        style: form
+      - description: An ODATA filter per Finbourne.Filtering syntax.
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          description: An ODATA filter per Finbourne.Filtering syntax.
+          nullable: true
+          type: string
+        style: form
+      - description: "Default is null (meaning return all columns in the original\
+          \ query itself).\r\nThe values are in terms of the result column name from\
+          \ the original data set and are comma delimited.\r\nThe power of this comes\
+          \ in that you may aggregate the data if you wish\r\n(that is the main reason\
+          \ for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER\
+          \ (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify,\
+          \ with a nice column name)\r\n- `count(*)` (count the rows for the given\
+          \ group, that would produce a rather ugly column name, but  it works)\r\n\
+          - `count(distinct x) as numOfXs`\r\nIf there was an illegal character in\
+          \ a field you are selecting from, you are responsible for bracketing it\
+          \ with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column\
+          \ with space in name]) as nice_name`\r\n  where you would likely want to\
+          \ pass `1` as the `groupBy` also."
+        explode: true
+        in: query
+        name: select
+        required: false
+        schema:
+          description: "Default is null (meaning return all columns in the original\
+            \ query itself).\r\nThe values are in terms of the result column name\
+            \ from the original data set and are comma delimited.\r\nThe power of\
+            \ this comes in that you may aggregate the data if you wish\r\n(that is\
+            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
+            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
+            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
+            \ the rows for the given group, that would produce a rather ugly column\
+            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
+            \ was an illegal character in a field you are selecting from, you are\
+            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
+            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
+            \  where you would likely want to pass `1` as the `groupBy` also."
+          nullable: true
+          type: string
+        style: form
+      - description: "Groups by the specified fields.\r\n            A comma delimited\
+          \ list of: 1 based numeric indexes (cleaner), or repeats of the select expressions\
+          \ (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\
+          \n            Default is null (meaning no grouping will be performed on\
+          \ the selected columns).\r\n            This applies only over the result\
+          \ set being requested here, meaning indexes into the \"select\" parameter\
+          \ fields.\r\n            Only specify this if you are selecting aggregations\
+          \ in the \"select\" parameter."
+        explode: true
+        in: query
+        name: groupBy
+        required: false
+        schema:
+          description: "Groups by the specified fields.\r\n            A comma delimited\
+            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
+            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
+            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
+            \ will be performed on the selected columns).\r\n            This applies\
+            \ only over the result set being requested here, meaning indexes into\
+            \ the \"select\" parameter fields.\r\n            Only specify this if\
+            \ you are selecting aggregations in the \"select\" parameter."
+          nullable: true
+          type: string
+        style: form
+      - description: When paginating, only return this number of records, page should
+          also be specified.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 0
+          description: When paginating, only return this number of records, page should
+            also be specified.
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      - description: 0-N based on chunk sized determined by the limit, ignored if
+          limit < 1.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 0
+          description: 0-N based on chunk sized determined by the limit, ignored if
+            limit < 1.
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] FetchQueryResultJsonProper: Fetches the result from
+        a previously started query, in JSON format.'
+      tags:
+      - Sql Background Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/SqlBackground/{executionId}/pipe:
+    get:
+      description: |-
+        Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)
+        The following error codes are to be anticipated most with standard Problem Detail reports:
+        - 400 BadRequest : Something failed with the execution of your query
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't (yet) exist.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: FetchQueryResultPipe
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      - description: Makes this a file-download request (as opposed to returning the
+          data in the response-body)
+        explode: true
+        in: query
+        name: download
+        required: false
+        schema:
+          default: false
+          description: Makes this a file-download request (as opposed to returning
+            the data in the response-body)
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: "Order the results by these fields.\r\n            Use the `-`\
+          \ sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+          \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted\
+          \ by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n\
+          \            Default is null, the sort order specified in the query itself."
+        explode: true
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          description: "Order the results by these fields.\r\n            Use the\
+            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
+            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
+            \n            Default is null, the sort order specified in the query itself."
+          nullable: true
+          type: string
+        style: form
+      - description: An ODATA filter per Finbourne.Filtering syntax.
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          description: An ODATA filter per Finbourne.Filtering syntax.
+          nullable: true
+          type: string
+        style: form
+      - description: "Default is null (meaning return all columns in the original\
+          \ query itself).\r\nThe values are in terms of the result column name from\
+          \ the original data set and are comma delimited.\r\nThe power of this comes\
+          \ in that you may aggregate the data if you wish\r\n(that is the main reason\
+          \ for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER\
+          \ (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify,\
+          \ with a nice column name)\r\n- `count(*)` (count the rows for the given\
+          \ group, that would produce a rather ugly column name, but  it works)\r\n\
+          - `count(distinct x) as numOfXs`\r\nIf there was an illegal character in\
+          \ a field you are selecting from, you are responsible for bracketing it\
+          \ with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column\
+          \ with space in name]) as nice_name`\r\n  where you would likely want to\
+          \ pass `1` as the `groupBy` also."
+        explode: true
+        in: query
+        name: select
+        required: false
+        schema:
+          description: "Default is null (meaning return all columns in the original\
+            \ query itself).\r\nThe values are in terms of the result column name\
+            \ from the original data set and are comma delimited.\r\nThe power of\
+            \ this comes in that you may aggregate the data if you wish\r\n(that is\
+            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
+            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
+            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
+            \ the rows for the given group, that would produce a rather ugly column\
+            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
+            \ was an illegal character in a field you are selecting from, you are\
+            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
+            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
+            \  where you would likely want to pass `1` as the `groupBy` also."
+          nullable: true
+          type: string
+        style: form
+      - description: "Groups by the specified fields.\r\n            A comma delimited\
+          \ list of: 1 based numeric indexes (cleaner), or repeats of the select expressions\
+          \ (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\
+          \n            Default is null (meaning no grouping will be performed on\
+          \ the selected columns).\r\n            This applies only over the result\
+          \ set being requested here, meaning indexes into the \"select\" parameter\
+          \ fields.\r\n            Only specify this if you are selecting aggregations\
+          \ in the \"select\" parameter."
+        explode: true
+        in: query
+        name: groupBy
+        required: false
+        schema:
+          description: "Groups by the specified fields.\r\n            A comma delimited\
+            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
+            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
+            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
+            \ will be performed on the selected columns).\r\n            This applies\
+            \ only over the result set being requested here, meaning indexes into\
+            \ the \"select\" parameter fields.\r\n            Only specify this if\
+            \ you are selecting aggregations in the \"select\" parameter."
+          nullable: true
+          type: string
+        style: form
+      - description: When paginating, only return this number of records, page should
+          also be specified.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 0
+          description: When paginating, only return this number of records, page should
+            also be specified.
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      - description: 0-N based on chunk sized determined by the limit, ignored if
+          limit < 1.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 0
+          description: 0-N based on chunk sized determined by the limit, ignored if
+            limit < 1.
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] FetchQueryResultPipe: Fetches the result from a previously
+        started query, in pipe-delimited format.'
+      tags:
+      - Sql Background Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+  /api/SqlBackground/{executionId}/sqlite:
+    get:
+      description: |-
+        Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)
+        The following error codes are to be anticipated most with standard Problem Detail reports:
+        - 400 BadRequest : Something failed with the execution of your query
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't (yet) exist.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: FetchQueryResultSqlite
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      - description: "Order the results by these fields.\r\n            Use the `-`\
+          \ sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+          \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted\
+          \ by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n\
+          \            Default is null, the sort order specified in the query itself."
+        explode: true
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          description: "Order the results by these fields.\r\n            Use the\
+            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
+            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
+            \n            Default is null, the sort order specified in the query itself."
+          nullable: true
+          type: string
+        style: form
+      - description: An ODATA filter per Finbourne.Filtering syntax.
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          description: An ODATA filter per Finbourne.Filtering syntax.
+          nullable: true
+          type: string
+        style: form
+      - description: "Default is null (meaning return all columns in the original\
+          \ query itself).\r\nThe values are in terms of the result column name from\
+          \ the original data set and are comma delimited.\r\nThe power of this comes\
+          \ in that you may aggregate the data if you wish\r\n(that is the main reason\
+          \ for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER\
+          \ (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify,\
+          \ with a nice column name)\r\n- `count(*)` (count the rows for the given\
+          \ group, that would produce a rather ugly column name, but  it works)\r\n\
+          - `count(distinct x) as numOfXs`\r\nIf there was an illegal character in\
+          \ a field you are selecting from, you are responsible for bracketing it\
+          \ with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column\
+          \ with space in name]) as nice_name`\r\n  where you would likely want to\
+          \ pass `1` as the `groupBy` also."
+        explode: true
+        in: query
+        name: select
+        required: false
+        schema:
+          description: "Default is null (meaning return all columns in the original\
+            \ query itself).\r\nThe values are in terms of the result column name\
+            \ from the original data set and are comma delimited.\r\nThe power of\
+            \ this comes in that you may aggregate the data if you wish\r\n(that is\
+            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
+            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
+            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
+            \ the rows for the given group, that would produce a rather ugly column\
+            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
+            \ was an illegal character in a field you are selecting from, you are\
+            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
+            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
+            \  where you would likely want to pass `1` as the `groupBy` also."
+          nullable: true
+          type: string
+        style: form
+      - description: "Groups by the specified fields.\r\n            A comma delimited\
+          \ list of: 1 based numeric indexes (cleaner), or repeats of the select expressions\
+          \ (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\
+          \n            Default is null (meaning no grouping will be performed on\
+          \ the selected columns).\r\n            This applies only over the result\
+          \ set being requested here, meaning indexes into the \"select\" parameter\
+          \ fields.\r\n            Only specify this if you are selecting aggregations\
+          \ in the \"select\" parameter."
+        explode: true
+        in: query
+        name: groupBy
+        required: false
+        schema:
+          description: "Groups by the specified fields.\r\n            A comma delimited\
+            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
+            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
+            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
+            \ will be performed on the selected columns).\r\n            This applies\
+            \ only over the result set being requested here, meaning indexes into\
+            \ the \"select\" parameter fields.\r\n            Only specify this if\
+            \ you are selecting aggregations in the \"select\" parameter."
+          nullable: true
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] FetchQueryResultSqlite: Fetches the result from a previously
+        started query, in SqLite format.'
+      tags:
+      - Sql Background Execution
+      x-fbn-apistatus: Experimental
+      x-accepts: application/json
+components:
+  schemas:
+    AccessControlledAction:
+      additionalProperties: false
+      example:
+        limitedSet:
+        - identifier:
+            key: identifier
+          name: name
+          description: description
+          actions:
+          - activity: activity
+            scope: scope
+            entity: entity
+          - activity: activity
+            scope: scope
+            entity: entity
+        - identifier:
+            key: identifier
+          name: name
+          description: description
+          actions:
+          - activity: activity
+            scope: scope
+            entity: entity
+          - activity: activity
+            scope: scope
+            entity: entity
+        description: description
+        action:
+          activity: activity
+          scope: scope
+          entity: entity
+      properties:
+        description:
+          nullable: true
+          type: string
+        action:
+          $ref: '#/components/schemas/ActionId'
+        limitedSet:
+          items:
+            $ref: '#/components/schemas/IdSelectorDefinition'
+          nullable: true
+          type: array
+      type: object
+    AccessControlledResource:
+      additionalProperties: false
+      example:
+        application: application
+        name: name
+        description: description
+        actions:
+        - limitedSet:
+          - identifier:
+              key: identifier
+            name: name
+            description: description
+            actions:
+            - activity: activity
+              scope: scope
+              entity: entity
+            - activity: activity
+              scope: scope
+              entity: entity
+          - identifier:
+              key: identifier
+            name: name
+            description: description
+            actions:
+            - activity: activity
+              scope: scope
+              entity: entity
+            - activity: activity
+              scope: scope
+              entity: entity
+          description: description
+          action:
+            activity: activity
+            scope: scope
+            entity: entity
+        - limitedSet:
+          - identifier:
+              key: identifier
+            name: name
+            description: description
+            actions:
+            - activity: activity
+              scope: scope
+              entity: entity
+            - activity: activity
+              scope: scope
+              entity: entity
+          - identifier:
+              key: identifier
+            name: name
+            description: description
+            actions:
+            - activity: activity
+              scope: scope
+              entity: entity
+            - activity: activity
+              scope: scope
+              entity: entity
+          description: description
+          action:
+            activity: activity
+            scope: scope
+            entity: entity
+        identifierParts:
+        - valuesPath: valuesPath
+          displayName: displayName
+          name: name
+          index: 0
+          description: description
+          typeId: '{}'
+          required: true
+        - valuesPath: valuesPath
+          displayName: displayName
+          name: name
+          index: 0
+          description: description
+          typeId: '{}'
+          required: true
+      properties:
+        application:
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+        description:
+          nullable: true
+          type: string
+        actions:
+          items:
+            $ref: '#/components/schemas/AccessControlledAction'
+          nullable: true
+          type: array
+        identifierParts:
+          items:
+            $ref: '#/components/schemas/AccessControlledResourceIdentifierPartSchemaAttribute'
+          nullable: true
+          type: array
+      type: object
+    AccessControlledResourceIdentifierPartSchemaAttribute:
+      additionalProperties: false
+      example:
+        valuesPath: valuesPath
+        displayName: displayName
+        name: name
+        index: 0
+        description: description
+        typeId: '{}'
+        required: true
+      properties:
+        index:
+          format: int32
+          type: integer
+        name:
+          nullable: true
+          type: string
+        displayName:
+          nullable: true
+          type: string
+        description:
+          nullable: true
+          type: string
+        required:
+          type: boolean
+        valuesPath:
+          nullable: true
+          type: string
+        typeId:
+          additionalProperties: false
+          nullable: true
+          readOnly: true
+          type: object
+      type: object
+    ActionId:
+      additionalProperties: false
+      example:
+        activity: activity
+        scope: scope
+        entity: entity
+      properties:
+        scope:
+          maxLength: 100
+          minLength: 3
+          type: string
+        activity:
+          maxLength: 25
+          minLength: 3
+          type: string
+        entity:
+          maxLength: 25
+          minLength: 3
+          type: string
+      required:
+      - activity
+      - entity
+      - scope
+      type: object
+    BackgroundMultiQueryProgressResponse:
+      additionalProperties: false
+      example:
+        feedback:
+        - executionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          sender: sender
+          stateId: 6
+          propertyValues:
+          - '{}'
+          - '{}'
+          sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          message: message
+          when: 2000-01-23T04:56:07.000+00:00
+          messageTemplate: messageTemplate
+        - executionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          sender: sender
+          stateId: 6
+          propertyValues:
+          - '{}'
+          - '{}'
+          sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          message: message
+          when: 2000-01-23T04:56:07.000+00:00
+          messageTemplate: messageTemplate
+        progress: progress
+        queries:
+        - feedback:
+          - executionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            sender: sender
+            stateId: 6
+            propertyValues:
+            - '{}'
+            - '{}'
+            sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            message: message
+            when: 2000-01-23T04:56:07.000+00:00
+            messageTemplate: messageTemplate
+          - executionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            sender: sender
+            stateId: 6
+            propertyValues:
+            - '{}'
+            - '{}'
+            sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            message: message
+            when: 2000-01-23T04:56:07.000+00:00
+            messageTemplate: messageTemplate
+          columnsAvailable:
+          - allowedValues: allowedValues
+            sampleValues: sampleValues
+            isMain: true
+            isRequiredByProvider: true
+            displayName: displayName
+            name: name
+            description: description
+            isPrimaryKey: true
+            clientIds:
+            - clientIds
+            - clientIds
+          - allowedValues: allowedValues
+            sampleValues: sampleValues
+            isMain: true
+            isRequiredByProvider: true
+            displayName: displayName
+            name: name
+            description: description
+            isPrimaryKey: true
+            clientIds:
+            - clientIds
+            - clientIds
+          hasData: true
+          query: query
+          progress: progress
+          queryName: queryName
+          rowCount: 0
+        - feedback:
+          - executionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            sender: sender
+            stateId: 6
+            propertyValues:
+            - '{}'
+            - '{}'
+            sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            message: message
+            when: 2000-01-23T04:56:07.000+00:00
+            messageTemplate: messageTemplate
+          - executionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            sender: sender
+            stateId: 6
+            propertyValues:
+            - '{}'
+            - '{}'
+            sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            message: message
+            when: 2000-01-23T04:56:07.000+00:00
+            messageTemplate: messageTemplate
+          columnsAvailable:
+          - allowedValues: allowedValues
+            sampleValues: sampleValues
+            isMain: true
+            isRequiredByProvider: true
+            displayName: displayName
+            name: name
+            description: description
+            isPrimaryKey: true
+            clientIds:
+            - clientIds
+            - clientIds
+          - allowedValues: allowedValues
+            sampleValues: sampleValues
+            isMain: true
+            isRequiredByProvider: true
+            displayName: displayName
+            name: name
+            description: description
+            isPrimaryKey: true
+            clientIds:
+            - clientIds
+            - clientIds
+          hasData: true
+          query: query
+          progress: progress
+          queryName: queryName
+          rowCount: 0
+      properties:
+        progress:
+          description: The full progress log (up to this point at least)
+          nullable: true
+          type: string
+        feedback:
+          description: Individual Feedback Messages (to replace Progress).  A given
+            message will be returned from only one call.
+          items:
+            $ref: '#/components/schemas/FeedbackEventArgs'
+          nullable: true
+          type: array
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        queries:
+          items:
+            $ref: '#/components/schemas/BackgroundQueryProgressResponse'
+          nullable: true
+          type: array
+      type: object
+    BackgroundMultiQueryResponse:
+      additionalProperties: false
+      example:
+        cancel:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        executionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        fetchSqlite:
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        fetchPipe:
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        fetchJson:
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        progress:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        fetchJsonProper:
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        fetchExcel:
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        fetchCsv:
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+      properties:
+        executionId:
+          format: uuid
+          readOnly: true
+          type: string
+        progress:
+          $ref: '#/components/schemas/Link'
+        cancel:
+          $ref: '#/components/schemas/Link'
+        fetchJson:
+          items:
+            $ref: '#/components/schemas/Link'
+          nullable: true
+          readOnly: true
+          type: array
+        fetchJsonProper:
+          items:
+            $ref: '#/components/schemas/Link'
+          nullable: true
+          readOnly: true
+          type: array
+        fetchCsv:
+          items:
+            $ref: '#/components/schemas/Link'
+          nullable: true
+          readOnly: true
+          type: array
+        fetchPipe:
+          items:
+            $ref: '#/components/schemas/Link'
+          nullable: true
+          readOnly: true
+          type: array
+        fetchExcel:
+          items:
+            $ref: '#/components/schemas/Link'
+          nullable: true
+          readOnly: true
+          type: array
+        fetchSqlite:
+          items:
+            $ref: '#/components/schemas/Link'
+          nullable: true
+          readOnly: true
+          type: array
+      type: object
+    BackgroundQueryCancelResponse:
+      additionalProperties: false
+      example:
+        progress: progress
+        hadData: true
+      properties:
+        hadData:
+          type: boolean
+        previousStatus:
+          $ref: '#/components/schemas/TaskStatus'
+        previousState:
+          $ref: '#/components/schemas/BackgroundQueryState'
+        progress:
+          nullable: true
+          type: string
+      type: object
+    BackgroundQueryProgressResponse:
+      additionalProperties: false
+      example:
+        feedback:
+        - executionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          sender: sender
+          stateId: 6
+          propertyValues:
+          - '{}'
+          - '{}'
+          sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          message: message
+          when: 2000-01-23T04:56:07.000+00:00
+          messageTemplate: messageTemplate
+        - executionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          sender: sender
+          stateId: 6
+          propertyValues:
+          - '{}'
+          - '{}'
+          sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          message: message
+          when: 2000-01-23T04:56:07.000+00:00
+          messageTemplate: messageTemplate
+        columnsAvailable:
+        - allowedValues: allowedValues
+          sampleValues: sampleValues
+          isMain: true
+          isRequiredByProvider: true
+          displayName: displayName
+          name: name
+          description: description
+          isPrimaryKey: true
+          clientIds:
+          - clientIds
+          - clientIds
+        - allowedValues: allowedValues
+          sampleValues: sampleValues
+          isMain: true
+          isRequiredByProvider: true
+          displayName: displayName
+          name: name
+          description: description
+          isPrimaryKey: true
+          clientIds:
+          - clientIds
+          - clientIds
+        hasData: true
+        query: query
+        progress: progress
+        queryName: queryName
+        rowCount: 0
+      properties:
+        hasData:
+          description: Is there currently data for this Query?
+          type: boolean
+        rowCount:
+          description: Number of rows of data held. -1 if none as yet.
+          format: int32
+          type: integer
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        state:
+          $ref: '#/components/schemas/BackgroundQueryState'
+        progress:
+          description: The full progress log (up to this point at least)
+          nullable: true
+          type: string
+        feedback:
+          description: Individual Feedback Messages (to replace Progress).  A given
+            message will be returned from only one call.
+          items:
+            $ref: '#/components/schemas/FeedbackEventArgs'
+          nullable: true
+          type: array
+        query:
+          description: The HoneycombSql of the original request
+          nullable: true
+          type: string
+        queryName:
+          description: The QueryName given in the original request
+          nullable: true
+          type: string
+        columnsAvailable:
+          description: When HasData is true this is the schema of columns that will
+            be returned if the data is requested
+          items:
+            $ref: '#/components/schemas/Column'
+          nullable: true
+          type: array
+      type: object
+    BackgroundQueryResponse:
+      additionalProperties: false
+      example:
+        cancel:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        histogram:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        executionId: executionId
+        fetchSqlite:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        fetchPipe:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        fetchJson:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        progress:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        fetchJsonProper:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        fetchExcel:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        fetchCsv:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+      properties:
+        executionId:
+          nullable: true
+          type: string
+        progress:
+          $ref: '#/components/schemas/Link'
+        cancel:
+          $ref: '#/components/schemas/Link'
+        fetchJson:
+          $ref: '#/components/schemas/Link'
+        fetchJsonProper:
+          $ref: '#/components/schemas/Link'
+        fetchCsv:
+          $ref: '#/components/schemas/Link'
+        fetchPipe:
+          $ref: '#/components/schemas/Link'
+        fetchExcel:
+          $ref: '#/components/schemas/Link'
+        fetchSqlite:
+          $ref: '#/components/schemas/Link'
+        histogram:
+          $ref: '#/components/schemas/Link'
+      type: object
+    BackgroundQueryState:
+      enum:
+      - New
+      - Running
+      - Errored
+      - Cancelled
+      - Executed
+      - Serialized
+      - SerializationFailed
+      - AttemptingToDeserialize
+      - Loaded
+      - Cleared
+      - Disposed
+      type: string
+    Column:
+      additionalProperties: false
+      example:
+        allowedValues: allowedValues
+        sampleValues: sampleValues
+        isMain: true
+        isRequiredByProvider: true
+        displayName: displayName
+        name: name
+        description: description
+        isPrimaryKey: true
+        clientIds:
+        - clientIds
+        - clientIds
+      properties:
+        isPrimaryKey:
+          type: boolean
+        isMain:
+          type: boolean
+        isRequiredByProvider:
+          type: boolean
+        clientIds:
+          items:
+            type: string
+          nullable: true
+          type: array
+        name:
+          nullable: true
+          readOnly: true
+          type: string
+        type:
+          $ref: '#/components/schemas/DataType'
+        description:
+          nullable: true
+          type: string
+        displayName:
+          nullable: true
+          type: string
+        conditionUsage:
+          $ref: '#/components/schemas/ConditionAttributes'
+        sampleValues:
+          nullable: true
+          type: string
+        allowedValues:
+          nullable: true
+          type: string
+      type: object
+    ConditionAttributes:
+      enum:
+      - None
+      - Normal
+      - Required
+      - Main
+      type: string
+    DataType:
+      enum:
+      - Boolean
+      - Int
+      - BigInt
+      - Double
+      - Decimal
+      - Text
+      - Date
+      - DateTime
+      - Table
+      type: string
+    FeedbackEventArgs:
+      additionalProperties: false
+      example:
+        executionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        sender: sender
+        stateId: 6
+        propertyValues:
+        - '{}'
+        - '{}'
+        sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        message: message
+        when: 2000-01-23T04:56:07.000+00:00
+        messageTemplate: messageTemplate
+      properties:
+        when:
+          format: date-time
+          type: string
+        sessionId:
+          format: uuid
+          type: string
+        executionId:
+          format: uuid
+          type: string
+        level:
+          $ref: '#/components/schemas/FeedbackLevel'
+        sender:
+          nullable: true
+          type: string
+        stateId:
+          format: int32
+          nullable: true
+          type: integer
+        messageTemplate:
+          nullable: true
+          type: string
+        propertyValues:
+          items:
+            additionalProperties: false
+            type: object
+          nullable: true
+          type: array
+        message:
+          nullable: true
+          readOnly: true
+          type: string
+      type: object
+    FeedbackLevel:
+      enum:
+      - None
+      - Progress
+      - Debug
+      - Information
+      - Warning
+      - Error
+      - ExecutionKeepAlive
+      - ProgressAndDebug
+      - ProgressAndInformation
+      - ProgressAndWarning
+      - ProgressAndError
+      type: string
+    IdSelectorDefinition:
+      additionalProperties: false
+      example:
+        identifier:
+          key: identifier
+        name: name
+        description: description
+        actions:
+        - activity: activity
+          scope: scope
+          entity: entity
+        - activity: activity
+          scope: scope
+          entity: entity
+      properties:
+        identifier:
+          additionalProperties:
+            type: string
+          minLength: 1
+          type: object
+        actions:
+          items:
+            $ref: '#/components/schemas/ActionId'
+          minLength: 1
+          type: array
+        name:
+          maxLength: 100
+          minLength: 0
+          nullable: true
+          type: string
+        description:
+          maxLength: 1024
+          minLength: 0
+          nullable: true
+          type: string
+      required:
+      - actions
+      - identifier
+      type: object
+    Link:
+      additionalProperties: false
+      example:
+        method: method
+        description: description
+        href: https://openapi-generator.tech
+        relation: relation
+      properties:
+        relation:
+          type: string
+        href:
+          format: uri
+          type: string
+        description:
+          nullable: true
+          type: string
+        method:
+          type: string
+      required:
+      - href
+      - method
+      - relation
+      type: object
+    LusidProblemDetails:
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        errorDetails:
+          items:
+            additionalProperties:
+              type: string
+            type: object
+          nullable: true
+          type: array
+        code:
+          format: int32
+          type: integer
+        type:
+          nullable: true
+          type: string
+        title:
+          nullable: true
+          type: string
+        status:
+          format: int32
+          nullable: true
+          type: integer
+        detail:
+          nullable: true
+          type: string
+        instance:
+          nullable: true
+          type: string
+        extensions:
+          additionalProperties:
+            additionalProperties: false
+            type: object
+          nullable: true
+          readOnly: true
+          type: object
+      required:
+      - code
+      - name
+      type: object
+    MultiQueryDefinitionType:
+      enum:
+      - Instrument
+      - Expiry
+      - CorporateActions
+      - GetFees
+      - ListFees
+      - PostTradeCompliance
+      - EdiInstrument
+      - EdiInstrumentWriter
+      - Testing
+      - MarketplaceClientLoadHistory
+      type: string
+    ResourceListOfAccessControlledResource:
+      additionalProperties: false
+      example:
+        previousPage: previousPage
+        nextPage: nextPage
+        values:
+        - application: application
+          name: name
+          description: description
+          actions:
+          - limitedSet:
+            - identifier:
+                key: identifier
+              name: name
+              description: description
+              actions:
+              - activity: activity
+                scope: scope
+                entity: entity
+              - activity: activity
+                scope: scope
+                entity: entity
+            - identifier:
+                key: identifier
+              name: name
+              description: description
+              actions:
+              - activity: activity
+                scope: scope
+                entity: entity
+              - activity: activity
+                scope: scope
+                entity: entity
+            description: description
+            action:
+              activity: activity
+              scope: scope
+              entity: entity
+          - limitedSet:
+            - identifier:
+                key: identifier
+              name: name
+              description: description
+              actions:
+              - activity: activity
+                scope: scope
+                entity: entity
+              - activity: activity
+                scope: scope
+                entity: entity
+            - identifier:
+                key: identifier
+              name: name
+              description: description
+              actions:
+              - activity: activity
+                scope: scope
+                entity: entity
+              - activity: activity
+                scope: scope
+                entity: entity
+            description: description
+            action:
+              activity: activity
+              scope: scope
+              entity: entity
+          identifierParts:
+          - valuesPath: valuesPath
+            displayName: displayName
+            name: name
+            index: 0
+            description: description
+            typeId: '{}'
+            required: true
+          - valuesPath: valuesPath
+            displayName: displayName
+            name: name
+            index: 0
+            description: description
+            typeId: '{}'
+            required: true
+        - application: application
+          name: name
+          description: description
+          actions:
+          - limitedSet:
+            - identifier:
+                key: identifier
+              name: name
+              description: description
+              actions:
+              - activity: activity
+                scope: scope
+                entity: entity
+              - activity: activity
+                scope: scope
+                entity: entity
+            - identifier:
+                key: identifier
+              name: name
+              description: description
+              actions:
+              - activity: activity
+                scope: scope
+                entity: entity
+              - activity: activity
+                scope: scope
+                entity: entity
+            description: description
+            action:
+              activity: activity
+              scope: scope
+              entity: entity
+          - limitedSet:
+            - identifier:
+                key: identifier
+              name: name
+              description: description
+              actions:
+              - activity: activity
+                scope: scope
+                entity: entity
+              - activity: activity
+                scope: scope
+                entity: entity
+            - identifier:
+                key: identifier
+              name: name
+              description: description
+              actions:
+              - activity: activity
+                scope: scope
+                entity: entity
+              - activity: activity
+                scope: scope
+                entity: entity
+            description: description
+            action:
+              activity: activity
+              scope: scope
+              entity: entity
+          identifierParts:
+          - valuesPath: valuesPath
+            displayName: displayName
+            name: name
+            index: 0
+            description: description
+            typeId: '{}'
+            required: true
+          - valuesPath: valuesPath
+            displayName: displayName
+            name: name
+            index: 0
+            description: description
+            typeId: '{}'
+            required: true
+        links:
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        href: https://openapi-generator.tech
+      properties:
+        values:
+          items:
+            $ref: '#/components/schemas/AccessControlledResource'
+          type: array
+        href:
+          format: uri
+          nullable: true
+          type: string
+        links:
+          items:
+            $ref: '#/components/schemas/Link'
+          nullable: true
+          type: array
+        nextPage:
+          nullable: true
+          type: string
+        previousPage:
+          nullable: true
+          type: string
+      required:
+      - values
+      type: object
+    TaskStatus:
+      enum:
+      - Created
+      - WaitingForActivation
+      - WaitingToRun
+      - Running
+      - WaitingForChildrenToComplete
+      - RanToCompletion
+      - Canceled
+      - Faulted
+      type: string
+  securitySchemes:
+    oauth2:
+      description: OAuth2 Implicit Grant
+      flows:
+        implicit:
+          authorizationUrl: https://lusid-fbn-ci.okta.com/oauth2/aus49h9b8rQPvouCH2p7/v1/authorize
+          scopes: {}
+      type: oauth2
+x-tagGroups:
+  name: API
+  tags:
+  - Application Metadata
+  - Current Table/Field Catalog
+  - Historically Executed Queries
+  - Multi-Query Execution
+  - Sql Background Execution
+  - Sql Execution
+

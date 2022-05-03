@@ -7,7 +7,7 @@ The Luminesce application is part of the [LUSID by FINBOURNE](https://www.finbou
 
 For more details on other applications in the LUSID platform, see [Understanding all the applications in the LUSID platform](https://support.lusid.com/knowledgebase/article/KA-01787/en-us).
 
-[C# SDK Extensions](https://github.com/finbourne/luminesce-sdk-extensions-csharp) to accompany this SDK are available. These provides the user with additional extensions to make it easy to configure and use the API endpoints.
+[Java SDK Extensions](https://github.com/finbourne/luminesce-sdk-extensions-java) to accompany this SDK are available. These provides the user with additional extensions to make it easy to configure and use the API endpoints.
 
 ## Installation
 

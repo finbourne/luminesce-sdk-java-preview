@@ -7,7 +7,7 @@
     "groupId": "com.finbourne",
     "artifactId": "luminesce-sdk-preview",
     "artifactUrl": "https://github.com/finbourne/luminesce-sdk-java-preview/",
-    "artifactDescription": "Notifications SDK Java Preview",    
+    "artifactDescription": "Luminesce SDK Java Preview",    
     "dateLibrary": "java8",
     "modelPackage": "com.finbourne.luminesce.model",
     "apiPackage": "com.finbourne.luminesce.api",

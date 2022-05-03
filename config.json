@@ -1,0 +1,22 @@
+{
+    "developerName": "FINBOURNE Technology Limited",
+    "developerEmail": "engineering@finbourne.com",
+    "developerOrganization": "FINBOURNE Technology Limited",
+    "developerOrganizationUrl": "https://www.finbourne.com",
+    "sourceFolder": "src/main/java",
+    "groupId": "com.finbourne",
+    "artifactId": "luminesce-sdk-preview",
+    "artifactUrl": "https://github.com/finbourne/luminesce-sdk-java-preview/",
+    "artifactDescription": "Notifications SDK Java Preview",    
+    "dateLibrary": "java8",
+    "modelPackage": "com.finbourne.luminesce.model",
+    "apiPackage": "com.finbourne.luminesce.api",
+    "invokerPackage": "com.finbourne.luminesce",
+    "licenseName": "MIT",
+    "licenseUrl": "https://github.com/finbourne/luminesce-sdk-java-preview/blob/master/LICENSE.md",
+    "hideGenerationTimestamp": true,
+    "metaRequestIdHeader": "honeycomb-meta-requestid",
+    "scmConnection": "git@github.com:finbourne/luminesce-sdk-java-preview.git",
+    "scmDeveloperConnection": "git@github.com:finbourne/luminesce-sdk-java-preview.git",
+    "scmUrl": "https://github.com/finbourne/luminesce-sdk-java-preview/"
+}

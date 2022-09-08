@@ -4,24 +4,24 @@ All URIs are relative to *https://www.lusid.com/honeycomb*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getByQueryCsv**](SqlExecutionApi.md#getByQueryCsv) | **GET** /api/Sql/csv/{query} | [EXPERIMENTAL] GetByQueryCsv: Executes Sql, returned in CSV format, where the sql is simply in the url.
-[**getByQueryExcel**](SqlExecutionApi.md#getByQueryExcel) | **GET** /api/Sql/excel/{query} | [EXPERIMENTAL] GetByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded) format, where the sql is simply in the url.
-[**getByQueryJson**](SqlExecutionApi.md#getByQueryJson) | **GET** /api/Sql/json/{query} | [EXPERIMENTAL] GetByQueryJson: Executes Sql, returned in JSON format, where the sql is simply in the url.
-[**getByQueryPipe**](SqlExecutionApi.md#getByQueryPipe) | **GET** /api/Sql/pipe/{query} | [EXPERIMENTAL] GetByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is simply in the url.
-[**getByQuerySqlite**](SqlExecutionApi.md#getByQuerySqlite) | **GET** /api/Sql/sqlite/{query} | [EXPERIMENTAL] GetByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded) format, where the sql is simply in the url.
-[**putByQueryCsv**](SqlExecutionApi.md#putByQueryCsv) | **PUT** /api/Sql/csv | [EXPERIMENTAL] PutByQueryCsv: Executes Sql, returned in CSV format, where the sql is the post-body url.
-[**putByQueryExcel**](SqlExecutionApi.md#putByQueryExcel) | **PUT** /api/Sql/excel | [EXPERIMENTAL] PutByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded), where the sql is the post-body url.
-[**putByQueryJson**](SqlExecutionApi.md#putByQueryJson) | **PUT** /api/Sql/json | [EXPERIMENTAL] PutByQueryJson: Executes Sql, returned in JSON format, where the sql is the post-body url.
-[**putByQueryPipe**](SqlExecutionApi.md#putByQueryPipe) | **PUT** /api/Sql/pipe | [EXPERIMENTAL] PutByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is the post-body url.
-[**putByQuerySqlite**](SqlExecutionApi.md#putByQuerySqlite) | **PUT** /api/Sql/sqlite | [EXPERIMENTAL] PutByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body url.
-[**putQueryToFormat**](SqlExecutionApi.md#putQueryToFormat) | **PUT** /api/Sql/pretty | [EXPERIMENTAL] PutQueryToFormat: Executes Sql, returned in JSON format, where the sql is the post-body url.
+[**getByQueryCsv**](SqlExecutionApi.md#getByQueryCsv) | **GET** /api/Sql/csv/{query} | GetByQueryCsv: Executes Sql, returned in CSV format, where the sql is simply in the url.
+[**getByQueryExcel**](SqlExecutionApi.md#getByQueryExcel) | **GET** /api/Sql/excel/{query} | GetByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded) format, where the sql is simply in the url.
+[**getByQueryJson**](SqlExecutionApi.md#getByQueryJson) | **GET** /api/Sql/json/{query} | GetByQueryJson: Executes Sql, returned in JSON format, where the sql is simply in the url.
+[**getByQueryPipe**](SqlExecutionApi.md#getByQueryPipe) | **GET** /api/Sql/pipe/{query} | GetByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is simply in the url.
+[**getByQuerySqlite**](SqlExecutionApi.md#getByQuerySqlite) | **GET** /api/Sql/sqlite/{query} | GetByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded) format, where the sql is simply in the url.
+[**putByQueryCsv**](SqlExecutionApi.md#putByQueryCsv) | **PUT** /api/Sql/csv | PutByQueryCsv: Executes Sql, returned in CSV format, where the sql is the post-body url.
+[**putByQueryExcel**](SqlExecutionApi.md#putByQueryExcel) | **PUT** /api/Sql/excel | PutByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded), where the sql is the post-body url.
+[**putByQueryJson**](SqlExecutionApi.md#putByQueryJson) | **PUT** /api/Sql/json | PutByQueryJson: Executes Sql, returned in JSON format, where the sql is the post-body url.
+[**putByQueryPipe**](SqlExecutionApi.md#putByQueryPipe) | **PUT** /api/Sql/pipe | PutByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is the post-body url.
+[**putByQuerySqlite**](SqlExecutionApi.md#putByQuerySqlite) | **PUT** /api/Sql/sqlite | PutByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body url.
+[**putQueryToFormat**](SqlExecutionApi.md#putQueryToFormat) | **PUT** /api/Sql/pretty | PutQueryToFormat: Executes Sql, returned in JSON format, where the sql is the post-body url.
 
 
 <a name="getByQueryCsv"></a>
 # **getByQueryCsv**
 > String getByQueryCsv(query, queryName, download, timeout)
 
-[EXPERIMENTAL] GetByQueryCsv: Executes Sql, returned in CSV format, where the sql is simply in the url.
+GetByQueryCsv: Executes Sql, returned in CSV format, where the sql is simply in the url.
 
  For simple single-line query execution via the url. e.g. &#x60;select ^ from Sys.Field order by 1, 2&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
 
@@ -45,7 +45,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String query = "select ^ from Sys.Field order by 1, 2"; // String | HoneycombSql to Execute (must be one line only)
+    String query = "select ^ from Sys.Field order by 1, 2"; // String | LuminesceSql to Execute (must be one line only)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeout = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -67,7 +67,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **query** | **String**| HoneycombSql to Execute (must be one line only) |
+ **query** | **String**| LuminesceSql to Execute (must be one line only) |
  **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
  **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false]
  **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
@@ -95,7 +95,7 @@ Name | Type | Description  | Notes
 # **getByQueryExcel**
 > String getByQueryExcel(query, queryName, timeout)
 
-[EXPERIMENTAL] GetByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded) format, where the sql is simply in the url.
+GetByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded) format, where the sql is simply in the url.
 
  For simple single-line query execution via the url. e.g. &#x60;select ^ from Sys.Field order by 1, 2&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
 
@@ -119,7 +119,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String query = "select ^ from Sys.Field order by 1, 2"; // String | HoneycombSql to Execute (must be one line only)
+    String query = "select ^ from Sys.Field order by 1, 2"; // String | LuminesceSql to Execute (must be one line only)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeout = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
@@ -140,7 +140,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **query** | **String**| HoneycombSql to Execute (must be one line only) |
+ **query** | **String**| LuminesceSql to Execute (must be one line only) |
  **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
  **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
 
@@ -167,7 +167,7 @@ Name | Type | Description  | Notes
 # **getByQueryJson**
 > String getByQueryJson(query, queryName, timeout, jsonProper)
 
-[EXPERIMENTAL] GetByQueryJson: Executes Sql, returned in JSON format, where the sql is simply in the url.
+GetByQueryJson: Executes Sql, returned in JSON format, where the sql is simply in the url.
 
  For simple single-line query execution via the url. e.g. &#x60;select ^ from Sys.Field order by 1, 2&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
 
@@ -191,7 +191,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String query = "select ^ from Sys.Field order by 1, 2"; // String | HoneycombSql to Execute (must be one line only)
+    String query = "select ^ from Sys.Field order by 1, 2"; // String | LuminesceSql to Execute (must be one line only)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeout = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     Boolean jsonProper = false; // Boolean | Should this be text/json (not json-encoded-as-a-string)
@@ -213,7 +213,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **query** | **String**| HoneycombSql to Execute (must be one line only) |
+ **query** | **String**| LuminesceSql to Execute (must be one line only) |
  **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
  **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
  **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false]
@@ -241,7 +241,7 @@ Name | Type | Description  | Notes
 # **getByQueryPipe**
 > String getByQueryPipe(query, queryName, download, timeout)
 
-[EXPERIMENTAL] GetByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is simply in the url.
+GetByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is simply in the url.
 
  For simple single-line query execution via the url. e.g. &#x60;select ^ from Sys.Field order by 1, 2&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
 
@@ -265,7 +265,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String query = "select ^ from Sys.Field order by 1, 2"; // String | HoneycombSql to Execute (must be one line only)
+    String query = "select ^ from Sys.Field order by 1, 2"; // String | LuminesceSql to Execute (must be one line only)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeout = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -287,7 +287,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **query** | **String**| HoneycombSql to Execute (must be one line only) |
+ **query** | **String**| LuminesceSql to Execute (must be one line only) |
  **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
  **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false]
  **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
@@ -315,7 +315,7 @@ Name | Type | Description  | Notes
 # **getByQuerySqlite**
 > String getByQuerySqlite(query, queryName, timeout)
 
-[EXPERIMENTAL] GetByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded) format, where the sql is simply in the url.
+GetByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded) format, where the sql is simply in the url.
 
  For simple single-line query execution via the url. e.g. &#x60;select ^ from Sys.Field order by 1, 2&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
 
@@ -339,7 +339,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String query = "select ^ from Sys.Field order by 1, 2"; // String | HoneycombSql to Execute (must be one line only)
+    String query = "select ^ from Sys.Field order by 1, 2"; // String | LuminesceSql to Execute (must be one line only)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeout = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
@@ -360,7 +360,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **query** | **String**| HoneycombSql to Execute (must be one line only) |
+ **query** | **String**| LuminesceSql to Execute (must be one line only) |
  **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
  **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
 
@@ -387,9 +387,9 @@ Name | Type | Description  | Notes
 # **putByQueryCsv**
 > String putByQueryCsv(body, queryName, download, timeoutSeconds)
 
-[EXPERIMENTAL] PutByQueryCsv: Executes Sql, returned in CSV format, where the sql is the post-body url.
+PutByQueryCsv: Executes Sql, returned in CSV format, where the sql is the post-body url.
 
- For more complex HoneycombSql a PUT will allow for longer Sql. e.g.: &#x60;&#x60;&#x60;sql @@cutoff &#x3D; select #2020-02-01#; @issues &#x3D; select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project&#x3D;&#39;HC&#39; and Created &lt; @@cutoff and Updated &gt; @@cutoff;  select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary from @issues i inner join Dev.Jira.Issue.Link li     on i.Id &#x3D; li.IssueId &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
+ For more complex LuminesceSql a PUT will allow for longer Sql. e.g.: &#x60;&#x60;&#x60;sql @@cutoff &#x3D; select #2020-02-01#; @issues &#x3D; select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project&#x3D;&#39;HC&#39; and Created &lt; @@cutoff and Updated &gt; @@cutoff;  select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary from @issues i inner join Dev.Jira.Issue.Link li     on i.Id &#x3D; li.IssueId &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
 
 ### Example
 ```java
@@ -411,7 +411,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = "body_example"; // String | HoneycombSql to Execute (may be multi-line)
+    String body = "body_example"; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -433,7 +433,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | **String**| HoneycombSql to Execute (may be multi-line) |
+ **body** | **String**| LuminesceSql to Execute (may be multi-line) |
  **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
  **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false]
  **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
@@ -461,9 +461,9 @@ Name | Type | Description  | Notes
 # **putByQueryExcel**
 > String putByQueryExcel(body, queryName, timeoutSeconds)
 
-[EXPERIMENTAL] PutByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded), where the sql is the post-body url.
+PutByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded), where the sql is the post-body url.
 
- For more complex HoneycombSql a PUT will allow for longer Sql. e.g.: &#x60;&#x60;&#x60;sql @@cutoff &#x3D; select #2020-02-01#; @issues &#x3D; select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project&#x3D;&#39;HC&#39; and Created &lt; @@cutoff and Updated &gt; @@cutoff;  select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary from @issues i inner join Dev.Jira.Issue.Link li     on i.Id &#x3D; li.IssueId &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
+ For more complex LuminesceSql a PUT will allow for longer Sql. e.g.: &#x60;&#x60;&#x60;sql @@cutoff &#x3D; select #2020-02-01#; @issues &#x3D; select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project&#x3D;&#39;HC&#39; and Created &lt; @@cutoff and Updated &gt; @@cutoff;  select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary from @issues i inner join Dev.Jira.Issue.Link li     on i.Id &#x3D; li.IssueId &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
 
 ### Example
 ```java
@@ -485,7 +485,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = "body_example"; // String | HoneycombSql to Execute (may be multi-line)
+    String body = "body_example"; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
@@ -506,7 +506,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | **String**| HoneycombSql to Execute (may be multi-line) |
+ **body** | **String**| LuminesceSql to Execute (may be multi-line) |
  **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
  **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
 
@@ -533,9 +533,9 @@ Name | Type | Description  | Notes
 # **putByQueryJson**
 > String putByQueryJson(body, queryName, timeoutSeconds, jsonProper)
 
-[EXPERIMENTAL] PutByQueryJson: Executes Sql, returned in JSON format, where the sql is the post-body url.
+PutByQueryJson: Executes Sql, returned in JSON format, where the sql is the post-body url.
 
- For more complex HoneycombSql a PUT will allow for longer Sql. e.g.: &#x60;&#x60;&#x60;sql @@cutoff &#x3D; select #2020-02-01#; @issues &#x3D; select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project&#x3D;&#39;HC&#39; and Created &lt; @@cutoff and Updated &gt; @@cutoff;  select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary from @issues i inner join Dev.Jira.Issue.Link li     on i.Id &#x3D; li.IssueId &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
+ For more complex LuminesceSql a PUT will allow for longer Sql. e.g.: &#x60;&#x60;&#x60;sql @@cutoff &#x3D; select #2020-02-01#; @issues &#x3D; select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project&#x3D;&#39;HC&#39; and Created &lt; @@cutoff and Updated &gt; @@cutoff;  select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary from @issues i inner join Dev.Jira.Issue.Link li     on i.Id &#x3D; li.IssueId &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
 
 ### Example
 ```java
@@ -557,7 +557,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = "body_example"; // String | HoneycombSql to Execute (may be multi-line)
+    String body = "body_example"; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     Boolean jsonProper = false; // Boolean | Should this be text/json (not json-encoded-as-a-string)
@@ -579,7 +579,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | **String**| HoneycombSql to Execute (may be multi-line) |
+ **body** | **String**| LuminesceSql to Execute (may be multi-line) |
  **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
  **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
  **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false]
@@ -607,9 +607,9 @@ Name | Type | Description  | Notes
 # **putByQueryPipe**
 > String putByQueryPipe(body, queryName, download, timeoutSeconds)
 
-[EXPERIMENTAL] PutByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is the post-body url.
+PutByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is the post-body url.
 
- For more complex HoneycombSql a PUT will allow for longer Sql. e.g.: &#x60;&#x60;&#x60;sql @@cutoff &#x3D; select #2020-02-01#; @issues &#x3D; select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project&#x3D;&#39;HC&#39; and Created &lt; @@cutoff and Updated &gt; @@cutoff;  select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary from @issues i inner join Dev.Jira.Issue.Link li     on i.Id &#x3D; li.IssueId &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
+ For more complex LuminesceSql a PUT will allow for longer Sql. e.g.: &#x60;&#x60;&#x60;sql @@cutoff &#x3D; select #2020-02-01#; @issues &#x3D; select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project&#x3D;&#39;HC&#39; and Created &lt; @@cutoff and Updated &gt; @@cutoff;  select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary from @issues i inner join Dev.Jira.Issue.Link li     on i.Id &#x3D; li.IssueId &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
 
 ### Example
 ```java
@@ -631,7 +631,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = "body_example"; // String | HoneycombSql to Execute (may be multi-line)
+    String body = "body_example"; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -653,7 +653,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | **String**| HoneycombSql to Execute (may be multi-line) |
+ **body** | **String**| LuminesceSql to Execute (may be multi-line) |
  **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
  **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false]
  **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
@@ -681,9 +681,9 @@ Name | Type | Description  | Notes
 # **putByQuerySqlite**
 > String putByQuerySqlite(body, queryName, timeoutSeconds)
 
-[EXPERIMENTAL] PutByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body url.
+PutByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body url.
 
- For more complex HoneycombSql a PUT will allow for longer Sql. e.g.: &#x60;&#x60;&#x60;sql @@cutoff &#x3D; select #2020-02-01#; @issues &#x3D; select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project&#x3D;&#39;HC&#39; and Created &lt; @@cutoff and Updated &gt; @@cutoff;  select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary from @issues i inner join Dev.Jira.Issue.Link li     on i.Id &#x3D; li.IssueId &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
+ For more complex LuminesceSql a PUT will allow for longer Sql. e.g.: &#x60;&#x60;&#x60;sql @@cutoff &#x3D; select #2020-02-01#; @issues &#x3D; select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project&#x3D;&#39;HC&#39; and Created &lt; @@cutoff and Updated &gt; @@cutoff;  select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary from @issues i inner join Dev.Jira.Issue.Link li     on i.Id &#x3D; li.IssueId &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - something failed with the execution or parsing of your query - 401 Unauthorized 
 
 ### Example
 ```java
@@ -705,7 +705,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = "body_example"; // String | HoneycombSql to Execute (may be multi-line)
+    String body = "body_example"; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
@@ -726,7 +726,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | **String**| HoneycombSql to Execute (may be multi-line) |
+ **body** | **String**| LuminesceSql to Execute (may be multi-line) |
  **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
  **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
 
@@ -753,7 +753,7 @@ Name | Type | Description  | Notes
 # **putQueryToFormat**
 > String putQueryToFormat(body, trailingCommas, uppercaseKeywords, breakJoinOnSections, spaceAfterExpandedComma, keywordStandardization, expandCommaLists, expandInLists, expandBooleanExpressions, expandBetweenConditions, expandCaseStatements, maxLineWidth)
 
-[EXPERIMENTAL] PutQueryToFormat: Executes Sql, returned in JSON format, where the sql is the post-body url.
+PutQueryToFormat: Executes Sql, returned in JSON format, where the sql is the post-body url.
 
  This formats SQL (given a set of options as to how to do so). It takes some SQL (or a fragment thereof, it need not fully parse as yet and certainly need not execute correctly) and returns the reformatted version. e.g. &#x60;&#x60;&#x60;sql select x,y,z from a inner join b on a.x&#x3D;b.x where x&gt;y or y!&#x3D;z &#x60;&#x60;&#x60; becomes &#x60;&#x60;&#x60;sql select x, y, z from a inner join b    on a.x &#x3D; b.x where x &gt; y    or y !&#x3D; z &#x60;&#x60;&#x60; 
 
@@ -777,7 +777,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = "body_example"; // String | HoneycombSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it
+    String body = "body_example"; // String | LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it
     Boolean trailingCommas = true; // Boolean | Should commas be after an expression (as opposed to before)
     Boolean uppercaseKeywords = false; // Boolean | Should key words be capitalized
     Boolean breakJoinOnSections = true; // Boolean | Should clauses on joins be given line breaks?
@@ -807,7 +807,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | **String**| HoneycombSql to Pretty-Print. Even if it doesn&#39;t parse an attempt will be made to format it |
+ **body** | **String**| LuminesceSql to Pretty-Print. Even if it doesn&#39;t parse an attempt will be made to format it |
  **trailingCommas** | **Boolean**| Should commas be after an expression (as opposed to before) | [optional] [default to true]
  **uppercaseKeywords** | **Boolean**| Should key words be capitalized | [optional] [default to false]
  **breakJoinOnSections** | **Boolean**| Should clauses on joins be given line breaks? | [optional] [default to true]

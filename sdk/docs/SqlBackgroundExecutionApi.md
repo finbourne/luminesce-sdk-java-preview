@@ -4,22 +4,23 @@ All URIs are relative to *https://www.lusid.com/honeycomb*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**cancelQuery**](SqlBackgroundExecutionApi.md#cancelQuery) | **DELETE** /api/SqlBackground/{executionId} | [EXPERIMENTAL] CancelQuery: Cancels (if running) or clears the data from (if completed) a previously started query
-[**fetchQueryResultCsv**](SqlBackgroundExecutionApi.md#fetchQueryResultCsv) | **GET** /api/SqlBackground/{executionId}/csv | [EXPERIMENTAL] FetchQueryResultCsv: Fetches the result from a previously started query, in CSV format.
-[**fetchQueryResultExcel**](SqlBackgroundExecutionApi.md#fetchQueryResultExcel) | **GET** /api/SqlBackground/{executionId}/excel | [EXPERIMENTAL] FetchQueryResultExcel: Fetches the result from a previously started query, in Excel format.
-[**fetchQueryResultJson**](SqlBackgroundExecutionApi.md#fetchQueryResultJson) | **GET** /api/SqlBackground/{executionId}/json | [EXPERIMENTAL] FetchQueryResultJson: Fetches the result from a previously started query, in JSON string format.  Please move to &#39;/jsonProper&#39; instead.  This may be marked as Deprecated in the future.
-[**fetchQueryResultJsonProper**](SqlBackgroundExecutionApi.md#fetchQueryResultJsonProper) | **GET** /api/SqlBackground/{executionId}/jsonProper | [EXPERIMENTAL] FetchQueryResultJsonProper: Fetches the result from a previously started query, in JSON format.
-[**fetchQueryResultPipe**](SqlBackgroundExecutionApi.md#fetchQueryResultPipe) | **GET** /api/SqlBackground/{executionId}/pipe | [EXPERIMENTAL] FetchQueryResultPipe: Fetches the result from a previously started query, in pipe-delimited format.
-[**fetchQueryResultSqlite**](SqlBackgroundExecutionApi.md#fetchQueryResultSqlite) | **GET** /api/SqlBackground/{executionId}/sqlite | [EXPERIMENTAL] FetchQueryResultSqlite: Fetches the result from a previously started query, in SqLite format.
-[**getProgressOf**](SqlBackgroundExecutionApi.md#getProgressOf) | **GET** /api/SqlBackground/{executionId} | [EXPERIMENTAL] GetProgressOf: View progress information (up until this point)
-[**startQuery**](SqlBackgroundExecutionApi.md#startQuery) | **PUT** /api/SqlBackground | [EXPERIMENTAL] StartQuery: Starts to Execute HoneycombSql in the background.
+[**cancelQuery**](SqlBackgroundExecutionApi.md#cancelQuery) | **DELETE** /api/SqlBackground/{executionId} | CancelQuery: Cancels (if running) or clears the data from (if completed) a previously started query
+[**fetchQueryResultCsv**](SqlBackgroundExecutionApi.md#fetchQueryResultCsv) | **GET** /api/SqlBackground/{executionId}/csv | FetchQueryResultCsv: Fetches the result from a previously started query, in CSV format.
+[**fetchQueryResultExcel**](SqlBackgroundExecutionApi.md#fetchQueryResultExcel) | **GET** /api/SqlBackground/{executionId}/excel | FetchQueryResultExcel: Fetches the result from a previously started query, in Excel format.
+[**fetchQueryResultHistogram**](SqlBackgroundExecutionApi.md#fetchQueryResultHistogram) | **GET** /api/SqlBackground/{executionId}/histogram | FetchQueryResultHistogram: Fetches the result from a previously started query, converts it to a histogram (counts in buckets).
+[**fetchQueryResultJson**](SqlBackgroundExecutionApi.md#fetchQueryResultJson) | **GET** /api/SqlBackground/{executionId}/json | FetchQueryResultJson: Fetches the result from a previously started query, in JSON string format.  Please move to &#39;/jsonProper&#39; instead.  This may be marked as Deprecated in the future.
+[**fetchQueryResultJsonProper**](SqlBackgroundExecutionApi.md#fetchQueryResultJsonProper) | **GET** /api/SqlBackground/{executionId}/jsonProper | FetchQueryResultJsonProper: Fetches the result from a previously started query, in JSON format.
+[**fetchQueryResultPipe**](SqlBackgroundExecutionApi.md#fetchQueryResultPipe) | **GET** /api/SqlBackground/{executionId}/pipe | FetchQueryResultPipe: Fetches the result from a previously started query, in pipe-delimited format.
+[**fetchQueryResultSqlite**](SqlBackgroundExecutionApi.md#fetchQueryResultSqlite) | **GET** /api/SqlBackground/{executionId}/sqlite | FetchQueryResultSqlite: Fetches the result from a previously started query, in SqLite format.
+[**getProgressOf**](SqlBackgroundExecutionApi.md#getProgressOf) | **GET** /api/SqlBackground/{executionId} | GetProgressOf: View progress information (up until this point)
+[**startQuery**](SqlBackgroundExecutionApi.md#startQuery) | **PUT** /api/SqlBackground | StartQuery: Starts to Execute LuminesceSql in the background.
 
 
 <a name="cancelQuery"></a>
 # **cancelQuery**
 > BackgroundQueryCancelResponse cancelQuery(executionId)
 
-[EXPERIMENTAL] CancelQuery: Cancels (if running) or clears the data from (if completed) a previously started query
+CancelQuery: Cancels (if running) or clears the data from (if completed) a previously started query
 
 Cancel the query (if still running) / clear the data (if already returned) The following error codes are to be anticipated with standard Problem Detail reports: - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t exist and is not running. 
 
@@ -86,7 +87,7 @@ Name | Type | Description  | Notes
 # **fetchQueryResultCsv**
 > String fetchQueryResultCsv(executionId, download, sortBy, filter, select, groupBy, limit, page)
 
-[EXPERIMENTAL] FetchQueryResultCsv: Fetches the result from a previously started query, in CSV format.
+FetchQueryResultCsv: Fetches the result from a previously started query, in CSV format.
 
 Fetch the data in various formats (if available, or if not simply being informed it is not yet ready) The following error codes are to be anticipated most with standard Problem Detail reports: - 400 BadRequest : Something failed with the execution of your query - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t (yet) exist. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
 
@@ -168,7 +169,7 @@ Name | Type | Description  | Notes
 # **fetchQueryResultExcel**
 > String fetchQueryResultExcel(executionId, sortBy, filter, select, groupBy)
 
-[EXPERIMENTAL] FetchQueryResultExcel: Fetches the result from a previously started query, in Excel format.
+FetchQueryResultExcel: Fetches the result from a previously started query, in Excel format.
 
 Fetch the data in various formats (if available, or if not simply being informed it is not yet ready) The following error codes are to be anticipated most with standard Problem Detail reports: - 400 BadRequest : Something failed with the execution of your query - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t (yet) exist. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
 
@@ -240,11 +241,91 @@ Name | Type | Description  | Notes
 **200** | Success |  -  |
 **400** | Bad Request |  -  |
 
+<a name="fetchQueryResultHistogram"></a>
+# **fetchQueryResultHistogram**
+> String fetchQueryResultHistogram(executionId, timestampFieldName, startAt, endAt, bucketSize, filter, jsonProper)
+
+FetchQueryResultHistogram: Fetches the result from a previously started query, converts it to a histogram (counts in buckets).
+
+Fetch the histogram in Json format (if available, or if not simply being informed it is not yet ready) The following error codes are to be anticipated with standard Problem Detail reports: - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t (yet) exist. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+
+### Example
+```java
+// Import classes:
+import com.finbourne.luminesce.ApiClient;
+import com.finbourne.luminesce.ApiException;
+import com.finbourne.luminesce.Configuration;
+import com.finbourne.luminesce.auth.*;
+import com.finbourne.luminesce.models.*;
+import com.finbourne.luminesce.api.SqlBackgroundExecutionApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    
+    // Configure OAuth2 access token for authorization: oauth2
+    OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+    oauth2.setAccessToken("YOUR ACCESS TOKEN");
+
+    SqlBackgroundExecutionApi apiInstance = new SqlBackgroundExecutionApi(defaultClient);
+    String executionId = "executionId_example"; // String | ExecutionId returned when starting the query
+    String timestampFieldName = "timestampFieldName_example"; // String | Name of the timestamp field used in building the histogram
+    OffsetDateTime startAt = OffsetDateTime.now(); // OffsetDateTime | Start point (of the timestampFieldName field) for the histogram
+    OffsetDateTime endAt = OffsetDateTime.now(); // OffsetDateTime | End point (of the timestampFieldName field) for the histogram
+    String bucketSize = "bucketSize_example"; // String | Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated.
+    String filter = "filter_example"; // String | An ODATA filter per Finbourne.Filtering syntax.
+    Boolean jsonProper = false; // Boolean | Should this be text/json (not json-encoded-as-a-string)
+    try {
+      String result = apiInstance.fetchQueryResultHistogram(executionId, timestampFieldName, startAt, endAt, bucketSize, filter, jsonProper);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling SqlBackgroundExecutionApi#fetchQueryResultHistogram");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **executionId** | **String**| ExecutionId returned when starting the query |
+ **timestampFieldName** | **String**| Name of the timestamp field used in building the histogram |
+ **startAt** | **OffsetDateTime**| Start point (of the timestampFieldName field) for the histogram | [optional]
+ **endAt** | **OffsetDateTime**| End point (of the timestampFieldName field) for the histogram | [optional]
+ **bucketSize** | **String**| Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated. | [optional]
+ **filter** | **String**| An ODATA filter per Finbourne.Filtering syntax. | [optional]
+ **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false]
+
+### Return type
+
+**String**
+
+### Authorization
+
+[oauth2](../README.md#oauth2)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain, application/json, text/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success |  -  |
+**400** | Bad Request |  -  |
+
 <a name="fetchQueryResultJson"></a>
 # **fetchQueryResultJson**
 > String fetchQueryResultJson(executionId, sortBy, filter, select, groupBy, limit, page)
 
-[EXPERIMENTAL] FetchQueryResultJson: Fetches the result from a previously started query, in JSON string format.  Please move to &#39;/jsonProper&#39; instead.  This may be marked as Deprecated in the future.
+FetchQueryResultJson: Fetches the result from a previously started query, in JSON string format.  Please move to &#39;/jsonProper&#39; instead.  This may be marked as Deprecated in the future.
 
 Fetch the data in various formats (if available, or if not simply being informed it is not yet ready) The following error codes are to be anticipated most with standard Problem Detail reports: - 400 BadRequest : Something failed with the execution of your query - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t (yet) exist. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
 
@@ -324,7 +405,7 @@ Name | Type | Description  | Notes
 # **fetchQueryResultJsonProper**
 > String fetchQueryResultJsonProper(executionId, download, sortBy, filter, select, groupBy, limit, page)
 
-[EXPERIMENTAL] FetchQueryResultJsonProper: Fetches the result from a previously started query, in JSON format.
+FetchQueryResultJsonProper: Fetches the result from a previously started query, in JSON format.
 
 Fetch the data in various formats (if available, or if not simply being informed it is not yet ready) The following error codes are to be anticipated most with standard Problem Detail reports: - 400 BadRequest : Something failed with the execution of your query - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t (yet) exist. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
 
@@ -406,7 +487,7 @@ Name | Type | Description  | Notes
 # **fetchQueryResultPipe**
 > String fetchQueryResultPipe(executionId, download, sortBy, filter, select, groupBy, limit, page)
 
-[EXPERIMENTAL] FetchQueryResultPipe: Fetches the result from a previously started query, in pipe-delimited format.
+FetchQueryResultPipe: Fetches the result from a previously started query, in pipe-delimited format.
 
 Fetch the data in various formats (if available, or if not simply being informed it is not yet ready) The following error codes are to be anticipated most with standard Problem Detail reports: - 400 BadRequest : Something failed with the execution of your query - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t (yet) exist. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
 
@@ -488,7 +569,7 @@ Name | Type | Description  | Notes
 # **fetchQueryResultSqlite**
 > String fetchQueryResultSqlite(executionId, sortBy, filter, select, groupBy)
 
-[EXPERIMENTAL] FetchQueryResultSqlite: Fetches the result from a previously started query, in SqLite format.
+FetchQueryResultSqlite: Fetches the result from a previously started query, in SqLite format.
 
 Fetch the data in various formats (if available, or if not simply being informed it is not yet ready) The following error codes are to be anticipated most with standard Problem Detail reports: - 400 BadRequest : Something failed with the execution of your query - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t (yet) exist. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
 
@@ -564,7 +645,7 @@ Name | Type | Description  | Notes
 # **getProgressOf**
 > BackgroundQueryProgressResponse getProgressOf(executionId)
 
-[EXPERIMENTAL] GetProgressOf: View progress information (up until this point)
+GetProgressOf: View progress information (up until this point)
 
 View progress information (up until this point) The following error codes are to be anticipated most with standard Problem Detail reports: - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t exist and is not running. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
 
@@ -631,9 +712,9 @@ Name | Type | Description  | Notes
 # **startQuery**
 > BackgroundQueryResponse startQuery(body, queryName, timeoutSeconds, keepForSeconds)
 
-[EXPERIMENTAL] StartQuery: Starts to Execute HoneycombSql in the background.
+StartQuery: Starts to Execute LuminesceSql in the background.
 
- Allow for starting a potentially long running query and getting back an immediate response with how to  - fetch the data in various formats (if available, or if not simply being informed it is not yet ready) - view progress information (up until this point) - cancel the query (if still running) / clear the data (if already returned)  This can still error on things like an outright syntax error, but more runtime errors (e.g. from providers) will not cause this to error (that will happen when attempting to fetch data)  Here is an example that intentionally takes one minute to run:  &#x60;&#x60;&#x60;sql select Str, Takes500Ms from Testing1K where UseLinq &#x3D; true and [Int] &lt;&#x3D; 120 &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - there was something wrong with your query syntax (the issue was detected at parse-time) - 401 Unauthorized 
+ Allow for starting a potentially long running query and getting back an immediate response with how to  - fetch the data in various formats (if available, or if not simply being informed it is not yet ready) - view progress information (up until this point) - cancel the query (if still running) / clear the data (if already returned)  This can still error on things like an outright syntax error, but more runtime errors (e.g. from providers) will not cause this to error (that will happen when attempting to fetch data)  Here is an example that intentionally takes one minute to run:  &#x60;&#x60;&#x60;sql select Str, Takes500Ms from Testing1K where UseLinq &#x3D; true and [Int] &lt;&#x3D; 120 &#x60;&#x60;&#x60;  This is the only place in the Luminesce WebAPI where the following is supported. This will allow for the same user running a character-identical query not kick off a new query but simply be returned a reference  to the already running one for up to &#x60;N&#x60; seconds (where &#x60;N&#x60; should be &#x60;&lt;&#x3D;&#x60; &#x60;keepForSeconds&#x60;).  The following error codes are to be anticipated with standard Problem Detail reports: - 400 BadRequest - there was something wrong with your query syntax (the issue was detected at parse-time) - 401 Unauthorized 
 
 ### Example
 ```java
@@ -655,7 +736,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlBackgroundExecutionApi apiInstance = new SqlBackgroundExecutionApi(defaultClient);
-    String body = "body_example"; // String | The HoneycombSql query to kick off.
+    String body = "body_example"; // String | The LuminesceSql query to kick off.
     String queryName = "Intentionally slow test query"; // String | A name for this query.  This goes into logs and is available in `Sys.Logs.HcQueryStart`.
     Integer timeoutSeconds = 0; // Integer | Maximum time the query may run for, in seconds: <0 → ∞, 0 → 7200 (2h)
     Integer keepForSeconds = 0; // Integer | Maximum time the result may be kept for, in seconds: <0 → 1200 (20m), 0 → 28800 (8h), max = 2,678,400 (31d)
@@ -677,7 +758,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **body** | **String**| The HoneycombSql query to kick off. |
+ **body** | **String**| The LuminesceSql query to kick off. |
  **queryName** | **String**| A name for this query.  This goes into logs and is available in &#x60;Sys.Logs.HcQueryStart&#x60;. | [optional]
  **timeoutSeconds** | **Integer**| Maximum time the query may run for, in seconds: &lt;0 → ∞, 0 → 7200 (2h) | [optional] [default to 0]
  **keepForSeconds** | **Integer**| Maximum time the result may be kept for, in seconds: &lt;0 → 1200 (20m), 0 → 28800 (8h), max &#x3D; 2,678,400 (31d) | [optional] [default to 0]

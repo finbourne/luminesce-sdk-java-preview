@@ -4,16 +4,16 @@ All URIs are relative to *https://www.lusid.com/honeycomb*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getServicesAsAccessControlledResources**](ApplicationMetadataApi.md#getServicesAsAccessControlledResources) | **GET** /api/metadata/access/resources | [EXPERIMENTAL] GetServicesAsAccessControlledResources: Get resources available for access control
+[**getServicesAsAccessControlledResources**](ApplicationMetadataApi.md#getServicesAsAccessControlledResources) | **GET** /api/metadata/access/resources | GetServicesAsAccessControlledResources: Get resources available for access control
 
 
 <a name="getServicesAsAccessControlledResources"></a>
 # **getServicesAsAccessControlledResources**
 > ResourceListOfAccessControlledResource getServicesAsAccessControlledResources()
 
-[EXPERIMENTAL] GetServicesAsAccessControlledResources: Get resources available for access control
+GetServicesAsAccessControlledResources: Get resources available for access control
 
-Get the comprehensive set of resources that are available for access control
+ Get the comprehensive set of resources that are available for access control.  The following LuminesceSql is executed to return this information,  which is then packaged up as AccessControlledResource:  &#x60;&#x60;&#x60;sql select     Name,     min(coalesce(Description, Name) || &#39; (&#39; || Type || &#39;)&#39;) as Description from     Sys.Registration where     Type in (&#39;DirectProvider&#39;, &#39;DataProvider&#39;)     and     ShowAll &#x3D; true group by 1 order by 1     &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 401 Unauthorized 
 
 ### Example
 ```java

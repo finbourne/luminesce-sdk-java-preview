@@ -4,16 +4,16 @@ All URIs are relative to *https://www.lusid.com/honeycomb*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**getCatalog**](CurrentTableFieldCatalogApi.md#getCatalog) | **GET** /api/Catalog | [EXPERIMENTAL] GetCatalog: Shows Table and Field level information on Providers that are currently running that you have access to (in Json format)
+[**getCatalog**](CurrentTableFieldCatalogApi.md#getCatalog) | **GET** /api/Catalog | GetCatalog: Shows Table and Field level information on Providers that are currently running that you have access to (in Json format)
 
 
 <a name="getCatalog"></a>
 # **getCatalog**
 > String getCatalog(freeTextSearch, jsonProper)
 
-[EXPERIMENTAL] GetCatalog: Shows Table and Field level information on Providers that are currently running that you have access to (in Json format)
+GetCatalog: Shows Table and Field level information on Providers that are currently running that you have access to (in Json format)
 
- The following HoneycombSql is executed to return this information:  &#x60;&#x60;&#x60;sql select     coalesce(f.TableName, r.Name) as TableName,     coalesce(f.FieldName, &#39;N/A&#39;) as FieldName,     f.DataType,     f.FieldType,     f.IsPrimaryKey,     f.IsMain,     case          when f.TableName is not null              then f.Description         else             r.Name || &#39; returns a different set of columns depending on use.&#39;         end as Description,     f.ParamDefaultValue,     f.TableParamColumns,     min(r.Description) as ProviderDescription from     Sys.Registration r     left outer join Sys.Field f         on r.Name &#x3D; f.TableName where     r.Type in (&#39;DirectProvider&#39;, &#39;DataProvider&#39;)     and      r.ShowAll &#x3D; false group by     1, 2, 3, 4, 5, 6, 8, 9 order by     1, 5 desc, 6 desc, 2     &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 401 Unauthorized 
+ The following LuminesceSql is executed to return this information:  &#x60;&#x60;&#x60;sql @reg &#x3D; select     r.Name,     min(r.Description) as Description from     Sys.Registration r where     r.Type in (&#39;DirectProvider&#39;, &#39;DataProvider&#39;)     and      r.ShowAll &#x3D; false group by     1     ;  @fld &#x3D; select     f.TableName,     f.FieldName,     f.DataType,     f.FieldType,     f.IsPrimaryKey,     f.IsMain,     f.Description,     f.ParamDefaultValue,     f.TableParamColumns from     Sys.Field f     ;  @x &#x3D; select     coalesce(f.TableName, r.Name) as TableName,     coalesce(f.FieldName, &#39;N/A&#39;) as FieldName,     f.DataType,     f.FieldType,     f.IsPrimaryKey,     f.IsMain,     case          when f.TableName is not null              then f.Description         else             r.Name || &#39; returns a different set of columns depending on use.&#39;         end as Description,     f.ParamDefaultValue,     f.TableParamColumns,     r.Description as ProviderDescription from     @reg r     left outer join @fld f         on r.Name &#x3D; f.TableName order by     1, 5 desc, 6 desc, 2     ;     &#x60;&#x60;&#x60;  The following error codes are to be anticipated with standard Problem Detail reports: - 401 Unauthorized 
 
 ### Example
 ```java

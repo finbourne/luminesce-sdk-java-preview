@@ -1,14 +1,14 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "FINBOURNE Honeycomb Web API",
+    "title": "FINBOURNE Luminesce Web API",
     "termsOfService": "https://www.finbourne.com/legal/terms-conditions",
     "contact": {
       "name": "FINBOURNE Technology",
       "url": "https://www.finbourne.com",
       "email": "info@finbourne.com"
     },
-    "version": "1.9.16",
+    "version": "1.11.201",
     "x-logo": {
       "url": "https://www.lusid.com/app/assets/logo_white.png",
       "backgroundColor": "#415464"
@@ -25,8 +25,8 @@
         "tags": [
           "Current Table/Field Catalog"
         ],
-        "summary": "[EXPERIMENTAL] GetCatalog: Shows Table and Field level information on Providers that are currently running that you have access to (in Json format)",
-        "description": "\nThe following HoneycombSql is executed to return this information:\n\n```sql\nselect\n    coalesce(f.TableName, r.Name) as TableName,\n    coalesce(f.FieldName, 'N/A') as FieldName,\n    f.DataType,\n    f.FieldType,\n    f.IsPrimaryKey,\n    f.IsMain,\n    case \n        when f.TableName is not null \n            then f.Description\n        else\n            r.Name || ' returns a different set of columns depending on use.'\n        end as Description,\n    f.ParamDefaultValue,\n    f.TableParamColumns,\n    min(r.Description) as ProviderDescription\nfrom\n    Sys.Registration r\n    left outer join Sys.Field f\n        on r.Name = f.TableName\nwhere\n    r.Type in ('DirectProvider', 'DataProvider')\n    and \n    r.ShowAll = false\ngroup by\n    1, 2, 3, 4, 5, 6, 8, 9\norder by\n    1, 5 desc, 6 desc, 2\n   \n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n",
+        "summary": "GetCatalog: Shows Table and Field level information on Providers that are currently running that you have access to (in Json format)",
+        "description": "\nThe following LuminesceSql is executed to return this information:\n\n```sql\n@reg =\nselect\n    r.Name,\n    min(r.Description) as Description\nfrom\n    Sys.Registration r\nwhere\n    r.Type in ('DirectProvider', 'DataProvider')\n    and \n    r.ShowAll = false\ngroup by\n    1\n    ;\n\n@fld =\nselect\n    f.TableName,\n    f.FieldName,\n    f.DataType,\n    f.FieldType,\n    f.IsPrimaryKey,\n    f.IsMain,\n    f.Description,\n    f.ParamDefaultValue,\n    f.TableParamColumns\nfrom\n    Sys.Field f\n    ;\n\n@x =\nselect\n    coalesce(f.TableName, r.Name) as TableName,\n    coalesce(f.FieldName, 'N/A') as FieldName,\n    f.DataType,\n    f.FieldType,\n    f.IsPrimaryKey,\n    f.IsMain,\n    case \n        when f.TableName is not null \n            then f.Description\n        else\n            r.Name || ' returns a different set of columns depending on use.'\n        end as Description,\n    f.ParamDefaultValue,\n    f.TableParamColumns,\n    r.Description as ProviderDescription\nfrom\n    @reg r\n    left outer join @fld f\n        on r.Name = f.TableName\norder by\n    1, 5 desc, 6 desc, 2\n    ;\n   \n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n",
         "operationId": "GetCatalog",
         "parameters": [
           {
@@ -78,7 +78,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/History": {
@@ -86,7 +86,7 @@
         "tags": [
           "Historically Executed Queries"
         ],
-        "summary": "[EXPERIMENTAL] GetHistory: Shows queries executed in a given historical time window (in Json format).",
+        "summary": "GetHistory: Shows queries executed in a given historical time window (in Json format).",
         "description": "\nStarts to load the historical query logs for a certain time range, search criteria, etc.\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n",
         "operationId": "GetHistory",
         "parameters": [
@@ -163,7 +163,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/History/{executionId}": {
@@ -171,7 +171,7 @@
         "tags": [
           "Historically Executed Queries"
         ],
-        "summary": "[EXPERIMENTAL] GetProgressOfHistory: View progress information (up until this point) of a history query",
+        "summary": "GetProgressOfHistory: View progress information (up until this point) of a history query",
         "description": "View progress information (up until this point) of previously started History query\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't exist and is not running.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
         "operationId": "GetProgressOfHistory",
         "parameters": [
@@ -213,13 +213,13 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       },
       "delete": {
         "tags": [
           "Historically Executed Queries"
         ],
-        "summary": "[EXPERIMENTAL] CancelHistory: Cancels (if running) or clears the data from (if completed) a previously started History query",
+        "summary": "CancelHistory: Cancels (if running) or clears the data from (if completed) a previously started History query",
         "description": "Cancel the query (if still running) / clear the data (if already returned)\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't exist and is not running.\n",
         "operationId": "CancelHistory",
         "parameters": [
@@ -261,7 +261,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/History/{executionId}/histogram": {
@@ -269,9 +269,9 @@
         "tags": [
           "Historically Executed Queries"
         ],
-        "summary": "[EXPERIMENTAL] FetchQueryResultHistogram: Fetches the result from a previously started query, converts it to a histogram (counts in buckets).",
-        "description": "Fetch the data in Json format (if available, or if not simply being informed it is not yet ready)\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't (yet) exist.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
-        "operationId": "FetchQueryResultHistogram",
+        "summary": "FetchHistoryResultHistogram: Fetches the result from a previously started query, converts it to a histogram (counts in buckets).",
+        "description": "Fetch the histogram in Json format (if available, or if not simply being informed it is not yet ready)\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't (yet) exist.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
+        "operationId": "FetchHistoryResultHistogram",
         "parameters": [
           {
             "name": "executionId",
@@ -363,7 +363,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/History/{executionId}/json": {
@@ -371,7 +371,7 @@
         "tags": [
           "Historically Executed Queries"
         ],
-        "summary": "[EXPERIMENTAL] FetchHistoryResultJson: Fetches the result from a previously started query, in JSON format.",
+        "summary": "FetchHistoryResultJson: Fetches the result from a previously started query, in JSON format.",
         "description": "Fetch the data in Json format (if available, or if not simply being informed it is not yet ready)\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't (yet) exist.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
         "operationId": "FetchHistoryResultJson",
         "parameters": [
@@ -508,7 +508,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/metadata/access/resources": {
@@ -516,8 +516,8 @@
         "tags": [
           "Application Metadata"
         ],
-        "summary": "[EXPERIMENTAL] GetServicesAsAccessControlledResources: Get resources available for access control",
-        "description": "Get the comprehensive set of resources that are available for access control",
+        "summary": "GetServicesAsAccessControlledResources: Get resources available for access control",
+        "description": "\nGet the comprehensive set of resources that are available for access control.\n\nThe following LuminesceSql is executed to return this information, \nwhich is then packaged up as AccessControlledResource:\n\n```sql\nselect\n    Name,\n    min(coalesce(Description, Name) || ' (' || Type || ')') as Description\nfrom\n    Sys.Registration\nwhere\n    Type in ('DirectProvider', 'DataProvider')\n    and\n    ShowAll = true\ngroup by 1\norder by 1\n   \n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n",
         "operationId": "GetServicesAsAccessControlledResources",
         "responses": {
           "200": {
@@ -546,7 +546,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/MultiQueryBackground": {
@@ -554,7 +554,7 @@
         "tags": [
           "Multi-Query Execution"
         ],
-        "summary": "[EXPERIMENTAL] StartQueries: Starts to Execute the HoneycombSql statements in the background.",
+        "summary": "StartQueries: Starts to Execute the LuminesceSql statements in the background.",
         "description": "\nAllow for starting a potentially long running query and getting back an immediate response with how to \n- fetch the data in various formats (if available, or if not simply being informed it is not yet ready), on a per result basis\n- view progress information (up until this point), for all results in one go\n- cancel the queries (if still running) / clear the data (if already returned)\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - there was something wrong with your query syntax (the issue was detected at parse-time)\n- 401 Unauthorized\n",
         "operationId": "StartQueries",
         "parameters": [
@@ -673,12 +673,12 @@
           }
         ],
         "requestBody": {
-          "description": "A search value (e.g. 'Apple' on an instrument search)",
+          "description": "A \"search\" value (e.g. 'Apple' on an instrument search, a `Finbourne.Filtering` expression of Insights, etc.)\r\nIn the cases where \"Nothing\" is valid for a `Finbourne.Filtering` expression, pass `True`.",
           "content": {
             "text/plain": {
               "schema": {
                 "type": "string",
-                "description": "A search value (e.g. 'Apple' on an instrument search)",
+                "description": "A \"search\" value (e.g. 'Apple' on an instrument search, a `Finbourne.Filtering` expression of Insights, etc.)\r\nIn the cases where \"Nothing\" is valid for a `Finbourne.Filtering` expression, pass `True`.",
                 "example": "Apple"
               }
             }
@@ -732,7 +732,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/MultiQueryBackground/{executionId}": {
@@ -740,7 +740,7 @@
         "tags": [
           "Multi-Query Execution"
         ],
-        "summary": "[EXPERIMENTAL] GetProgressOfMultiQuery: View progress information (up until this point) for the entire query-set",
+        "summary": "GetProgressOfMultiQuery: View progress information (up until this point) for the entire query-set",
         "description": "View progress information (up until this point) for the entire query-set\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't exist and is not running.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
         "operationId": "GetProgressOfMultiQuery",
         "parameters": [
@@ -782,13 +782,13 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       },
       "delete": {
         "tags": [
           "Multi-Query Execution"
         ],
-        "summary": "[EXPERIMENTAL] CancelMultiQuery: Cancels (if running) or clears the data from (if completed) a previously started query-set",
+        "summary": "CancelMultiQuery: Cancels (if running) or clears the data from (if completed) a previously started query-set",
         "description": "Cancel the query-set (if still running) / clear the data (if already returned)\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't exist and is not running.\n",
         "operationId": "CancelMultiQuery",
         "parameters": [
@@ -830,7 +830,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/Sql/csv": {
@@ -838,8 +838,8 @@
         "tags": [
           "Sql Execution"
         ],
-        "summary": "[EXPERIMENTAL] PutByQueryCsv: Executes Sql, returned in CSV format, where the sql is the post-body url.",
-        "description": "\nFor more complex HoneycombSql a PUT will allow for longer Sql.\ne.g.:\n```sql\n@@cutoff = select #2020-02-01#;\n@issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;\n\nselect i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary\nfrom @issues i\ninner join Dev.Jira.Issue.Link li\n    on i.Id = li.IssueId\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
+        "summary": "PutByQueryCsv: Executes Sql, returned in CSV format, where the sql is the post-body url.",
+        "description": "\nFor more complex LuminesceSql a PUT will allow for longer Sql.\ne.g.:\n```sql\n@@cutoff = select #2020-02-01#;\n@issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;\n\nselect i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary\nfrom @issues i\ninner join Dev.Jira.Issue.Link li\n    on i.Id = li.IssueId\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
         "operationId": "PutByQueryCsv",
         "parameters": [
           {
@@ -879,12 +879,12 @@
           }
         ],
         "requestBody": {
-          "description": "HoneycombSql to Execute (may be multi-line)",
+          "description": "LuminesceSql to Execute (may be multi-line)",
           "content": {
             "text/plain": {
               "schema": {
                 "type": "string",
-                "description": "HoneycombSql to Execute (may be multi-line)",
+                "description": "LuminesceSql to Execute (may be multi-line)",
                 "example": "select * from sys.field"
               }
             }
@@ -938,7 +938,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/Sql/csv/{query}": {
@@ -946,18 +946,18 @@
         "tags": [
           "Sql Execution"
         ],
-        "summary": "[EXPERIMENTAL] GetByQueryCsv: Executes Sql, returned in CSV format, where the sql is simply in the url.",
+        "summary": "GetByQueryCsv: Executes Sql, returned in CSV format, where the sql is simply in the url.",
         "description": "\nFor simple single-line query execution via the url.\ne.g. `select ^ from Sys.Field order by 1, 2`\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
         "operationId": "GetByQueryCsv",
         "parameters": [
           {
             "name": "query",
             "in": "path",
-            "description": "HoneycombSql to Execute (must be one line only)",
+            "description": "LuminesceSql to Execute (must be one line only)",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "HoneycombSql to Execute (must be one line only)",
+              "description": "LuminesceSql to Execute (must be one line only)",
               "example": "select ^ from Sys.Field order by 1, 2"
             }
           },
@@ -1044,7 +1044,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/Sql/excel": {
@@ -1052,8 +1052,8 @@
         "tags": [
           "Sql Execution"
         ],
-        "summary": "[EXPERIMENTAL] PutByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded), where the sql is the post-body url.",
-        "description": "\nFor more complex HoneycombSql a PUT will allow for longer Sql.\ne.g.:\n```sql\n@@cutoff = select #2020-02-01#;\n@issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;\n\nselect i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary\nfrom @issues i\ninner join Dev.Jira.Issue.Link li\n    on i.Id = li.IssueId\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
+        "summary": "PutByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded), where the sql is the post-body url.",
+        "description": "\nFor more complex LuminesceSql a PUT will allow for longer Sql.\ne.g.:\n```sql\n@@cutoff = select #2020-02-01#;\n@issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;\n\nselect i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary\nfrom @issues i\ninner join Dev.Jira.Issue.Link li\n    on i.Id = li.IssueId\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
         "operationId": "PutByQueryExcel",
         "parameters": [
           {
@@ -1082,12 +1082,12 @@
           }
         ],
         "requestBody": {
-          "description": "HoneycombSql to Execute (may be multi-line)",
+          "description": "LuminesceSql to Execute (may be multi-line)",
           "content": {
             "text/plain": {
               "schema": {
                 "type": "string",
-                "description": "HoneycombSql to Execute (may be multi-line)",
+                "description": "LuminesceSql to Execute (may be multi-line)",
                 "example": "select * from sys.field"
               }
             }
@@ -1141,7 +1141,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/Sql/excel/{query}": {
@@ -1149,18 +1149,18 @@
         "tags": [
           "Sql Execution"
         ],
-        "summary": "[EXPERIMENTAL] GetByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded) format, where the sql is simply in the url.",
+        "summary": "GetByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded) format, where the sql is simply in the url.",
         "description": "\nFor simple single-line query execution via the url.\ne.g. `select ^ from Sys.Field order by 1, 2`\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
         "operationId": "GetByQueryExcel",
         "parameters": [
           {
             "name": "query",
             "in": "path",
-            "description": "HoneycombSql to Execute (must be one line only)",
+            "description": "LuminesceSql to Execute (must be one line only)",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "HoneycombSql to Execute (must be one line only)",
+              "description": "LuminesceSql to Execute (must be one line only)",
               "example": "select ^ from Sys.Field order by 1, 2"
             }
           },
@@ -1236,7 +1236,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/Sql/json": {
@@ -1244,8 +1244,8 @@
         "tags": [
           "Sql Execution"
         ],
-        "summary": "[EXPERIMENTAL] PutByQueryJson: Executes Sql, returned in JSON format, where the sql is the post-body url.",
-        "description": "\nFor more complex HoneycombSql a PUT will allow for longer Sql.\ne.g.:\n```sql\n@@cutoff = select #2020-02-01#;\n@issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;\n\nselect i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary\nfrom @issues i\ninner join Dev.Jira.Issue.Link li\n    on i.Id = li.IssueId\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
+        "summary": "PutByQueryJson: Executes Sql, returned in JSON format, where the sql is the post-body url.",
+        "description": "\nFor more complex LuminesceSql a PUT will allow for longer Sql.\ne.g.:\n```sql\n@@cutoff = select #2020-02-01#;\n@issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;\n\nselect i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary\nfrom @issues i\ninner join Dev.Jira.Issue.Link li\n    on i.Id = li.IssueId\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
         "operationId": "PutByQueryJson",
         "parameters": [
           {
@@ -1285,12 +1285,12 @@
           }
         ],
         "requestBody": {
-          "description": "HoneycombSql to Execute (may be multi-line)",
+          "description": "LuminesceSql to Execute (may be multi-line)",
           "content": {
             "text/plain": {
               "schema": {
                 "type": "string",
-                "description": "HoneycombSql to Execute (may be multi-line)",
+                "description": "LuminesceSql to Execute (may be multi-line)",
                 "example": "select * from sys.field"
               }
             }
@@ -1344,7 +1344,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/Sql/json/{query}": {
@@ -1352,18 +1352,18 @@
         "tags": [
           "Sql Execution"
         ],
-        "summary": "[EXPERIMENTAL] GetByQueryJson: Executes Sql, returned in JSON format, where the sql is simply in the url.",
+        "summary": "GetByQueryJson: Executes Sql, returned in JSON format, where the sql is simply in the url.",
         "description": "\nFor simple single-line query execution via the url.\ne.g. `select ^ from Sys.Field order by 1, 2`\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
         "operationId": "GetByQueryJson",
         "parameters": [
           {
             "name": "query",
             "in": "path",
-            "description": "HoneycombSql to Execute (must be one line only)",
+            "description": "LuminesceSql to Execute (must be one line only)",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "HoneycombSql to Execute (must be one line only)",
+              "description": "LuminesceSql to Execute (must be one line only)",
               "example": "select ^ from Sys.Field order by 1, 2"
             }
           },
@@ -1450,7 +1450,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/Sql/pipe": {
@@ -1458,8 +1458,8 @@
         "tags": [
           "Sql Execution"
         ],
-        "summary": "[EXPERIMENTAL] PutByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is the post-body url.",
-        "description": "\nFor more complex HoneycombSql a PUT will allow for longer Sql.\ne.g.:\n```sql\n@@cutoff = select #2020-02-01#;\n@issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;\n\nselect i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary\nfrom @issues i\ninner join Dev.Jira.Issue.Link li\n    on i.Id = li.IssueId\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
+        "summary": "PutByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is the post-body url.",
+        "description": "\nFor more complex LuminesceSql a PUT will allow for longer Sql.\ne.g.:\n```sql\n@@cutoff = select #2020-02-01#;\n@issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;\n\nselect i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary\nfrom @issues i\ninner join Dev.Jira.Issue.Link li\n    on i.Id = li.IssueId\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
         "operationId": "PutByQueryPipe",
         "parameters": [
           {
@@ -1499,12 +1499,12 @@
           }
         ],
         "requestBody": {
-          "description": "HoneycombSql to Execute (may be multi-line)",
+          "description": "LuminesceSql to Execute (may be multi-line)",
           "content": {
             "text/plain": {
               "schema": {
                 "type": "string",
-                "description": "HoneycombSql to Execute (may be multi-line)",
+                "description": "LuminesceSql to Execute (may be multi-line)",
                 "example": "select * from sys.field"
               }
             }
@@ -1558,7 +1558,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/Sql/pipe/{query}": {
@@ -1566,18 +1566,18 @@
         "tags": [
           "Sql Execution"
         ],
-        "summary": "[EXPERIMENTAL] GetByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is simply in the url.",
+        "summary": "GetByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is simply in the url.",
         "description": "\nFor simple single-line query execution via the url.\ne.g. `select ^ from Sys.Field order by 1, 2`\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
         "operationId": "GetByQueryPipe",
         "parameters": [
           {
             "name": "query",
             "in": "path",
-            "description": "HoneycombSql to Execute (must be one line only)",
+            "description": "LuminesceSql to Execute (must be one line only)",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "HoneycombSql to Execute (must be one line only)",
+              "description": "LuminesceSql to Execute (must be one line only)",
               "example": "select ^ from Sys.Field order by 1, 2"
             }
           },
@@ -1664,7 +1664,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/Sql/pretty": {
@@ -1672,7 +1672,7 @@
         "tags": [
           "Sql Execution"
         ],
-        "summary": "[EXPERIMENTAL] PutQueryToFormat: Executes Sql, returned in JSON format, where the sql is the post-body url.",
+        "summary": "PutQueryToFormat: Executes Sql, returned in JSON format, where the sql is the post-body url.",
         "description": "\nThis formats SQL (given a set of options as to how to do so).\nIt takes some SQL (or a fragment thereof, it need not fully parse as yet and certainly need not execute correctly)\nand returns the reformatted version.\ne.g.\n```sql\nselect x,y,z from a inner join b on a.x=b.x where x>y or y!=z\n```\nbecomes\n```sql\nselect x, y, z\nfrom a\ninner join b\n   on a.x = b.x\nwhere x > y\n   or y != z\n```\n",
         "operationId": "PutQueryToFormat",
         "parameters": [
@@ -1800,12 +1800,12 @@
           }
         ],
         "requestBody": {
-          "description": "HoneycombSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it",
+          "description": "LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it",
           "content": {
             "text/plain": {
               "schema": {
                 "type": "string",
-                "description": "HoneycombSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it",
+                "description": "LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it",
                 "example": "select * from sys.field"
               }
             }
@@ -1859,7 +1859,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/Sql/sqlite": {
@@ -1867,8 +1867,8 @@
         "tags": [
           "Sql Execution"
         ],
-        "summary": "[EXPERIMENTAL] PutByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body url.",
-        "description": "\nFor more complex HoneycombSql a PUT will allow for longer Sql.\ne.g.:\n```sql\n@@cutoff = select #2020-02-01#;\n@issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;\n\nselect i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary\nfrom @issues i\ninner join Dev.Jira.Issue.Link li\n    on i.Id = li.IssueId\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
+        "summary": "PutByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body url.",
+        "description": "\nFor more complex LuminesceSql a PUT will allow for longer Sql.\ne.g.:\n```sql\n@@cutoff = select #2020-02-01#;\n@issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;\n\nselect i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary\nfrom @issues i\ninner join Dev.Jira.Issue.Link li\n    on i.Id = li.IssueId\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
         "operationId": "PutByQuerySqlite",
         "parameters": [
           {
@@ -1897,12 +1897,12 @@
           }
         ],
         "requestBody": {
-          "description": "HoneycombSql to Execute (may be multi-line)",
+          "description": "LuminesceSql to Execute (may be multi-line)",
           "content": {
             "text/plain": {
               "schema": {
                 "type": "string",
-                "description": "HoneycombSql to Execute (may be multi-line)",
+                "description": "LuminesceSql to Execute (may be multi-line)",
                 "example": "select * from sys.field"
               }
             }
@@ -1956,7 +1956,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/Sql/sqlite/{query}": {
@@ -1964,18 +1964,18 @@
         "tags": [
           "Sql Execution"
         ],
-        "summary": "[EXPERIMENTAL] GetByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded) format, where the sql is simply in the url.",
+        "summary": "GetByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded) format, where the sql is simply in the url.",
         "description": "\nFor simple single-line query execution via the url.\ne.g. `select ^ from Sys.Field order by 1, 2`\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
         "operationId": "GetByQuerySqlite",
         "parameters": [
           {
             "name": "query",
             "in": "path",
-            "description": "HoneycombSql to Execute (must be one line only)",
+            "description": "LuminesceSql to Execute (must be one line only)",
             "required": true,
             "schema": {
               "type": "string",
-              "description": "HoneycombSql to Execute (must be one line only)",
+              "description": "LuminesceSql to Execute (must be one line only)",
               "example": "select ^ from Sys.Field order by 1, 2"
             }
           },
@@ -2051,7 +2051,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/SqlBackground": {
@@ -2059,8 +2059,8 @@
         "tags": [
           "Sql Background Execution"
         ],
-        "summary": "[EXPERIMENTAL] StartQuery: Starts to Execute HoneycombSql in the background.",
-        "description": "\nAllow for starting a potentially long running query and getting back an immediate response with how to \n- fetch the data in various formats (if available, or if not simply being informed it is not yet ready)\n- view progress information (up until this point)\n- cancel the query (if still running) / clear the data (if already returned)\n\nThis can still error on things like an outright syntax error, but more runtime errors (e.g. from providers) will not\ncause this to error (that will happen when attempting to fetch data)\n\nHere is an example that intentionally takes one minute to run:\n\n```sql\nselect Str, Takes500Ms from Testing1K where UseLinq = true and [Int] <= 120\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - there was something wrong with your query syntax (the issue was detected at parse-time)\n- 401 Unauthorized\n",
+        "summary": "StartQuery: Starts to Execute LuminesceSql in the background.",
+        "description": "\nAllow for starting a potentially long running query and getting back an immediate response with how to \n- fetch the data in various formats (if available, or if not simply being informed it is not yet ready)\n- view progress information (up until this point)\n- cancel the query (if still running) / clear the data (if already returned)\n\nThis can still error on things like an outright syntax error, but more runtime errors (e.g. from providers) will not\ncause this to error (that will happen when attempting to fetch data)\n\nHere is an example that intentionally takes one minute to run:\n\n```sql\nselect Str, Takes500Ms from Testing1K where UseLinq = true and [Int] <= 120\n```\n\nThis is the only place in the Luminesce WebAPI where the following is supported.\nThis will allow for the same user running a character-identical query not kick off a new query but simply be returned a reference \nto the already running one for up to `N` seconds (where `N` should be `<=` `keepForSeconds`).\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - there was something wrong with your query syntax (the issue was detected at parse-time)\n- 401 Unauthorized\n",
         "operationId": "StartQuery",
         "parameters": [
           {
@@ -2102,12 +2102,12 @@
           }
         ],
         "requestBody": {
-          "description": "The HoneycombSql query to kick off.",
+          "description": "The LuminesceSql query to kick off.",
           "content": {
             "text/plain": {
               "schema": {
                 "type": "string",
-                "description": "The HoneycombSql query to kick off.",
+                "description": "The LuminesceSql query to kick off.",
                 "example": "select Str, Takes500Ms from Testing1K where UseLinq = true and [Int] <= 120"
               }
             }
@@ -2161,7 +2161,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/SqlBackground/{executionId}": {
@@ -2169,7 +2169,7 @@
         "tags": [
           "Sql Background Execution"
         ],
-        "summary": "[EXPERIMENTAL] GetProgressOf: View progress information (up until this point)",
+        "summary": "GetProgressOf: View progress information (up until this point)",
         "description": "View progress information (up until this point)\nThe following error codes are to be anticipated most with standard Problem Detail reports:\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't exist and is not running.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
         "operationId": "GetProgressOf",
         "parameters": [
@@ -2211,13 +2211,13 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       },
       "delete": {
         "tags": [
           "Sql Background Execution"
         ],
-        "summary": "[EXPERIMENTAL] CancelQuery: Cancels (if running) or clears the data from (if completed) a previously started query",
+        "summary": "CancelQuery: Cancels (if running) or clears the data from (if completed) a previously started query",
         "description": "Cancel the query (if still running) / clear the data (if already returned)\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't exist and is not running.\n",
         "operationId": "CancelQuery",
         "parameters": [
@@ -2259,7 +2259,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/SqlBackground/{executionId}/csv": {
@@ -2267,7 +2267,7 @@
         "tags": [
           "Sql Background Execution"
         ],
-        "summary": "[EXPERIMENTAL] FetchQueryResultCsv: Fetches the result from a previously started query, in CSV format.",
+        "summary": "FetchQueryResultCsv: Fetches the result from a previously started query, in CSV format.",
         "description": "Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)\nThe following error codes are to be anticipated most with standard Problem Detail reports:\n- 400 BadRequest : Something failed with the execution of your query\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't (yet) exist.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
         "operationId": "FetchQueryResultCsv",
         "parameters": [
@@ -2404,7 +2404,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/SqlBackground/{executionId}/excel": {
@@ -2412,7 +2412,7 @@
         "tags": [
           "Sql Background Execution"
         ],
-        "summary": "[EXPERIMENTAL] FetchQueryResultExcel: Fetches the result from a previously started query, in Excel format.",
+        "summary": "FetchQueryResultExcel: Fetches the result from a previously started query, in Excel format.",
         "description": "Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)\nThe following error codes are to be anticipated most with standard Problem Detail reports:\n- 400 BadRequest : Something failed with the execution of your query\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't (yet) exist.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
         "operationId": "FetchQueryResultExcel",
         "parameters": [
@@ -2514,7 +2514,143 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
+      }
+    },
+    "/api/SqlBackground/{executionId}/histogram": {
+      "get": {
+        "tags": [
+          "Sql Background Execution"
+        ],
+        "summary": "FetchQueryResultHistogram: Fetches the result from a previously started query, converts it to a histogram (counts in buckets).",
+        "description": "Fetch the histogram in Json format (if available, or if not simply being informed it is not yet ready)\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't (yet) exist.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
+        "operationId": "FetchQueryResultHistogram",
+        "parameters": [
+          {
+            "name": "executionId",
+            "in": "path",
+            "description": "ExecutionId returned when starting the query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "ExecutionId returned when starting the query"
+            }
+          },
+          {
+            "name": "timestampFieldName",
+            "in": "query",
+            "description": "Name of the timestamp field used in building the histogram",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Name of the timestamp field used in building the histogram"
+            }
+          },
+          {
+            "name": "startAt",
+            "in": "query",
+            "description": "Start point (of the timestampFieldName field) for the histogram",
+            "schema": {
+              "type": "string",
+              "description": "Start point (of the timestampFieldName field) for the histogram",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-nullable": true
+          },
+          {
+            "name": "endAt",
+            "in": "query",
+            "description": "End point (of the timestampFieldName field) for the histogram",
+            "schema": {
+              "type": "string",
+              "description": "End point (of the timestampFieldName field) for the histogram",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-nullable": true
+          },
+          {
+            "name": "bucketSize",
+            "in": "query",
+            "description": "Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated.",
+            "schema": {
+              "type": "string",
+              "description": "Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated.",
+              "format": "date-span",
+              "nullable": true
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "An ODATA filter per Finbourne.Filtering syntax.",
+            "schema": {
+              "type": "string",
+              "description": "An ODATA filter per Finbourne.Filtering syntax.",
+              "nullable": true
+            }
+          },
+          {
+            "name": "jsonProper",
+            "in": "query",
+            "description": "Should this be text/json (not json-encoded-as-a-string)",
+            "schema": {
+              "type": "boolean",
+              "description": "Should this be text/json (not json-encoded-as-a-string)",
+              "default": false
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ],
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/SqlBackground/{executionId}/json": {
@@ -2522,7 +2658,7 @@
         "tags": [
           "Sql Background Execution"
         ],
-        "summary": "[EXPERIMENTAL] FetchQueryResultJson: Fetches the result from a previously started query, in JSON string format.\r\nPlease move to '/jsonProper' instead.  This may be marked as Deprecated in the future.",
+        "summary": "FetchQueryResultJson: Fetches the result from a previously started query, in JSON string format.\r\nPlease move to '/jsonProper' instead.  This may be marked as Deprecated in the future.",
         "description": "Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)\nThe following error codes are to be anticipated most with standard Problem Detail reports:\n- 400 BadRequest : Something failed with the execution of your query\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't (yet) exist.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
         "operationId": "FetchQueryResultJson",
         "parameters": [
@@ -2648,7 +2784,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/SqlBackground/{executionId}/jsonProper": {
@@ -2656,7 +2792,7 @@
         "tags": [
           "Sql Background Execution"
         ],
-        "summary": "[EXPERIMENTAL] FetchQueryResultJsonProper: Fetches the result from a previously started query, in JSON format.",
+        "summary": "FetchQueryResultJsonProper: Fetches the result from a previously started query, in JSON format.",
         "description": "Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)\nThe following error codes are to be anticipated most with standard Problem Detail reports:\n- 400 BadRequest : Something failed with the execution of your query\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't (yet) exist.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
         "operationId": "FetchQueryResultJsonProper",
         "parameters": [
@@ -2793,7 +2929,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/SqlBackground/{executionId}/pipe": {
@@ -2801,7 +2937,7 @@
         "tags": [
           "Sql Background Execution"
         ],
-        "summary": "[EXPERIMENTAL] FetchQueryResultPipe: Fetches the result from a previously started query, in pipe-delimited format.",
+        "summary": "FetchQueryResultPipe: Fetches the result from a previously started query, in pipe-delimited format.",
         "description": "Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)\nThe following error codes are to be anticipated most with standard Problem Detail reports:\n- 400 BadRequest : Something failed with the execution of your query\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't (yet) exist.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
         "operationId": "FetchQueryResultPipe",
         "parameters": [
@@ -2938,7 +3074,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     },
     "/api/SqlBackground/{executionId}/sqlite": {
@@ -2946,7 +3082,7 @@
         "tags": [
           "Sql Background Execution"
         ],
-        "summary": "[EXPERIMENTAL] FetchQueryResultSqlite: Fetches the result from a previously started query, in SqLite format.",
+        "summary": "FetchQueryResultSqlite: Fetches the result from a previously started query, in SqLite format.",
         "description": "Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)\nThe following error codes are to be anticipated most with standard Problem Detail reports:\n- 400 BadRequest : Something failed with the execution of your query\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't (yet) exist.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
         "operationId": "FetchQueryResultSqlite",
         "parameters": [
@@ -3048,7 +3184,7 @@
             "oauth2": [ ]
           }
         ],
-        "x-fbn-apistatus": "Experimental"
+        "x-fbn-apistatus": "Stable"
       }
     }
   },
@@ -3215,6 +3351,7 @@
             "items": {
               "$ref": "#/components/schemas/Link"
             },
+            "description": "Json (as a string) data request links for all of the child queries",
             "nullable": true,
             "readOnly": true
           },
@@ -3223,6 +3360,7 @@
             "items": {
               "$ref": "#/components/schemas/Link"
             },
+            "description": "Json-proper data request links for all of the child queries",
             "nullable": true,
             "readOnly": true
           },
@@ -3231,6 +3369,7 @@
             "items": {
               "$ref": "#/components/schemas/Link"
             },
+            "description": "CSV data request links for all of the child queries",
             "nullable": true,
             "readOnly": true
           },
@@ -3239,6 +3378,7 @@
             "items": {
               "$ref": "#/components/schemas/Link"
             },
+            "description": "Pipe delimited data request links for all of the child queries",
             "nullable": true,
             "readOnly": true
           },
@@ -3247,6 +3387,7 @@
             "items": {
               "$ref": "#/components/schemas/Link"
             },
+            "description": "Excel workbook data request links for all of the child queries",
             "nullable": true,
             "readOnly": true
           },
@@ -3255,6 +3396,16 @@
             "items": {
               "$ref": "#/components/schemas/Link"
             },
+            "description": "SqLite DB data request links for all of the child queries",
+            "nullable": true,
+            "readOnly": true
+          },
+          "histogram": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Link"
+            },
+            "description": "Histogram links for all of the child queries",
             "nullable": true,
             "readOnly": true
           }
@@ -3313,7 +3464,7 @@
           },
           "query": {
             "type": "string",
-            "description": "The HoneycombSql of the original request",
+            "description": "The LuminesceSql of the original request",
             "nullable": true
           },
           "queryName": {
@@ -3643,13 +3794,11 @@
           "Instrument",
           "Expiry",
           "CorporateActions",
-          "GetFees",
-          "ListFees",
-          "PostTradeCompliance",
           "EdiInstrument",
           "EdiInstrumentWriter",
           "Testing",
-          "MarketplaceClientLoadHistory"
+          "MarketplaceClientLoadHistory",
+          "InsightsMetricsEntitlement"
         ],
         "type": "string"
       },
@@ -3733,15 +3882,15 @@
     },
     {
       "name": "Multi-Query Execution",
-      "description": "This executes a series of internally defined HoneycombSql statements in the background"
+      "description": "This executes a series of internally defined LuminesceSql statements in the background"
     },
     {
       "name": "Sql Background Execution",
-      "description": "This executes HoneycombSql and allows monitoring its completion"
+      "description": "This executes LuminesceSql and allows monitoring its completion"
     },
     {
       "name": "Sql Execution",
-      "description": "This executes HoneycombSql synchronously, allows for returning the resulting data in various formats and for pretty-printing of sql."
+      "description": "This executes LuminesceSql synchronously, allows for returning the resulting data in various formats and for pretty-printing of sql."
     }
   ],
   "x-tagGroups": {

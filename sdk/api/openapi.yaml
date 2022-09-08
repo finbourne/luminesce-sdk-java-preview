@@ -5,8 +5,8 @@ info:
     name: FINBOURNE Technology
     url: https://www.finbourne.com
   termsOfService: https://www.finbourne.com/legal/terms-conditions
-  title: FINBOURNE Honeycomb Web API
-  version: 1.9.16
+  title: FINBOURNE Luminesce Web API
+  version: 1.11.201
   x-logo:
     url: https://www.lusid.com/app/assets/logo_white.png
     backgroundColor: '#415464'
@@ -22,30 +22,34 @@ tags:
   name: Current Table/Field Catalog
 - description: Shows queries executed at some point and details about them
   name: Historically Executed Queries
-- description: This executes a series of internally defined HoneycombSql statements
+- description: This executes a series of internally defined LuminesceSql statements
     in the background
   name: Multi-Query Execution
-- description: This executes HoneycombSql and allows monitoring its completion
+- description: This executes LuminesceSql and allows monitoring its completion
   name: Sql Background Execution
-- description: This executes HoneycombSql synchronously, allows for returning the
+- description: This executes LuminesceSql synchronously, allows for returning the
     resulting data in various formats and for pretty-printing of sql.
   name: Sql Execution
 paths:
   /api/Catalog:
     get:
-      description: "\nThe following HoneycombSql is executed to return this information:\n\
-        \n```sql\nselect\n    coalesce(f.TableName, r.Name) as TableName,\n    coalesce(f.FieldName,\
+      description: "\nThe following LuminesceSql is executed to return this information:\n\
+        \n```sql\n@reg =\nselect\n    r.Name,\n    min(r.Description) as Description\n\
+        from\n    Sys.Registration r\nwhere\n    r.Type in ('DirectProvider', 'DataProvider')\n\
+        \    and \n    r.ShowAll = false\ngroup by\n    1\n    ;\n\n@fld =\nselect\n\
+        \    f.TableName,\n    f.FieldName,\n    f.DataType,\n    f.FieldType,\n \
+        \   f.IsPrimaryKey,\n    f.IsMain,\n    f.Description,\n    f.ParamDefaultValue,\n\
+        \    f.TableParamColumns\nfrom\n    Sys.Field f\n    ;\n\n@x =\nselect\n \
+        \   coalesce(f.TableName, r.Name) as TableName,\n    coalesce(f.FieldName,\
         \ 'N/A') as FieldName,\n    f.DataType,\n    f.FieldType,\n    f.IsPrimaryKey,\n\
         \    f.IsMain,\n    case \n        when f.TableName is not null \n       \
         \     then f.Description\n        else\n            r.Name || ' returns a\
         \ different set of columns depending on use.'\n        end as Description,\n\
-        \    f.ParamDefaultValue,\n    f.TableParamColumns,\n    min(r.Description)\
-        \ as ProviderDescription\nfrom\n    Sys.Registration r\n    left outer join\
-        \ Sys.Field f\n        on r.Name = f.TableName\nwhere\n    r.Type in ('DirectProvider',\
-        \ 'DataProvider')\n    and \n    r.ShowAll = false\ngroup by\n    1, 2, 3,\
-        \ 4, 5, 6, 8, 9\norder by\n    1, 5 desc, 6 desc, 2\n   \n```\n\nThe following\
-        \ error codes are to be anticipated with standard Problem Detail reports:\n\
-        - 401 Unauthorized\n"
+        \    f.ParamDefaultValue,\n    f.TableParamColumns,\n    r.Description as\
+        \ ProviderDescription\nfrom\n    @reg r\n    left outer join @fld f\n    \
+        \    on r.Name = f.TableName\norder by\n    1, 5 desc, 6 desc, 2\n    ;\n\
+        \   \n```\n\nThe following error codes are to be anticipated with standard\
+        \ Problem Detail reports:\n- 401 Unauthorized\n"
       operationId: GetCatalog
       parameters:
       - description: Limit the catalog to only things in some way dealing with the
@@ -86,11 +90,11 @@ paths:
           description: Success
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] GetCatalog: Shows Table and Field level information
-        on Providers that are currently running that you have access to (in Json format)'
+      summary: 'GetCatalog: Shows Table and Field level information on Providers that
+        are currently running that you have access to (in Json format)'
       tags:
       - Current Table/Field Catalog
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/History:
     get:
@@ -166,11 +170,11 @@ paths:
           description: Success
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] GetHistory: Shows queries executed in a given historical
-        time window (in Json format).'
+      summary: 'GetHistory: Shows queries executed in a given historical time window
+        (in Json format).'
       tags:
       - Historically Executed Queries
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/History/{executionId}:
     delete:
@@ -205,11 +209,11 @@ paths:
           description: Success
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] CancelHistory: Cancels (if running) or clears the data
-        from (if completed) a previously started History query'
+      summary: 'CancelHistory: Cancels (if running) or clears the data from (if completed)
+        a previously started History query'
       tags:
       - Historically Executed Queries
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
     get:
       description: |-
@@ -247,16 +251,16 @@ paths:
           description: Success
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] GetProgressOfHistory: View progress information (up
-        until this point) of a history query'
+      summary: 'GetProgressOfHistory: View progress information (up until this point)
+        of a history query'
       tags:
       - Historically Executed Queries
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/History/{executionId}/histogram:
     get:
       description: |-
-        Fetch the data in Json format (if available, or if not simply being informed it is not yet ready)
+        Fetch the histogram in Json format (if available, or if not simply being informed it is not yet ready)
         The following error codes are to be anticipated with standard Problem Detail reports:
         - 401 Unauthorized
         - 404 Not Found : The requested query result doesn't (yet) exist.
@@ -264,7 +268,7 @@ paths:
           1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
           1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
           1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
-      operationId: FetchQueryResultHistogram
+      operationId: FetchHistoryResultHistogram
       parameters:
       - description: ExecutionId returned when starting the query
         explode: false
@@ -336,11 +340,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] FetchQueryResultHistogram: Fetches the result from
-        a previously started query, converts it to a histogram (counts in buckets).'
+      summary: 'FetchHistoryResultHistogram: Fetches the result from a previously
+        started query, converts it to a histogram (counts in buckets).'
       tags:
       - Historically Executed Queries
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/History/{executionId}/json:
     get:
@@ -516,16 +520,22 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] FetchHistoryResultJson: Fetches the result from a previously
-        started query, in JSON format.'
+      summary: 'FetchHistoryResultJson: Fetches the result from a previously started
+        query, in JSON format.'
       tags:
       - Historically Executed Queries
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/metadata/access/resources:
     get:
-      description: Get the comprehensive set of resources that are available for access
-        control
+      description: "\nGet the comprehensive set of resources that are available for\
+        \ access control.\n\nThe following LuminesceSql is executed to return this\
+        \ information, \nwhich is then packaged up as AccessControlledResource:\n\n\
+        ```sql\nselect\n    Name,\n    min(coalesce(Description, Name) || ' (' ||\
+        \ Type || ')') as Description\nfrom\n    Sys.Registration\nwhere\n    Type\
+        \ in ('DirectProvider', 'DataProvider')\n    and\n    ShowAll = true\ngroup\
+        \ by 1\norder by 1\n   \n```\n\nThe following error codes are to be anticipated\
+        \ with standard Problem Detail reports:\n- 401 Unauthorized\n"
       operationId: GetServicesAsAccessControlledResources
       responses:
         "200":
@@ -542,11 +552,11 @@ paths:
           description: Success
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] GetServicesAsAccessControlledResources: Get resources
-        available for access control'
+      summary: 'GetServicesAsAccessControlledResources: Get resources available for
+        access control'
       tags:
       - Application Metadata
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/MultiQueryBackground:
     put:
@@ -692,10 +702,15 @@ paths:
         content:
           text/plain:
             schema:
-              description: A search value (e.g. 'Apple' on an instrument search)
+              description: "A \"search\" value (e.g. 'Apple' on an instrument search,\
+                \ a `Finbourne.Filtering` expression of Insights, etc.)\r\nIn the\
+                \ cases where \"Nothing\" is valid for a `Finbourne.Filtering` expression,\
+                \ pass `True`."
               example: Apple
               type: string
-        description: A search value (e.g. 'Apple' on an instrument search)
+        description: "A \"search\" value (e.g. 'Apple' on an instrument search, a\
+          \ `Finbourne.Filtering` expression of Insights, etc.)\r\nIn the cases where\
+          \ \"Nothing\" is valid for a `Finbourne.Filtering` expression, pass `True`."
         required: true
       responses:
         "202":
@@ -724,11 +739,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] StartQueries: Starts to Execute the HoneycombSql statements
-        in the background.'
+      summary: 'StartQueries: Starts to Execute the LuminesceSql statements in the
+        background.'
       tags:
       - Multi-Query Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-contentType: text/plain
       x-accepts: application/json
   /api/MultiQueryBackground/{executionId}:
@@ -764,11 +779,11 @@ paths:
           description: Success
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] CancelMultiQuery: Cancels (if running) or clears the
-        data from (if completed) a previously started query-set'
+      summary: 'CancelMultiQuery: Cancels (if running) or clears the data from (if
+        completed) a previously started query-set'
       tags:
       - Multi-Query Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
     get:
       description: |-
@@ -806,17 +821,17 @@ paths:
           description: Success
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] GetProgressOfMultiQuery: View progress information
-        (up until this point) for the entire query-set'
+      summary: 'GetProgressOfMultiQuery: View progress information (up until this
+        point) for the entire query-set'
       tags:
       - Multi-Query Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/Sql/csv:
     put:
       description: |2
 
-        For more complex HoneycombSql a PUT will allow for longer Sql.
+        For more complex LuminesceSql a PUT will allow for longer Sql.
         e.g.:
         ```sql
         @@cutoff = select #2020-02-01#;
@@ -874,10 +889,10 @@ paths:
         content:
           text/plain:
             schema:
-              description: HoneycombSql to Execute (may be multi-line)
+              description: LuminesceSql to Execute (may be multi-line)
               example: select * from sys.field
               type: string
-        description: HoneycombSql to Execute (may be multi-line)
+        description: LuminesceSql to Execute (may be multi-line)
         required: true
       responses:
         "200":
@@ -906,11 +921,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] PutByQueryCsv: Executes Sql, returned in CSV format,
-        where the sql is the post-body url.'
+      summary: 'PutByQueryCsv: Executes Sql, returned in CSV format, where the sql
+        is the post-body url.'
       tags:
       - Sql Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-contentType: text/plain
       x-accepts: application/json
   /api/Sql/csv/{query}:
@@ -925,13 +940,13 @@ paths:
         - 401 Unauthorized
       operationId: GetByQueryCsv
       parameters:
-      - description: HoneycombSql to Execute (must be one line only)
+      - description: LuminesceSql to Execute (must be one line only)
         explode: false
         in: path
         name: query
         required: true
         schema:
-          description: HoneycombSql to Execute (must be one line only)
+          description: LuminesceSql to Execute (must be one line only)
           example: select ^ from Sys.Field order by 1, 2
           type: string
         style: simple
@@ -999,17 +1014,17 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] GetByQueryCsv: Executes Sql, returned in CSV format,
-        where the sql is simply in the url.'
+      summary: 'GetByQueryCsv: Executes Sql, returned in CSV format, where the sql
+        is simply in the url.'
       tags:
       - Sql Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/Sql/excel:
     put:
       description: |2
 
-        For more complex HoneycombSql a PUT will allow for longer Sql.
+        For more complex LuminesceSql a PUT will allow for longer Sql.
         e.g.:
         ```sql
         @@cutoff = select #2020-02-01#;
@@ -1054,10 +1069,10 @@ paths:
         content:
           text/plain:
             schema:
-              description: HoneycombSql to Execute (may be multi-line)
+              description: LuminesceSql to Execute (may be multi-line)
               example: select * from sys.field
               type: string
-        description: HoneycombSql to Execute (may be multi-line)
+        description: LuminesceSql to Execute (may be multi-line)
         required: true
       responses:
         "200":
@@ -1086,11 +1101,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] PutByQueryExcel: Executes Sql, returned in Excel (xlsx)
-        format (as a file to be downloaded), where the sql is the post-body url.'
+      summary: 'PutByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as
+        a file to be downloaded), where the sql is the post-body url.'
       tags:
       - Sql Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-contentType: text/plain
       x-accepts: application/json
   /api/Sql/excel/{query}:
@@ -1105,13 +1120,13 @@ paths:
         - 401 Unauthorized
       operationId: GetByQueryExcel
       parameters:
-      - description: HoneycombSql to Execute (must be one line only)
+      - description: LuminesceSql to Execute (must be one line only)
         explode: false
         in: path
         name: query
         required: true
         schema:
-          description: HoneycombSql to Execute (must be one line only)
+          description: LuminesceSql to Execute (must be one line only)
           example: select ^ from Sys.Field order by 1, 2
           type: string
         style: simple
@@ -1166,18 +1181,17 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] GetByQueryExcel: Executes Sql, returned in Excel (xlsx)
-        format (as a file to be downloaded) format, where the sql is simply in the
-        url.'
+      summary: 'GetByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as
+        a file to be downloaded) format, where the sql is simply in the url.'
       tags:
       - Sql Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/Sql/json:
     put:
       description: |2
 
-        For more complex HoneycombSql a PUT will allow for longer Sql.
+        For more complex LuminesceSql a PUT will allow for longer Sql.
         e.g.:
         ```sql
         @@cutoff = select #2020-02-01#;
@@ -1233,10 +1247,10 @@ paths:
         content:
           text/plain:
             schema:
-              description: HoneycombSql to Execute (may be multi-line)
+              description: LuminesceSql to Execute (may be multi-line)
               example: select * from sys.field
               type: string
-        description: HoneycombSql to Execute (may be multi-line)
+        description: LuminesceSql to Execute (may be multi-line)
         required: true
       responses:
         "200":
@@ -1265,11 +1279,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] PutByQueryJson: Executes Sql, returned in JSON format,
-        where the sql is the post-body url.'
+      summary: 'PutByQueryJson: Executes Sql, returned in JSON format, where the sql
+        is the post-body url.'
       tags:
       - Sql Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-contentType: text/plain
       x-accepts: application/json
   /api/Sql/json/{query}:
@@ -1284,13 +1298,13 @@ paths:
         - 401 Unauthorized
       operationId: GetByQueryJson
       parameters:
-      - description: HoneycombSql to Execute (must be one line only)
+      - description: LuminesceSql to Execute (must be one line only)
         explode: false
         in: path
         name: query
         required: true
         schema:
-          description: HoneycombSql to Execute (must be one line only)
+          description: LuminesceSql to Execute (must be one line only)
           example: select ^ from Sys.Field order by 1, 2
           type: string
         style: simple
@@ -1356,17 +1370,17 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] GetByQueryJson: Executes Sql, returned in JSON format,
-        where the sql is simply in the url.'
+      summary: 'GetByQueryJson: Executes Sql, returned in JSON format, where the sql
+        is simply in the url.'
       tags:
       - Sql Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/Sql/pipe:
     put:
       description: |2
 
-        For more complex HoneycombSql a PUT will allow for longer Sql.
+        For more complex LuminesceSql a PUT will allow for longer Sql.
         e.g.:
         ```sql
         @@cutoff = select #2020-02-01#;
@@ -1424,10 +1438,10 @@ paths:
         content:
           text/plain:
             schema:
-              description: HoneycombSql to Execute (may be multi-line)
+              description: LuminesceSql to Execute (may be multi-line)
               example: select * from sys.field
               type: string
-        description: HoneycombSql to Execute (may be multi-line)
+        description: LuminesceSql to Execute (may be multi-line)
         required: true
       responses:
         "200":
@@ -1456,11 +1470,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] PutByQueryPipe: Executes Sql, returned in pipe-delimited
-        format, where the sql is the post-body url.'
+      summary: 'PutByQueryPipe: Executes Sql, returned in pipe-delimited format, where
+        the sql is the post-body url.'
       tags:
       - Sql Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-contentType: text/plain
       x-accepts: application/json
   /api/Sql/pipe/{query}:
@@ -1475,13 +1489,13 @@ paths:
         - 401 Unauthorized
       operationId: GetByQueryPipe
       parameters:
-      - description: HoneycombSql to Execute (must be one line only)
+      - description: LuminesceSql to Execute (must be one line only)
         explode: false
         in: path
         name: query
         required: true
         schema:
-          description: HoneycombSql to Execute (must be one line only)
+          description: LuminesceSql to Execute (must be one line only)
           example: select ^ from Sys.Field order by 1, 2
           type: string
         style: simple
@@ -1549,11 +1563,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] GetByQueryPipe: Executes Sql, returned in pipe-delimited
-        format, where the sql is simply in the url.'
+      summary: 'GetByQueryPipe: Executes Sql, returned in pipe-delimited format, where
+        the sql is simply in the url.'
       tags:
       - Sql Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/Sql/pretty:
     put:
@@ -1704,11 +1718,11 @@ paths:
         content:
           text/plain:
             schema:
-              description: HoneycombSql to Pretty-Print. Even if it doesn't parse
+              description: LuminesceSql to Pretty-Print. Even if it doesn't parse
                 an attempt will be made to format it
               example: select * from sys.field
               type: string
-        description: HoneycombSql to Pretty-Print. Even if it doesn't parse an attempt
+        description: LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt
           will be made to format it
         required: true
       responses:
@@ -1738,18 +1752,18 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] PutQueryToFormat: Executes Sql, returned in JSON format,
-        where the sql is the post-body url.'
+      summary: 'PutQueryToFormat: Executes Sql, returned in JSON format, where the
+        sql is the post-body url.'
       tags:
       - Sql Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-contentType: text/plain
       x-accepts: application/json
   /api/Sql/sqlite:
     put:
       description: |2
 
-        For more complex HoneycombSql a PUT will allow for longer Sql.
+        For more complex LuminesceSql a PUT will allow for longer Sql.
         e.g.:
         ```sql
         @@cutoff = select #2020-02-01#;
@@ -1794,10 +1808,10 @@ paths:
         content:
           text/plain:
             schema:
-              description: HoneycombSql to Execute (may be multi-line)
+              description: LuminesceSql to Execute (may be multi-line)
               example: select * from sys.field
               type: string
-        description: HoneycombSql to Execute (may be multi-line)
+        description: LuminesceSql to Execute (may be multi-line)
         required: true
       responses:
         "200":
@@ -1826,12 +1840,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] PutByQuerySqlite: Executes Sql, returned in SqLite
-        DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body
-        url.'
+      summary: 'PutByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format
+        (as a file to be downloaded), where the sql is the post-body url.'
       tags:
       - Sql Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-contentType: text/plain
       x-accepts: application/json
   /api/Sql/sqlite/{query}:
@@ -1846,13 +1859,13 @@ paths:
         - 401 Unauthorized
       operationId: GetByQuerySqlite
       parameters:
-      - description: HoneycombSql to Execute (must be one line only)
+      - description: LuminesceSql to Execute (must be one line only)
         explode: false
         in: path
         name: query
         required: true
         schema:
-          description: HoneycombSql to Execute (must be one line only)
+          description: LuminesceSql to Execute (must be one line only)
           example: select ^ from Sys.Field order by 1, 2
           type: string
         style: simple
@@ -1907,12 +1920,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] GetByQuerySqlite: Executes Sql, returned in SqLite
-        DB (sqlite3) format (as a file to be downloaded) format, where the sql is
-        simply in the url.'
+      summary: 'GetByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format
+        (as a file to be downloaded) format, where the sql is simply in the url.'
       tags:
       - Sql Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/SqlBackground:
     put:
@@ -1925,10 +1937,14 @@ paths:
         \ providers) will not\ncause this to error (that will happen when attempting\
         \ to fetch data)\n\nHere is an example that intentionally takes one minute\
         \ to run:\n\n```sql\nselect Str, Takes500Ms from Testing1K where UseLinq =\
-        \ true and [Int] <= 120\n```\n\nThe following error codes are to be anticipated\
-        \ with standard Problem Detail reports:\n- 400 BadRequest - there was something\
-        \ wrong with your query syntax (the issue was detected at parse-time)\n- 401\
-        \ Unauthorized\n"
+        \ true and [Int] <= 120\n```\n\nThis is the only place in the Luminesce WebAPI\
+        \ where the following is supported.\nThis will allow for the same user running\
+        \ a character-identical query not kick off a new query but simply be returned\
+        \ a reference \nto the already running one for up to `N` seconds (where `N`\
+        \ should be `<=` `keepForSeconds`).\n\nThe following error codes are to be\
+        \ anticipated with standard Problem Detail reports:\n- 400 BadRequest - there\
+        \ was something wrong with your query syntax (the issue was detected at parse-time)\n\
+        - 401 Unauthorized\n"
       operationId: StartQuery
       parameters:
       - description: A name for this query.  This goes into logs and is available
@@ -1978,11 +1994,11 @@ paths:
         content:
           text/plain:
             schema:
-              description: The HoneycombSql query to kick off.
+              description: The LuminesceSql query to kick off.
               example: select Str, Takes500Ms from Testing1K where UseLinq = true
                 and [Int] <= 120
               type: string
-        description: The HoneycombSql query to kick off.
+        description: The LuminesceSql query to kick off.
         required: true
       responses:
         "202":
@@ -2011,10 +2027,10 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] StartQuery: Starts to Execute HoneycombSql in the background.'
+      summary: 'StartQuery: Starts to Execute LuminesceSql in the background.'
       tags:
       - Sql Background Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-contentType: text/plain
       x-accepts: application/json
   /api/SqlBackground/{executionId}:
@@ -2050,11 +2066,11 @@ paths:
           description: Success
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] CancelQuery: Cancels (if running) or clears the data
-        from (if completed) a previously started query'
+      summary: 'CancelQuery: Cancels (if running) or clears the data from (if completed)
+        a previously started query'
       tags:
       - Sql Background Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
     get:
       description: |-
@@ -2092,11 +2108,10 @@ paths:
           description: Success
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] GetProgressOf: View progress information (up until
-        this point)'
+      summary: 'GetProgressOf: View progress information (up until this point)'
       tags:
       - Sql Background Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/SqlBackground/{executionId}/csv:
     get:
@@ -2275,11 +2290,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] FetchQueryResultCsv: Fetches the result from a previously
-        started query, in CSV format.'
+      summary: 'FetchQueryResultCsv: Fetches the result from a previously started
+        query, in CSV format.'
       tags:
       - Sql Background Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/SqlBackground/{executionId}/excel:
     get:
@@ -2417,11 +2432,133 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] FetchQueryResultExcel: Fetches the result from a previously
-        started query, in Excel format.'
+      summary: 'FetchQueryResultExcel: Fetches the result from a previously started
+        query, in Excel format.'
       tags:
       - Sql Background Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
+      x-accepts: application/json
+  /api/SqlBackground/{executionId}/histogram:
+    get:
+      description: |-
+        Fetch the histogram in Json format (if available, or if not simply being informed it is not yet ready)
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't (yet) exist.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: FetchQueryResultHistogram
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          description: ExecutionId returned when starting the query
+          type: string
+        style: simple
+      - description: Name of the timestamp field used in building the histogram
+        explode: true
+        in: query
+        name: timestampFieldName
+        required: true
+        schema:
+          description: Name of the timestamp field used in building the histogram
+          type: string
+        style: form
+      - description: Start point (of the timestampFieldName field) for the histogram
+        explode: true
+        in: query
+        name: startAt
+        required: false
+        schema:
+          description: Start point (of the timestampFieldName field) for the histogram
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+        x-nullable: true
+      - description: End point (of the timestampFieldName field) for the histogram
+        explode: true
+        in: query
+        name: endAt
+        required: false
+        schema:
+          description: End point (of the timestampFieldName field) for the histogram
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+        x-nullable: true
+      - description: Optional histogram bucket width.  If not provided a set number
+          of buckets between start/end range will be generated.
+        explode: true
+        in: query
+        name: bucketSize
+        required: false
+        schema:
+          description: Optional histogram bucket width.  If not provided a set number
+            of buckets between start/end range will be generated.
+          format: date-span
+          nullable: true
+          type: string
+        style: form
+      - description: An ODATA filter per Finbourne.Filtering syntax.
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          description: An ODATA filter per Finbourne.Filtering syntax.
+          nullable: true
+          type: string
+        style: form
+      - description: Should this be text/json (not json-encoded-as-a-string)
+        explode: true
+        in: query
+        name: jsonProper
+        required: false
+        schema:
+          default: false
+          description: Should this be text/json (not json-encoded-as-a-string)
+          type: boolean
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: 'FetchQueryResultHistogram: Fetches the result from a previously started
+        query, converts it to a histogram (counts in buckets).'
+      tags:
+      - Sql Background Execution
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/SqlBackground/{executionId}/json:
     get:
@@ -2587,12 +2724,12 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: "[EXPERIMENTAL] FetchQueryResultJson: Fetches the result from a previously\
-        \ started query, in JSON string format.\r\nPlease move to '/jsonProper' instead.\
-        \  This may be marked as Deprecated in the future."
+      summary: "FetchQueryResultJson: Fetches the result from a previously started\
+        \ query, in JSON string format.\r\nPlease move to '/jsonProper' instead. \
+        \ This may be marked as Deprecated in the future."
       tags:
       - Sql Background Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/SqlBackground/{executionId}/jsonProper:
     get:
@@ -2771,11 +2908,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] FetchQueryResultJsonProper: Fetches the result from
-        a previously started query, in JSON format.'
+      summary: 'FetchQueryResultJsonProper: Fetches the result from a previously started
+        query, in JSON format.'
       tags:
       - Sql Background Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/SqlBackground/{executionId}/pipe:
     get:
@@ -2954,11 +3091,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] FetchQueryResultPipe: Fetches the result from a previously
-        started query, in pipe-delimited format.'
+      summary: 'FetchQueryResultPipe: Fetches the result from a previously started
+        query, in pipe-delimited format.'
       tags:
       - Sql Background Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
   /api/SqlBackground/{executionId}/sqlite:
     get:
@@ -3096,11 +3233,11 @@ paths:
           description: Bad Request
       security:
       - oauth2: []
-      summary: '[EXPERIMENTAL] FetchQueryResultSqlite: Fetches the result from a previously
-        started query, in SqLite format.'
+      summary: 'FetchQueryResultSqlite: Fetches the result from a previously started
+        query, in SqLite format.'
       tags:
       - Sql Background Execution
-      x-fbn-apistatus: Experimental
+      x-fbn-apistatus: Stable
       x-accepts: application/json
 components:
   schemas:
@@ -3456,6 +3593,15 @@ components:
           description: description
           href: https://openapi-generator.tech
           relation: relation
+        histogram:
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
         executionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
         fetchSqlite:
         - method: method
@@ -3526,36 +3672,50 @@ components:
         cancel:
           $ref: '#/components/schemas/Link'
         fetchJson:
+          description: Json (as a string) data request links for all of the child
+            queries
           items:
             $ref: '#/components/schemas/Link'
           nullable: true
           readOnly: true
           type: array
         fetchJsonProper:
+          description: Json-proper data request links for all of the child queries
           items:
             $ref: '#/components/schemas/Link'
           nullable: true
           readOnly: true
           type: array
         fetchCsv:
+          description: CSV data request links for all of the child queries
           items:
             $ref: '#/components/schemas/Link'
           nullable: true
           readOnly: true
           type: array
         fetchPipe:
+          description: Pipe delimited data request links for all of the child queries
           items:
             $ref: '#/components/schemas/Link'
           nullable: true
           readOnly: true
           type: array
         fetchExcel:
+          description: Excel workbook data request links for all of the child queries
           items:
             $ref: '#/components/schemas/Link'
           nullable: true
           readOnly: true
           type: array
         fetchSqlite:
+          description: SqLite DB data request links for all of the child queries
+          items:
+            $ref: '#/components/schemas/Link'
+          nullable: true
+          readOnly: true
+          type: array
+        histogram:
+          description: Histogram links for all of the child queries
           items:
             $ref: '#/components/schemas/Link'
           nullable: true
@@ -3654,7 +3814,7 @@ components:
           nullable: true
           type: array
         query:
-          description: The HoneycombSql of the original request
+          description: The LuminesceSql of the original request
           nullable: true
           type: string
         queryName:
@@ -3990,13 +4150,11 @@ components:
       - Instrument
       - Expiry
       - CorporateActions
-      - GetFees
-      - ListFees
-      - PostTradeCompliance
       - EdiInstrument
       - EdiInstrumentWriter
       - Testing
       - MarketplaceClientLoadHistory
+      - InsightsMetricsEntitlement
       type: string
     ResourceListOfAccessControlledResource:
       additionalProperties: false

@@ -4,18 +4,18 @@ All URIs are relative to *https://www.lusid.com/honeycomb*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**cancelHistory**](HistoricallyExecutedQueriesApi.md#cancelHistory) | **DELETE** /api/History/{executionId} | [EXPERIMENTAL] CancelHistory: Cancels (if running) or clears the data from (if completed) a previously started History query
-[**fetchHistoryResultJson**](HistoricallyExecutedQueriesApi.md#fetchHistoryResultJson) | **GET** /api/History/{executionId}/json | [EXPERIMENTAL] FetchHistoryResultJson: Fetches the result from a previously started query, in JSON format.
-[**fetchQueryResultHistogram**](HistoricallyExecutedQueriesApi.md#fetchQueryResultHistogram) | **GET** /api/History/{executionId}/histogram | [EXPERIMENTAL] FetchQueryResultHistogram: Fetches the result from a previously started query, converts it to a histogram (counts in buckets).
-[**getHistory**](HistoricallyExecutedQueriesApi.md#getHistory) | **GET** /api/History | [EXPERIMENTAL] GetHistory: Shows queries executed in a given historical time window (in Json format).
-[**getProgressOfHistory**](HistoricallyExecutedQueriesApi.md#getProgressOfHistory) | **GET** /api/History/{executionId} | [EXPERIMENTAL] GetProgressOfHistory: View progress information (up until this point) of a history query
+[**cancelHistory**](HistoricallyExecutedQueriesApi.md#cancelHistory) | **DELETE** /api/History/{executionId} | CancelHistory: Cancels (if running) or clears the data from (if completed) a previously started History query
+[**fetchHistoryResultHistogram**](HistoricallyExecutedQueriesApi.md#fetchHistoryResultHistogram) | **GET** /api/History/{executionId}/histogram | FetchHistoryResultHistogram: Fetches the result from a previously started query, converts it to a histogram (counts in buckets).
+[**fetchHistoryResultJson**](HistoricallyExecutedQueriesApi.md#fetchHistoryResultJson) | **GET** /api/History/{executionId}/json | FetchHistoryResultJson: Fetches the result from a previously started query, in JSON format.
+[**getHistory**](HistoricallyExecutedQueriesApi.md#getHistory) | **GET** /api/History | GetHistory: Shows queries executed in a given historical time window (in Json format).
+[**getProgressOfHistory**](HistoricallyExecutedQueriesApi.md#getProgressOfHistory) | **GET** /api/History/{executionId} | GetProgressOfHistory: View progress information (up until this point) of a history query
 
 
 <a name="cancelHistory"></a>
 # **cancelHistory**
 > BackgroundQueryCancelResponse cancelHistory(executionId)
 
-[EXPERIMENTAL] CancelHistory: Cancels (if running) or clears the data from (if completed) a previously started History query
+CancelHistory: Cancels (if running) or clears the data from (if completed) a previously started History query
 
 Cancel the query (if still running) / clear the data (if already returned) The following error codes are to be anticipated with standard Problem Detail reports: - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t exist and is not running. 
 
@@ -78,11 +78,85 @@ Name | Type | Description  | Notes
 |-------------|-------------|------------------|
 **200** | Success |  -  |
 
+<a name="fetchHistoryResultHistogram"></a>
+# **fetchHistoryResultHistogram**
+> String fetchHistoryResultHistogram(executionId, bucketSize, filter, jsonProper)
+
+FetchHistoryResultHistogram: Fetches the result from a previously started query, converts it to a histogram (counts in buckets).
+
+Fetch the histogram in Json format (if available, or if not simply being informed it is not yet ready) The following error codes are to be anticipated with standard Problem Detail reports: - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t (yet) exist. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+
+### Example
+```java
+// Import classes:
+import com.finbourne.luminesce.ApiClient;
+import com.finbourne.luminesce.ApiException;
+import com.finbourne.luminesce.Configuration;
+import com.finbourne.luminesce.auth.*;
+import com.finbourne.luminesce.models.*;
+import com.finbourne.luminesce.api.HistoricallyExecutedQueriesApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    
+    // Configure OAuth2 access token for authorization: oauth2
+    OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+    oauth2.setAccessToken("YOUR ACCESS TOKEN");
+
+    HistoricallyExecutedQueriesApi apiInstance = new HistoricallyExecutedQueriesApi(defaultClient);
+    String executionId = "executionId_example"; // String | ExecutionId returned when starting the query
+    String bucketSize = "bucketSize_example"; // String | Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated.
+    String filter = "filter_example"; // String | An ODATA filter per Finbourne.Filtering syntax.
+    Boolean jsonProper = false; // Boolean | Should this be text/json (not json-encoded-as-a-string)
+    try {
+      String result = apiInstance.fetchHistoryResultHistogram(executionId, bucketSize, filter, jsonProper);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling HistoricallyExecutedQueriesApi#fetchHistoryResultHistogram");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **executionId** | **String**| ExecutionId returned when starting the query |
+ **bucketSize** | **String**| Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated. | [optional]
+ **filter** | **String**| An ODATA filter per Finbourne.Filtering syntax. | [optional]
+ **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false]
+
+### Return type
+
+**String**
+
+### Authorization
+
+[oauth2](../README.md#oauth2)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain, application/json, text/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success |  -  |
+**400** | Bad Request |  -  |
+
 <a name="fetchHistoryResultJson"></a>
 # **fetchHistoryResultJson**
 > String fetchHistoryResultJson(executionId, sortBy, filter, select, groupBy, limit, page, jsonProper)
 
-[EXPERIMENTAL] FetchHistoryResultJson: Fetches the result from a previously started query, in JSON format.
+FetchHistoryResultJson: Fetches the result from a previously started query, in JSON format.
 
 Fetch the data in Json format (if available, or if not simply being informed it is not yet ready) The following error codes are to be anticipated with standard Problem Detail reports: - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t (yet) exist. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
 
@@ -160,85 +234,11 @@ Name | Type | Description  | Notes
 **200** | Success |  -  |
 **400** | Bad Request |  -  |
 
-<a name="fetchQueryResultHistogram"></a>
-# **fetchQueryResultHistogram**
-> String fetchQueryResultHistogram(executionId, bucketSize, filter, jsonProper)
-
-[EXPERIMENTAL] FetchQueryResultHistogram: Fetches the result from a previously started query, converts it to a histogram (counts in buckets).
-
-Fetch the data in Json format (if available, or if not simply being informed it is not yet ready) The following error codes are to be anticipated with standard Problem Detail reports: - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t (yet) exist. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
-
-### Example
-```java
-// Import classes:
-import com.finbourne.luminesce.ApiClient;
-import com.finbourne.luminesce.ApiException;
-import com.finbourne.luminesce.Configuration;
-import com.finbourne.luminesce.auth.*;
-import com.finbourne.luminesce.models.*;
-import com.finbourne.luminesce.api.HistoricallyExecutedQueriesApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
-    
-    // Configure OAuth2 access token for authorization: oauth2
-    OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
-    oauth2.setAccessToken("YOUR ACCESS TOKEN");
-
-    HistoricallyExecutedQueriesApi apiInstance = new HistoricallyExecutedQueriesApi(defaultClient);
-    String executionId = "executionId_example"; // String | ExecutionId returned when starting the query
-    String bucketSize = "bucketSize_example"; // String | Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated.
-    String filter = "filter_example"; // String | An ODATA filter per Finbourne.Filtering syntax.
-    Boolean jsonProper = false; // Boolean | Should this be text/json (not json-encoded-as-a-string)
-    try {
-      String result = apiInstance.fetchQueryResultHistogram(executionId, bucketSize, filter, jsonProper);
-      System.out.println(result);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling HistoricallyExecutedQueriesApi#fetchQueryResultHistogram");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **executionId** | **String**| ExecutionId returned when starting the query |
- **bucketSize** | **String**| Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated. | [optional]
- **filter** | **String**| An ODATA filter per Finbourne.Filtering syntax. | [optional]
- **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false]
-
-### Return type
-
-**String**
-
-### Authorization
-
-[oauth2](../README.md#oauth2)
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: text/plain, application/json, text/json
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
-
 <a name="getHistory"></a>
 # **getHistory**
 > BackgroundQueryResponse getHistory(startAt, endAt, freeTextSearch, showAll)
 
-[EXPERIMENTAL] GetHistory: Shows queries executed in a given historical time window (in Json format).
+GetHistory: Shows queries executed in a given historical time window (in Json format).
 
  Starts to load the historical query logs for a certain time range, search criteria, etc.  The following error codes are to be anticipated with standard Problem Detail reports: - 401 Unauthorized 
 
@@ -311,7 +311,7 @@ Name | Type | Description  | Notes
 # **getProgressOfHistory**
 > BackgroundQueryProgressResponse getProgressOfHistory(executionId)
 
-[EXPERIMENTAL] GetProgressOfHistory: View progress information (up until this point) of a history query
+GetProgressOfHistory: View progress information (up until this point) of a history query
 
 View progress information (up until this point) of previously started History query The following error codes are to be anticipated with standard Problem Detail reports: - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t exist and is not running. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
 

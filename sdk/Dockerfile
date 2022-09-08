@@ -6,6 +6,4 @@ WORKDIR /usr/src
 COPY pom.xml /usr/src/
 RUN mvn install
 
-ENV FBN_LUMINESCE_API_URL ${FBN_LUMINESCE_API_URL}
-
 ENTRYPOINT mvn -e -fae test

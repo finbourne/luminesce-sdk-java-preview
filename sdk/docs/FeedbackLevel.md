@@ -17,15 +17,15 @@
 
 * `ERROR` (value: `"Error"`)
 
-* `EXECUTIONKEEPALIVE` (value: `"ExecutionKeepAlive"`)
-
-* `PROGRESSANDDEBUG` (value: `"ProgressAndDebug"`)
-
-* `PROGRESSANDINFORMATION` (value: `"ProgressAndInformation"`)
+* `PROGRESSANDERROR` (value: `"ProgressAndError"`)
 
 * `PROGRESSANDWARNING` (value: `"ProgressAndWarning"`)
 
-* `PROGRESSANDERROR` (value: `"ProgressAndError"`)
+* `PROGRESSANDINFORMATION` (value: `"ProgressAndInformation"`)
+
+* `PROGRESSANDDEBUG` (value: `"ProgressAndDebug"`)
+
+* `EXECUTIONKEEPALIVE` (value: `"ExecutionKeepAlive"`)
 
 
 

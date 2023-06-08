@@ -21,5 +21,9 @@
 
 * `INSIGHTSMETRICSENTITLEMENT` (value: `"InsightsMetricsEntitlement"`)
 
+* `INSTRUMENTDISCOVERY` (value: `"InstrumentDiscovery"`)
+
+* `INSTRUMENTUPSERT` (value: `"InstrumentUpsert"`)
+
 
 

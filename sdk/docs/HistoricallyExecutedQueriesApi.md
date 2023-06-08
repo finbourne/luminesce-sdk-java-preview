@@ -305,7 +305,7 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**202** | Success |  -  |
+**202** | Accepted |  -  |
 
 <a name="getProgressOfHistory"></a>
 # **getProgressOfHistory**

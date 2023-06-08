@@ -6,7 +6,7 @@ info:
     url: https://www.finbourne.com
   termsOfService: https://www.finbourne.com/legal/terms-conditions
   title: FINBOURNE Luminesce Web API
-  version: 1.11.207
+  version: 1.12.897
   x-logo:
     url: https://www.lusid.com/app/assets/logo_white.png
     backgroundColor: '#415464'
@@ -34,22 +34,23 @@ paths:
   /api/Catalog:
     get:
       description: "\nThe following LuminesceSql is executed to return this information:\n\
-        \n```sql\n@reg =\nselect\n    r.Name,\n    min(r.Description) as Description\n\
-        from\n    Sys.Registration r\nwhere\n    r.Type in ('DirectProvider', 'DataProvider')\n\
-        \    and \n    r.ShowAll = false\ngroup by\n    1\n    ;\n\n@fld =\nselect\n\
-        \    f.TableName,\n    f.FieldName,\n    f.DataType,\n    f.FieldType,\n \
-        \   f.IsPrimaryKey,\n    f.IsMain,\n    f.Description,\n    f.ParamDefaultValue,\n\
-        \    f.TableParamColumns\nfrom\n    Sys.Field f\n    ;\n\n@x =\nselect\n \
-        \   coalesce(f.TableName, r.Name) as TableName,\n    coalesce(f.FieldName,\
+        \n```sql\n@reg =\nselect\n    Name,\n    min(Description) as Description,\n\
+        \    min(DocumentationLink) as DocumentationLink,\n    iif(Category = 'View'\
+        \ and Client is not null, true, false) as IsView\nfrom\n    Sys.Registration\n\
+        where\n    Type in ('DirectProvider', 'DataProvider')\n    and \n    ShowAll\
+        \ = false\ngroup by\n    1\n    ;\n\n@fld =\nselect\n    TableName,\n    FieldName,\n\
+        \    DataType,\n    FieldType,\n    IsPrimaryKey,\n    IsMain,\n    Description,\n\
+        \    ParamDefaultValue,\n    TableParamColumns\nfrom\n    Sys.Field\n    ;\n\
+        \n@x =\nselect\n    coalesce(f.TableName, r.Name) as TableName,\n    coalesce(f.FieldName,\
         \ 'N/A') as FieldName,\n    f.DataType,\n    f.FieldType,\n    f.IsPrimaryKey,\n\
-        \    f.IsMain,\n    case \n        when f.TableName is not null \n       \
-        \     then f.Description\n        else\n            r.Name || ' returns a\
-        \ different set of columns depending on use.'\n        end as Description,\n\
-        \    f.ParamDefaultValue,\n    f.TableParamColumns,\n    r.Description as\
-        \ ProviderDescription\nfrom\n    @reg r\n    left outer join @fld f\n    \
-        \    on r.Name = f.TableName\norder by\n    1, 5 desc, 6 desc, 2\n    ;\n\
-        \   \n```\n\nThe following error codes are to be anticipated with standard\
-        \ Problem Detail reports:\n- 401 Unauthorized\n"
+        \    f.IsMain,\n    case \n        when f.TableName is not null then\n   \
+        \         f.Description\n        else\n            r.Name || ' returns a different\
+        \ set of columns depending on use.'\n        end as Description,\n    f.ParamDefaultValue,\n\
+        \    f.TableParamColumns,\n    r.Description as ProviderDescription,\n   \
+        \ r.DocumentationLink,\n    r.IsView\nfrom\n    @reg r\n    left outer join\
+        \ @fld f\n        on r.Name = f.TableName\norder by\n    1, 5 desc, 6 desc,\
+        \ 2\n    ;\n   \n```\n\nThe following error codes are to be anticipated with\
+        \ standard Problem Detail reports:\n- 401 Unauthorized\n"
       operationId: GetCatalog
       parameters:
       - description: Limit the catalog to only things in some way dealing with the
@@ -59,9 +60,6 @@ paths:
         name: freeTextSearch
         required: false
         schema:
-          description: Limit the catalog to only things in some way dealing with the
-            passed in text string
-          nullable: true
           type: string
         style: form
       - description: Should this be text/json (not json-encoded-as-a-string)
@@ -71,7 +69,6 @@ paths:
         required: false
         schema:
           default: false
-          description: Should this be text/json (not json-encoded-as-a-string)
           type: boolean
         style: form
         x-nullable: true
@@ -113,10 +110,7 @@ paths:
         name: startAt
         required: false
         schema:
-          description: Date time to start the search from.  Will default to Now -
-            1 Day
           format: date-time
-          nullable: true
           type: string
         style: form
         x-nullable: true
@@ -126,9 +120,7 @@ paths:
         name: endAt
         required: false
         schema:
-          description: Date time to end the search at.  Defaults to now.
           format: date-time
-          nullable: true
           type: string
         style: form
         x-nullable: true
@@ -138,8 +130,6 @@ paths:
         name: freeTextSearch
         required: false
         schema:
-          description: Some test that must be in at least one field returned.
-          nullable: true
           type: string
         style: form
       - description: For users with extra permissions, they may optionally see other
@@ -150,8 +140,6 @@ paths:
         required: false
         schema:
           default: false
-          description: For users with extra permissions, they may optionally see other
-            users' queries.
           type: boolean
         style: form
         x-nullable: true
@@ -167,7 +155,7 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/BackgroundQueryResponse'
-          description: Success
+          description: Accepted
       security:
       - oauth2: []
       summary: 'GetHistory: Shows queries executed in a given historical time window
@@ -191,7 +179,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       responses:
@@ -233,7 +220,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       responses:
@@ -276,7 +262,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       - description: Optional histogram bucket width.  If not provided a set number
@@ -286,10 +271,7 @@ paths:
         name: bucketSize
         required: false
         schema:
-          description: Optional histogram bucket width.  If not provided a set number
-            of buckets between start/end range will be generated.
           format: date-span
-          nullable: true
           type: string
         style: form
       - description: An ODATA filter per Finbourne.Filtering syntax.
@@ -298,8 +280,9 @@ paths:
         name: filter
         required: false
         schema:
-          description: An ODATA filter per Finbourne.Filtering syntax.
-          nullable: true
+          maxLength: 16384
+          minLength: 0
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: Should this be text/json (not json-encoded-as-a-string)
@@ -309,7 +292,6 @@ paths:
         required: false
         schema:
           default: false
-          description: Should this be text/json (not json-encoded-as-a-string)
           type: boolean
         style: form
         x-nullable: true
@@ -365,7 +347,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       - description: "Order the results by these fields.\r\n            Use the `-`\
@@ -378,12 +359,9 @@ paths:
         name: sortBy
         required: false
         schema:
-          description: "Order the results by these fields.\r\n            Use the\
-            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
-            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
-            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
-            \n            Default is null, the sort order specified in the query itself."
-          nullable: true
+          maxLength: 16384
+          minLength: 1
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: An ODATA filter per Finbourne.Filtering syntax.
@@ -392,8 +370,9 @@ paths:
         name: filter
         required: false
         schema:
-          description: An ODATA filter per Finbourne.Filtering syntax.
-          nullable: true
+          maxLength: 16384
+          minLength: 0
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: "Default is null (meaning return all columns in the original\
@@ -414,20 +393,6 @@ paths:
         name: select
         required: false
         schema:
-          description: "Default is null (meaning return all columns in the original\
-            \ query itself).\r\nThe values are in terms of the result column name\
-            \ from the original data set and are comma delimited.\r\nThe power of\
-            \ this comes in that you may aggregate the data if you wish\r\n(that is\
-            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
-            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
-            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
-            \ the rows for the given group, that would produce a rather ugly column\
-            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
-            \ was an illegal character in a field you are selecting from, you are\
-            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
-            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
-            \  where you would likely want to pass `1` as the `groupBy` also."
-          nullable: true
           type: string
         style: form
       - description: "Groups by the specified fields.\r\n            A comma delimited\
@@ -443,15 +408,6 @@ paths:
         name: groupBy
         required: false
         schema:
-          description: "Groups by the specified fields.\r\n            A comma delimited\
-            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
-            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
-            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
-            \ will be performed on the selected columns).\r\n            This applies\
-            \ only over the result set being requested here, meaning indexes into\
-            \ the \"select\" parameter fields.\r\n            Only specify this if\
-            \ you are selecting aggregations in the \"select\" parameter."
-          nullable: true
           type: string
         style: form
       - description: When paginating, only return this number of records, page should
@@ -462,8 +418,6 @@ paths:
         required: false
         schema:
           default: 0
-          description: When paginating, only return this number of records, page should
-            also be specified.
           format: int32
           type: integer
         style: form
@@ -476,8 +430,6 @@ paths:
         required: false
         schema:
           default: 0
-          description: 0-N based on chunk sized determined by the limit, ignored if
-            limit < 1.
           format: int32
           type: integer
         style: form
@@ -489,7 +441,6 @@ paths:
         required: false
         schema:
           default: false
-          description: Should this be text/json (not json-encoded-as-a-string)
           type: boolean
         style: form
         x-nullable: true
@@ -572,6 +523,7 @@ paths:
       operationId: StartQueries
       parameters:
       - description: An enum value defining the set of statements being executed
+        example: Instrument
         explode: true
         in: query
         name: type
@@ -585,9 +537,7 @@ paths:
         name: asAt
         required: false
         schema:
-          description: The AsAt time used by any bitemporal provider in the queries.
           format: date-time
-          nullable: true
           type: string
         style: form
         x-nullable: true
@@ -597,10 +547,7 @@ paths:
         name: effectiveAt
         required: false
         schema:
-          description: The EffectiveAt time used by any bitemporal provider in the
-            queries.
           format: date-time
-          nullable: true
           type: string
         style: form
         x-nullable: true
@@ -611,10 +558,7 @@ paths:
         name: limit1
         required: false
         schema:
-          description: A limit that is applied to first-level queries (e.g. Instruments
-            themselves)
           format: int32
-          nullable: true
           type: integer
         style: form
         x-nullable: true
@@ -625,10 +569,7 @@ paths:
         name: limit2
         required: false
         schema:
-          description: A limit that is applied to second-level queries (e.g. Holdings
-            based on the set of Instruments found)
           format: int32
-          nullable: true
           type: integer
         style: form
         x-nullable: true
@@ -639,9 +580,6 @@ paths:
         name: input1
         required: false
         schema:
-          description: "A value available to queries, these vary by 'type' and are\
-            \ only used by some types at all.\r\ne.g. a start-date of some sort"
-          nullable: true
           type: string
         style: form
       - description: A second value available to queries, these vary by 'type' and
@@ -651,9 +589,6 @@ paths:
         name: input2
         required: false
         schema:
-          description: A second value available to queries, these vary by 'type' and
-            are only used by some types at all.
-          nullable: true
           type: string
         style: form
       - description: A third value available to queries, these vary by 'type' and
@@ -663,37 +598,30 @@ paths:
         name: input3
         required: false
         schema:
-          description: A third value available to queries, these vary by 'type' and
-            are only used by some types at all.
-          nullable: true
           type: string
         style: form
       - description: 'Maximum time the query may run for, in seconds: <0 → ∞, 0 →
           1200s (20m)'
+        example: 1200
         explode: true
         in: query
         name: timeoutSeconds
         required: false
         schema:
           default: 0
-          description: 'Maximum time the query may run for, in seconds: <0 → ∞, 0
-            → 1200s (20m)'
-          example: 1200
           format: int32
           type: integer
         style: form
         x-nullable: true
       - description: 'Maximum time the result may be kept for, in seconds: <0 → 1200
           (20m), 0 → 28800 (8h), max = 2,678,400 (31d)'
+        example: 7200
         explode: true
         in: query
         name: keepForSeconds
         required: false
         schema:
           default: 0
-          description: 'Maximum time the result may be kept for, in seconds: <0 →
-            1200 (20m), 0 → 28800 (8h), max = 2,678,400 (31d)'
-          example: 7200
           format: int32
           type: integer
         style: form
@@ -701,12 +629,8 @@ paths:
       requestBody:
         content:
           text/plain:
+            example: Apple
             schema:
-              description: "A \"search\" value (e.g. 'Apple' on an instrument search,\
-                \ a `Finbourne.Filtering` expression of Insights, etc.)\r\nIn the\
-                \ cases where \"Nothing\" is valid for a `Finbourne.Filtering` expression,\
-                \ pass `True`."
-              example: Apple
               type: string
         description: "A \"search\" value (e.g. 'Apple' on an instrument search, a\
           \ `Finbourne.Filtering` expression of Insights, etc.)\r\nIn the cases where\
@@ -724,7 +648,7 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/BackgroundMultiQueryResponse'
-          description: Success
+          description: Accepted
         "400":
           content:
             text/plain:
@@ -761,7 +685,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       responses:
@@ -803,7 +726,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       responses:
@@ -849,14 +771,12 @@ paths:
       operationId: PutByQueryCsv
       parameters:
       - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
         explode: true
         in: query
         name: queryName
         required: false
         schema:
-          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
-          example: Get tables/fields
-          nullable: true
           type: string
         style: form
       - description: Makes this a file-download request (as opposed to returning the
@@ -867,30 +787,42 @@ paths:
         required: false
         schema:
           default: false
-          description: Makes this a file-download request (as opposed to returning
-            the data in the response-body)
           type: boolean
         style: form
         x-nullable: true
       - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
         explode: true
         in: query
         name: timeoutSeconds
         required: false
         schema:
           default: 0
-          description: 'In seconds: <0 → ∞, 0 → 120s'
-          example: 120
           format: int32
           type: integer
         style: form
         x-nullable: true
+      - description: Delimiter string to override the default
+        explode: true
+        in: query
+        name: delimiter
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Escape character to override the default
+        explode: true
+        in: query
+        name: escape
+        required: false
+        schema:
+          type: string
+        style: form
       requestBody:
         content:
           text/plain:
+            example: select * from sys.field
             schema:
-              description: LuminesceSql to Execute (may be multi-line)
-              example: select * from sys.field
               type: string
         description: LuminesceSql to Execute (may be multi-line)
         required: true
@@ -941,24 +873,21 @@ paths:
       operationId: GetByQueryCsv
       parameters:
       - description: LuminesceSql to Execute (must be one line only)
+        example: select ^ from Sys.Field order by 1, 2
         explode: false
         in: path
         name: query
         required: true
         schema:
-          description: LuminesceSql to Execute (must be one line only)
-          example: select ^ from Sys.Field order by 1, 2
           type: string
         style: simple
       - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
         explode: true
         in: query
         name: queryName
         required: false
         schema:
-          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
-          example: Get tables/fields
-          nullable: true
           type: string
         style: form
       - description: Makes this a file-download request (as opposed to returning the
@@ -969,24 +898,37 @@ paths:
         required: false
         schema:
           default: false
-          description: Makes this a file-download request (as opposed to returning
-            the data in the response-body)
           type: boolean
         style: form
         x-nullable: true
       - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
         explode: true
         in: query
         name: timeout
         required: false
         schema:
           default: 0
-          description: 'In seconds: <0 → ∞, 0 → 120s'
-          example: 120
           format: int32
           type: integer
         style: form
         x-nullable: true
+      - description: Delimiter string to override the default
+        explode: true
+        in: query
+        name: delimiter
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Escape character to override the default
+        explode: true
+        in: query
+        name: escape
+        required: false
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -1042,25 +984,22 @@ paths:
       operationId: PutByQueryExcel
       parameters:
       - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
         explode: true
         in: query
         name: queryName
         required: false
         schema:
-          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
-          example: Get tables/fields
-          nullable: true
           type: string
         style: form
       - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
         explode: true
         in: query
         name: timeoutSeconds
         required: false
         schema:
           default: 0
-          description: 'In seconds: <0 → ∞, 0 → 120s'
-          example: 120
           format: int32
           type: integer
         style: form
@@ -1068,9 +1007,8 @@ paths:
       requestBody:
         content:
           text/plain:
+            example: select * from sys.field
             schema:
-              description: LuminesceSql to Execute (may be multi-line)
-              example: select * from sys.field
               type: string
         description: LuminesceSql to Execute (may be multi-line)
         required: true
@@ -1121,35 +1059,31 @@ paths:
       operationId: GetByQueryExcel
       parameters:
       - description: LuminesceSql to Execute (must be one line only)
+        example: select ^ from Sys.Field order by 1, 2
         explode: false
         in: path
         name: query
         required: true
         schema:
-          description: LuminesceSql to Execute (must be one line only)
-          example: select ^ from Sys.Field order by 1, 2
           type: string
         style: simple
       - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
         explode: true
         in: query
         name: queryName
         required: false
         schema:
-          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
-          example: Get tables/fields
-          nullable: true
           type: string
         style: form
       - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
         explode: true
         in: query
         name: timeout
         required: false
         schema:
           default: 0
-          description: 'In seconds: <0 → ∞, 0 → 120s'
-          example: 120
           format: int32
           type: integer
         style: form
@@ -1209,25 +1143,22 @@ paths:
       operationId: PutByQueryJson
       parameters:
       - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
         explode: true
         in: query
         name: queryName
         required: false
         schema:
-          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
-          example: Get tables/fields
-          nullable: true
           type: string
         style: form
       - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
         explode: true
         in: query
         name: timeoutSeconds
         required: false
         schema:
           default: 0
-          description: 'In seconds: <0 → ∞, 0 → 120s'
-          example: 120
           format: int32
           type: integer
         style: form
@@ -1239,16 +1170,14 @@ paths:
         required: false
         schema:
           default: false
-          description: Should this be text/json (not json-encoded-as-a-string)
           type: boolean
         style: form
         x-nullable: true
       requestBody:
         content:
           text/plain:
+            example: select * from sys.field
             schema:
-              description: LuminesceSql to Execute (may be multi-line)
-              example: select * from sys.field
               type: string
         description: LuminesceSql to Execute (may be multi-line)
         required: true
@@ -1299,35 +1228,31 @@ paths:
       operationId: GetByQueryJson
       parameters:
       - description: LuminesceSql to Execute (must be one line only)
+        example: select ^ from Sys.Field order by 1, 2
         explode: false
         in: path
         name: query
         required: true
         schema:
-          description: LuminesceSql to Execute (must be one line only)
-          example: select ^ from Sys.Field order by 1, 2
           type: string
         style: simple
       - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
         explode: true
         in: query
         name: queryName
         required: false
         schema:
-          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
-          example: Get tables/fields
-          nullable: true
           type: string
         style: form
       - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
         explode: true
         in: query
         name: timeout
         required: false
         schema:
           default: 0
-          description: 'In seconds: <0 → ∞, 0 → 120s'
-          example: 120
           format: int32
           type: integer
         style: form
@@ -1339,7 +1264,6 @@ paths:
         required: false
         schema:
           default: false
-          description: Should this be text/json (not json-encoded-as-a-string)
           type: boolean
         style: form
         x-nullable: true
@@ -1376,6 +1300,165 @@ paths:
       - Sql Execution
       x-fbn-apistatus: Stable
       x-accepts: application/json
+  /api/Sql/parquet:
+    put:
+      description: |2
+
+        For more complex LuminesceSql a PUT will allow for longer Sql.
+        e.g.:
+        ```sql
+        @@cutoff = select #2020-02-01#;
+        @issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;
+
+        select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary
+        from @issues i
+        inner join Dev.Jira.Issue.Link li
+            on i.Id = li.IssueId
+        ```
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: PutByQueryParquet
+      parameters:
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
+        explode: true
+        in: query
+        name: timeoutSeconds
+        required: false
+        schema:
+          default: 0
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      requestBody:
+        content:
+          text/plain:
+            example: select * from sys.field
+            schema:
+              type: string
+        description: LuminesceSql to Execute (may be multi-line)
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: 'PutByQueryParquet: Executes Sql, returned in Parquet format, where
+        the sql is the post-body url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Stable
+      x-contentType: text/plain
+      x-accepts: application/json
+  /api/Sql/parquet/{query}:
+    get:
+      description: |2
+
+        For simple single-line query execution via the url.
+        e.g. `select ^ from Sys.Field order by 1, 2`
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: GetByQueryParquet
+      parameters:
+      - description: LuminesceSql to Execute (must be one line only)
+        example: select ^ from Sys.Field order by 1, 2
+        explode: false
+        in: path
+        name: query
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
+        explode: true
+        in: query
+        name: timeout
+        required: false
+        schema:
+          default: 0
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: 'GetByQueryParquet: Executes Sql, returned in Parquet (.parquet) format
+        (as a file to be downloaded) format, where the sql is simply in the url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Stable
+      x-accepts: application/json
   /api/Sql/pipe:
     put:
       description: |2
@@ -1398,14 +1481,12 @@ paths:
       operationId: PutByQueryPipe
       parameters:
       - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
         explode: true
         in: query
         name: queryName
         required: false
         schema:
-          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
-          example: Get tables/fields
-          nullable: true
           type: string
         style: form
       - description: Makes this a file-download request (as opposed to returning the
@@ -1416,20 +1497,17 @@ paths:
         required: false
         schema:
           default: false
-          description: Makes this a file-download request (as opposed to returning
-            the data in the response-body)
           type: boolean
         style: form
         x-nullable: true
       - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
         explode: true
         in: query
         name: timeoutSeconds
         required: false
         schema:
           default: 0
-          description: 'In seconds: <0 → ∞, 0 → 120s'
-          example: 120
           format: int32
           type: integer
         style: form
@@ -1437,9 +1515,8 @@ paths:
       requestBody:
         content:
           text/plain:
+            example: select * from sys.field
             schema:
-              description: LuminesceSql to Execute (may be multi-line)
-              example: select * from sys.field
               type: string
         description: LuminesceSql to Execute (may be multi-line)
         required: true
@@ -1490,24 +1567,21 @@ paths:
       operationId: GetByQueryPipe
       parameters:
       - description: LuminesceSql to Execute (must be one line only)
+        example: select ^ from Sys.Field order by 1, 2
         explode: false
         in: path
         name: query
         required: true
         schema:
-          description: LuminesceSql to Execute (must be one line only)
-          example: select ^ from Sys.Field order by 1, 2
           type: string
         style: simple
       - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
         explode: true
         in: query
         name: queryName
         required: false
         schema:
-          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
-          example: Get tables/fields
-          nullable: true
           type: string
         style: form
       - description: Makes this a file-download request (as opposed to returning the
@@ -1518,20 +1592,17 @@ paths:
         required: false
         schema:
           default: false
-          description: Makes this a file-download request (as opposed to returning
-            the data in the response-body)
           type: boolean
         style: form
         x-nullable: true
       - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
         explode: true
         in: query
         name: timeout
         required: false
         schema:
           default: 0
-          description: 'In seconds: <0 → ∞, 0 → 120s'
-          example: 120
           format: int32
           type: integer
         style: form
@@ -1598,7 +1669,6 @@ paths:
         required: false
         schema:
           default: true
-          description: Should commas be after an expression (as opposed to before)
           type: boolean
         style: form
         x-nullable: true
@@ -1609,7 +1679,6 @@ paths:
         required: false
         schema:
           default: false
-          description: Should key words be capitalized
           type: boolean
         style: form
         x-nullable: true
@@ -1620,7 +1689,6 @@ paths:
         required: false
         schema:
           default: true
-          description: Should clauses on joins be given line breaks?
           type: boolean
         style: form
         x-nullable: true
@@ -1631,7 +1699,6 @@ paths:
         required: false
         schema:
           default: true
-          description: Should comma-lists have spaces after the commas?
           type: boolean
         style: form
         x-nullable: true
@@ -1642,8 +1709,6 @@ paths:
         required: false
         schema:
           default: true
-          description: Should the "nicest" key words be used? (e.g. JOIN -> INNER
-            JOIN)
           type: boolean
         style: form
         x-nullable: true
@@ -1654,7 +1719,6 @@ paths:
         required: false
         schema:
           default: false
-          description: Should comma-lists (e.g. select a,b,c) have line breaks added?
           type: boolean
         style: form
         x-nullable: true
@@ -1665,7 +1729,6 @@ paths:
         required: false
         schema:
           default: false
-          description: Should IN-lists have line breaks added?
           type: boolean
         style: form
         x-nullable: true
@@ -1676,7 +1739,6 @@ paths:
         required: false
         schema:
           default: true
-          description: Should boolean expressions have line breaks added?
           type: boolean
         style: form
         x-nullable: true
@@ -1687,7 +1749,6 @@ paths:
         required: false
         schema:
           default: true
-          description: Should between conditions have line breaks added?
           type: boolean
         style: form
         x-nullable: true
@@ -1698,7 +1759,6 @@ paths:
         required: false
         schema:
           default: true
-          description: Should case-statements have line breaks added?
           type: boolean
         style: form
         x-nullable: true
@@ -1709,7 +1769,6 @@ paths:
         required: false
         schema:
           default: 120
-          description: Maximum number of characters to allow on one line (if possible)
           format: int32
           type: integer
         style: form
@@ -1717,10 +1776,8 @@ paths:
       requestBody:
         content:
           text/plain:
+            example: select * from sys.field
             schema:
-              description: LuminesceSql to Pretty-Print. Even if it doesn't parse
-                an attempt will be made to format it
-              example: select * from sys.field
               type: string
         description: LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt
           will be made to format it
@@ -1781,25 +1838,22 @@ paths:
       operationId: PutByQuerySqlite
       parameters:
       - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
         explode: true
         in: query
         name: queryName
         required: false
         schema:
-          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
-          example: Get tables/fields
-          nullable: true
           type: string
         style: form
       - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
         explode: true
         in: query
         name: timeoutSeconds
         required: false
         schema:
           default: 0
-          description: 'In seconds: <0 → ∞, 0 → 120s'
-          example: 120
           format: int32
           type: integer
         style: form
@@ -1807,9 +1861,8 @@ paths:
       requestBody:
         content:
           text/plain:
+            example: select * from sys.field
             schema:
-              description: LuminesceSql to Execute (may be multi-line)
-              example: select * from sys.field
               type: string
         description: LuminesceSql to Execute (may be multi-line)
         required: true
@@ -1860,35 +1913,31 @@ paths:
       operationId: GetByQuerySqlite
       parameters:
       - description: LuminesceSql to Execute (must be one line only)
+        example: select ^ from Sys.Field order by 1, 2
         explode: false
         in: path
         name: query
         required: true
         schema:
-          description: LuminesceSql to Execute (must be one line only)
-          example: select ^ from Sys.Field order by 1, 2
           type: string
         style: simple
       - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
         explode: true
         in: query
         name: queryName
         required: false
         schema:
-          description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
-          example: Get tables/fields
-          nullable: true
           type: string
         style: form
       - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
         explode: true
         in: query
         name: timeout
         required: false
         schema:
           default: 0
-          description: 'In seconds: <0 → ∞, 0 → 120s'
-          example: 120
           format: int32
           type: integer
         style: form
@@ -1926,6 +1975,187 @@ paths:
       - Sql Execution
       x-fbn-apistatus: Stable
       x-accepts: application/json
+  /api/Sql/xml:
+    put:
+      description: |2
+
+        For more complex LuminesceSql a PUT will allow for longer Sql.
+        e.g.:
+        ```sql
+        @@cutoff = select #2020-02-01#;
+        @issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;
+
+        select i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary
+        from @issues i
+        inner join Dev.Jira.Issue.Link li
+            on i.Id = li.IssueId
+        ```
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: PutByQueryXml
+      parameters:
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Makes this a file-download request (as opposed to returning the
+          data in the response-body)
+        explode: true
+        in: query
+        name: download
+        required: false
+        schema:
+          default: false
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
+        explode: true
+        in: query
+        name: timeoutSeconds
+        required: false
+        schema:
+          default: 0
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      requestBody:
+        content:
+          text/plain:
+            example: select * from sys.field
+            schema:
+              type: string
+        description: LuminesceSql to Execute (may be multi-line)
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: 'PutByQueryXml: Executes Sql, returned in Xml format, where the sql
+        is the post-body url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Stable
+      x-contentType: text/plain
+      x-accepts: application/json
+  /api/Sql/xml/{query}:
+    get:
+      description: |2
+
+        For simple single-line query execution via the url.
+        e.g. `select ^ from Sys.Field order by 1, 2`
+
+        The following error codes are to be anticipated with standard Problem Detail reports:
+        - 400 BadRequest - something failed with the execution or parsing of your query
+        - 401 Unauthorized
+      operationId: GetByQueryXml
+      parameters:
+      - description: LuminesceSql to Execute (must be one line only)
+        example: select ^ from Sys.Field order by 1, 2
+        explode: false
+        in: path
+        name: query
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
+        example: Get tables/fields
+        explode: true
+        in: query
+        name: queryName
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Makes this a file-download request (as opposed to returning the
+          data in the response-body)
+        explode: true
+        in: query
+        name: download
+        required: false
+        schema:
+          default: false
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: 'In seconds: <0 → ∞, 0 → 120s'
+        example: 120
+        explode: true
+        in: query
+        name: timeout
+        required: false
+        schema:
+          default: 0
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: 'GetByQueryXml: Executes Sql, returned in Xml format, where the sql
+        is simply in the url.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Stable
+      x-accepts: application/json
   /api/SqlBackground:
     put:
       description: "\nAllow for starting a potentially long running query and getting\
@@ -1949,43 +2179,36 @@ paths:
       parameters:
       - description: A name for this query.  This goes into logs and is available
           in `Sys.Logs.HcQueryStart`.
+        example: Intentionally slow test query
         explode: true
         in: query
         name: queryName
         required: false
         schema:
-          description: A name for this query.  This goes into logs and is available
-            in `Sys.Logs.HcQueryStart`.
-          example: Intentionally slow test query
-          nullable: true
           type: string
         style: form
       - description: 'Maximum time the query may run for, in seconds: <0 → ∞, 0 →
           7200 (2h)'
+        example: 1200
         explode: true
         in: query
         name: timeoutSeconds
         required: false
         schema:
           default: 0
-          description: 'Maximum time the query may run for, in seconds: <0 → ∞, 0
-            → 7200 (2h)'
-          example: 1200
           format: int32
           type: integer
         style: form
         x-nullable: true
       - description: 'Maximum time the result may be kept for, in seconds: <0 → 1200
           (20m), 0 → 28800 (8h), max = 2,678,400 (31d)'
+        example: 7200
         explode: true
         in: query
         name: keepForSeconds
         required: false
         schema:
           default: 0
-          description: 'Maximum time the result may be kept for, in seconds: <0 →
-            1200 (20m), 0 → 28800 (8h), max = 2,678,400 (31d)'
-          example: 7200
           format: int32
           type: integer
         style: form
@@ -1993,10 +2216,9 @@ paths:
       requestBody:
         content:
           text/plain:
+            example: select Str, Takes500Ms from Testing1K where UseLinq = true and
+              [Int] <= 120
             schema:
-              description: The LuminesceSql query to kick off.
-              example: select Str, Takes500Ms from Testing1K where UseLinq = true
-                and [Int] <= 120
               type: string
         description: The LuminesceSql query to kick off.
         required: true
@@ -2012,7 +2234,7 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/BackgroundQueryResponse'
-          description: Success
+          description: Accepted
         "400":
           content:
             text/plain:
@@ -2048,7 +2270,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       responses:
@@ -2090,7 +2311,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       responses:
@@ -2133,7 +2353,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       - description: Makes this a file-download request (as opposed to returning the
@@ -2144,8 +2363,6 @@ paths:
         required: false
         schema:
           default: false
-          description: Makes this a file-download request (as opposed to returning
-            the data in the response-body)
           type: boolean
         style: form
         x-nullable: true
@@ -2159,12 +2376,9 @@ paths:
         name: sortBy
         required: false
         schema:
-          description: "Order the results by these fields.\r\n            Use the\
-            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
-            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
-            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
-            \n            Default is null, the sort order specified in the query itself."
-          nullable: true
+          maxLength: 16384
+          minLength: 1
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: An ODATA filter per Finbourne.Filtering syntax.
@@ -2173,8 +2387,9 @@ paths:
         name: filter
         required: false
         schema:
-          description: An ODATA filter per Finbourne.Filtering syntax.
-          nullable: true
+          maxLength: 16384
+          minLength: 0
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: "Default is null (meaning return all columns in the original\
@@ -2195,20 +2410,6 @@ paths:
         name: select
         required: false
         schema:
-          description: "Default is null (meaning return all columns in the original\
-            \ query itself).\r\nThe values are in terms of the result column name\
-            \ from the original data set and are comma delimited.\r\nThe power of\
-            \ this comes in that you may aggregate the data if you wish\r\n(that is\
-            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
-            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
-            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
-            \ the rows for the given group, that would produce a rather ugly column\
-            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
-            \ was an illegal character in a field you are selecting from, you are\
-            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
-            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
-            \  where you would likely want to pass `1` as the `groupBy` also."
-          nullable: true
           type: string
         style: form
       - description: "Groups by the specified fields.\r\n            A comma delimited\
@@ -2224,15 +2425,6 @@ paths:
         name: groupBy
         required: false
         schema:
-          description: "Groups by the specified fields.\r\n            A comma delimited\
-            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
-            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
-            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
-            \ will be performed on the selected columns).\r\n            This applies\
-            \ only over the result set being requested here, meaning indexes into\
-            \ the \"select\" parameter fields.\r\n            Only specify this if\
-            \ you are selecting aggregations in the \"select\" parameter."
-          nullable: true
           type: string
         style: form
       - description: When paginating, only return this number of records, page should
@@ -2243,8 +2435,6 @@ paths:
         required: false
         schema:
           default: 0
-          description: When paginating, only return this number of records, page should
-            also be specified.
           format: int32
           type: integer
         style: form
@@ -2257,12 +2447,26 @@ paths:
         required: false
         schema:
           default: 0
-          description: 0-N based on chunk sized determined by the limit, ignored if
-            limit < 1.
           format: int32
           type: integer
         style: form
         x-nullable: true
+      - description: Delimiter string to override the default
+        explode: true
+        in: query
+        name: delimiter
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Escape character to override the default
+        explode: true
+        in: query
+        name: escape
+        required: false
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -2316,7 +2520,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       - description: "Order the results by these fields.\r\n            Use the `-`\
@@ -2329,12 +2532,9 @@ paths:
         name: sortBy
         required: false
         schema:
-          description: "Order the results by these fields.\r\n            Use the\
-            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
-            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
-            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
-            \n            Default is null, the sort order specified in the query itself."
-          nullable: true
+          maxLength: 16384
+          minLength: 1
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: An ODATA filter per Finbourne.Filtering syntax.
@@ -2343,8 +2543,9 @@ paths:
         name: filter
         required: false
         schema:
-          description: An ODATA filter per Finbourne.Filtering syntax.
-          nullable: true
+          maxLength: 16384
+          minLength: 0
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: "Default is null (meaning return all columns in the original\
@@ -2365,20 +2566,6 @@ paths:
         name: select
         required: false
         schema:
-          description: "Default is null (meaning return all columns in the original\
-            \ query itself).\r\nThe values are in terms of the result column name\
-            \ from the original data set and are comma delimited.\r\nThe power of\
-            \ this comes in that you may aggregate the data if you wish\r\n(that is\
-            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
-            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
-            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
-            \ the rows for the given group, that would produce a rather ugly column\
-            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
-            \ was an illegal character in a field you are selecting from, you are\
-            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
-            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
-            \  where you would likely want to pass `1` as the `groupBy` also."
-          nullable: true
           type: string
         style: form
       - description: "Groups by the specified fields.\r\n            A comma delimited\
@@ -2394,15 +2581,6 @@ paths:
         name: groupBy
         required: false
         schema:
-          description: "Groups by the specified fields.\r\n            A comma delimited\
-            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
-            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
-            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
-            \ will be performed on the selected columns).\r\n            This applies\
-            \ only over the result set being requested here, meaning indexes into\
-            \ the \"select\" parameter fields.\r\n            Only specify this if\
-            \ you are selecting aggregations in the \"select\" parameter."
-          nullable: true
           type: string
         style: form
       responses:
@@ -2457,7 +2635,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       - description: Name of the timestamp field used in building the histogram
@@ -2466,7 +2643,6 @@ paths:
         name: timestampFieldName
         required: true
         schema:
-          description: Name of the timestamp field used in building the histogram
           type: string
         style: form
       - description: Start point (of the timestampFieldName field) for the histogram
@@ -2475,9 +2651,7 @@ paths:
         name: startAt
         required: false
         schema:
-          description: Start point (of the timestampFieldName field) for the histogram
           format: date-time
-          nullable: true
           type: string
         style: form
         x-nullable: true
@@ -2487,9 +2661,7 @@ paths:
         name: endAt
         required: false
         schema:
-          description: End point (of the timestampFieldName field) for the histogram
           format: date-time
-          nullable: true
           type: string
         style: form
         x-nullable: true
@@ -2500,10 +2672,7 @@ paths:
         name: bucketSize
         required: false
         schema:
-          description: Optional histogram bucket width.  If not provided a set number
-            of buckets between start/end range will be generated.
           format: date-span
-          nullable: true
           type: string
         style: form
       - description: An ODATA filter per Finbourne.Filtering syntax.
@@ -2512,8 +2681,9 @@ paths:
         name: filter
         required: false
         schema:
-          description: An ODATA filter per Finbourne.Filtering syntax.
-          nullable: true
+          maxLength: 16384
+          minLength: 0
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: Should this be text/json (not json-encoded-as-a-string)
@@ -2523,7 +2693,6 @@ paths:
         required: false
         schema:
           default: false
-          description: Should this be text/json (not json-encoded-as-a-string)
           type: boolean
         style: form
         x-nullable: true
@@ -2580,7 +2749,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       - description: "Order the results by these fields.\r\n            Use the `-`\
@@ -2593,12 +2761,9 @@ paths:
         name: sortBy
         required: false
         schema:
-          description: "Order the results by these fields.\r\n            Use the\
-            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
-            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
-            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
-            \n            Default is null, the sort order specified in the query itself."
-          nullable: true
+          maxLength: 16384
+          minLength: 1
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: An ODATA filter per Finbourne.Filtering syntax.
@@ -2607,8 +2772,9 @@ paths:
         name: filter
         required: false
         schema:
-          description: An ODATA filter per Finbourne.Filtering syntax.
-          nullable: true
+          maxLength: 16384
+          minLength: 0
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: "Default is null (meaning return all columns in the original\
@@ -2629,20 +2795,6 @@ paths:
         name: select
         required: false
         schema:
-          description: "Default is null (meaning return all columns in the original\
-            \ query itself).\r\nThe values are in terms of the result column name\
-            \ from the original data set and are comma delimited.\r\nThe power of\
-            \ this comes in that you may aggregate the data if you wish\r\n(that is\
-            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
-            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
-            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
-            \ the rows for the given group, that would produce a rather ugly column\
-            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
-            \ was an illegal character in a field you are selecting from, you are\
-            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
-            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
-            \  where you would likely want to pass `1` as the `groupBy` also."
-          nullable: true
           type: string
         style: form
       - description: "Groups by the specified fields.\r\n            A comma delimited\
@@ -2658,15 +2810,6 @@ paths:
         name: groupBy
         required: false
         schema:
-          description: "Groups by the specified fields.\r\n            A comma delimited\
-            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
-            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
-            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
-            \ will be performed on the selected columns).\r\n            This applies\
-            \ only over the result set being requested here, meaning indexes into\
-            \ the \"select\" parameter fields.\r\n            Only specify this if\
-            \ you are selecting aggregations in the \"select\" parameter."
-          nullable: true
           type: string
         style: form
       - description: When paginating, only return this number of records, page should
@@ -2677,8 +2820,6 @@ paths:
         required: false
         schema:
           default: 0
-          description: When paginating, only return this number of records, page should
-            also be specified.
           format: int32
           type: integer
         style: form
@@ -2691,8 +2832,6 @@ paths:
         required: false
         schema:
           default: 0
-          description: 0-N based on chunk sized determined by the limit, ignored if
-            limit < 1.
           format: int32
           type: integer
         style: form
@@ -2751,7 +2890,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       - description: Makes this a file-download request (as opposed to returning the
@@ -2762,8 +2900,6 @@ paths:
         required: false
         schema:
           default: false
-          description: Makes this a file-download request (as opposed to returning
-            the data in the response-body)
           type: boolean
         style: form
         x-nullable: true
@@ -2777,12 +2913,9 @@ paths:
         name: sortBy
         required: false
         schema:
-          description: "Order the results by these fields.\r\n            Use the\
-            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
-            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
-            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
-            \n            Default is null, the sort order specified in the query itself."
-          nullable: true
+          maxLength: 16384
+          minLength: 1
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: An ODATA filter per Finbourne.Filtering syntax.
@@ -2791,8 +2924,9 @@ paths:
         name: filter
         required: false
         schema:
-          description: An ODATA filter per Finbourne.Filtering syntax.
-          nullable: true
+          maxLength: 16384
+          minLength: 0
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: "Default is null (meaning return all columns in the original\
@@ -2813,20 +2947,6 @@ paths:
         name: select
         required: false
         schema:
-          description: "Default is null (meaning return all columns in the original\
-            \ query itself).\r\nThe values are in terms of the result column name\
-            \ from the original data set and are comma delimited.\r\nThe power of\
-            \ this comes in that you may aggregate the data if you wish\r\n(that is\
-            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
-            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
-            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
-            \ the rows for the given group, that would produce a rather ugly column\
-            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
-            \ was an illegal character in a field you are selecting from, you are\
-            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
-            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
-            \  where you would likely want to pass `1` as the `groupBy` also."
-          nullable: true
           type: string
         style: form
       - description: "Groups by the specified fields.\r\n            A comma delimited\
@@ -2842,15 +2962,6 @@ paths:
         name: groupBy
         required: false
         schema:
-          description: "Groups by the specified fields.\r\n            A comma delimited\
-            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
-            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
-            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
-            \ will be performed on the selected columns).\r\n            This applies\
-            \ only over the result set being requested here, meaning indexes into\
-            \ the \"select\" parameter fields.\r\n            Only specify this if\
-            \ you are selecting aggregations in the \"select\" parameter."
-          nullable: true
           type: string
         style: form
       - description: When paginating, only return this number of records, page should
@@ -2861,8 +2972,6 @@ paths:
         required: false
         schema:
           default: 0
-          description: When paginating, only return this number of records, page should
-            also be specified.
           format: int32
           type: integer
         style: form
@@ -2875,8 +2984,6 @@ paths:
         required: false
         schema:
           default: 0
-          description: 0-N based on chunk sized determined by the limit, ignored if
-            limit < 1.
           format: int32
           type: integer
         style: form
@@ -2914,7 +3021,7 @@ paths:
       - Sql Background Execution
       x-fbn-apistatus: Stable
       x-accepts: application/json
-  /api/SqlBackground/{executionId}/pipe:
+  /api/SqlBackground/{executionId}/parquet:
     get:
       description: |-
         Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)
@@ -2926,7 +3033,7 @@ paths:
           1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
           1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
           1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
-      operationId: FetchQueryResultPipe
+      operationId: FetchQueryResultParquet
       parameters:
       - description: ExecutionId returned when starting the query
         explode: false
@@ -2934,22 +3041,8 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
-      - description: Makes this a file-download request (as opposed to returning the
-          data in the response-body)
-        explode: true
-        in: query
-        name: download
-        required: false
-        schema:
-          default: false
-          description: Makes this a file-download request (as opposed to returning
-            the data in the response-body)
-          type: boolean
-        style: form
-        x-nullable: true
       - description: "Order the results by these fields.\r\n            Use the `-`\
           \ sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
           \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted\
@@ -2960,12 +3053,9 @@ paths:
         name: sortBy
         required: false
         schema:
-          description: "Order the results by these fields.\r\n            Use the\
-            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
-            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
-            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
-            \n            Default is null, the sort order specified in the query itself."
-          nullable: true
+          maxLength: 16384
+          minLength: 1
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: An ODATA filter per Finbourne.Filtering syntax.
@@ -2974,8 +3064,9 @@ paths:
         name: filter
         required: false
         schema:
-          description: An ODATA filter per Finbourne.Filtering syntax.
-          nullable: true
+          maxLength: 16384
+          minLength: 0
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: "Default is null (meaning return all columns in the original\
@@ -2996,20 +3087,6 @@ paths:
         name: select
         required: false
         schema:
-          description: "Default is null (meaning return all columns in the original\
-            \ query itself).\r\nThe values are in terms of the result column name\
-            \ from the original data set and are comma delimited.\r\nThe power of\
-            \ this comes in that you may aggregate the data if you wish\r\n(that is\
-            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
-            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
-            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
-            \ the rows for the given group, that would produce a rather ugly column\
-            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
-            \ was an illegal character in a field you are selecting from, you are\
-            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
-            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
-            \  where you would likely want to pass `1` as the `groupBy` also."
-          nullable: true
           type: string
         style: form
       - description: "Groups by the specified fields.\r\n            A comma delimited\
@@ -3025,15 +3102,133 @@ paths:
         name: groupBy
         required: false
         schema:
-          description: "Groups by the specified fields.\r\n            A comma delimited\
-            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
-            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
-            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
-            \ will be performed on the selected columns).\r\n            This applies\
-            \ only over the result set being requested here, meaning indexes into\
-            \ the \"select\" parameter fields.\r\n            Only specify this if\
-            \ you are selecting aggregations in the \"select\" parameter."
-          nullable: true
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: 'FetchQueryResultParquet: Fetches the result from a previously started
+        query, in Parquet format.'
+      tags:
+      - Sql Background Execution
+      x-fbn-apistatus: Stable
+      x-accepts: application/json
+  /api/SqlBackground/{executionId}/pipe:
+    get:
+      description: |-
+        Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)
+        The following error codes are to be anticipated most with standard Problem Detail reports:
+        - 400 BadRequest : Something failed with the execution of your query
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't (yet) exist.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: FetchQueryResultPipe
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Makes this a file-download request (as opposed to returning the
+          data in the response-body)
+        explode: true
+        in: query
+        name: download
+        required: false
+        schema:
+          default: false
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: "Order the results by these fields.\r\n            Use the `-`\
+          \ sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+          \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted\
+          \ by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n\
+          \            Default is null, the sort order specified in the query itself."
+        explode: true
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          maxLength: 16384
+          minLength: 1
+          pattern: ^[\s\S]*$
+          type: string
+        style: form
+      - description: An ODATA filter per Finbourne.Filtering syntax.
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          maxLength: 16384
+          minLength: 0
+          pattern: ^[\s\S]*$
+          type: string
+        style: form
+      - description: "Default is null (meaning return all columns in the original\
+          \ query itself).\r\nThe values are in terms of the result column name from\
+          \ the original data set and are comma delimited.\r\nThe power of this comes\
+          \ in that you may aggregate the data if you wish\r\n(that is the main reason\
+          \ for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER\
+          \ (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify,\
+          \ with a nice column name)\r\n- `count(*)` (count the rows for the given\
+          \ group, that would produce a rather ugly column name, but  it works)\r\n\
+          - `count(distinct x) as numOfXs`\r\nIf there was an illegal character in\
+          \ a field you are selecting from, you are responsible for bracketing it\
+          \ with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column\
+          \ with space in name]) as nice_name`\r\n  where you would likely want to\
+          \ pass `1` as the `groupBy` also."
+        explode: true
+        in: query
+        name: select
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Groups by the specified fields.\r\n            A comma delimited\
+          \ list of: 1 based numeric indexes (cleaner), or repeats of the select expressions\
+          \ (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\
+          \n            Default is null (meaning no grouping will be performed on\
+          \ the selected columns).\r\n            This applies only over the result\
+          \ set being requested here, meaning indexes into the \"select\" parameter\
+          \ fields.\r\n            Only specify this if you are selecting aggregations\
+          \ in the \"select\" parameter."
+        explode: true
+        in: query
+        name: groupBy
+        required: false
+        schema:
           type: string
         style: form
       - description: When paginating, only return this number of records, page should
@@ -3044,8 +3239,6 @@ paths:
         required: false
         schema:
           default: 0
-          description: When paginating, only return this number of records, page should
-            also be specified.
           format: int32
           type: integer
         style: form
@@ -3058,8 +3251,6 @@ paths:
         required: false
         schema:
           default: 0
-          description: 0-N based on chunk sized determined by the limit, ignored if
-            limit < 1.
           format: int32
           type: integer
         style: form
@@ -3117,7 +3308,6 @@ paths:
         name: executionId
         required: true
         schema:
-          description: ExecutionId returned when starting the query
           type: string
         style: simple
       - description: "Order the results by these fields.\r\n            Use the `-`\
@@ -3130,12 +3320,9 @@ paths:
         name: sortBy
         required: false
         schema:
-          description: "Order the results by these fields.\r\n            Use the\
-            \ `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
-            \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be\
-            \ denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\
-            \n            Default is null, the sort order specified in the query itself."
-          nullable: true
+          maxLength: 16384
+          minLength: 1
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: An ODATA filter per Finbourne.Filtering syntax.
@@ -3144,8 +3331,9 @@ paths:
         name: filter
         required: false
         schema:
-          description: An ODATA filter per Finbourne.Filtering syntax.
-          nullable: true
+          maxLength: 16384
+          minLength: 0
+          pattern: ^[\s\S]*$
           type: string
         style: form
       - description: "Default is null (meaning return all columns in the original\
@@ -3166,20 +3354,6 @@ paths:
         name: select
         required: false
         schema:
-          description: "Default is null (meaning return all columns in the original\
-            \ query itself).\r\nThe values are in terms of the result column name\
-            \ from the original data set and are comma delimited.\r\nThe power of\
-            \ this comes in that you may aggregate the data if you wish\r\n(that is\
-            \ the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\
-            \n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another\
-            \ field lets it qualify, with a nice column name)\r\n- `count(*)` (count\
-            \ the rows for the given group, that would produce a rather ugly column\
-            \ name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there\
-            \ was an illegal character in a field you are selecting from, you are\
-            \ responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*)\
-            \ as a, max(x) as b, min([column with space in name]) as nice_name`\r\n\
-            \  where you would likely want to pass `1` as the `groupBy` also."
-          nullable: true
           type: string
         style: form
       - description: "Groups by the specified fields.\r\n            A comma delimited\
@@ -3195,15 +3369,6 @@ paths:
         name: groupBy
         required: false
         schema:
-          description: "Groups by the specified fields.\r\n            A comma delimited\
-            \ list of: 1 based numeric indexes (cleaner), or repeats of the select\
-            \ expressions (a bit verbose and must match exactly).\r\n            e.g.\
-            \ `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping\
-            \ will be performed on the selected columns).\r\n            This applies\
-            \ only over the result set being requested here, meaning indexes into\
-            \ the \"select\" parameter fields.\r\n            Only specify this if\
-            \ you are selecting aggregations in the \"select\" parameter."
-          nullable: true
           type: string
         style: form
       responses:
@@ -3235,6 +3400,157 @@ paths:
       - oauth2: []
       summary: 'FetchQueryResultSqlite: Fetches the result from a previously started
         query, in SqLite format.'
+      tags:
+      - Sql Background Execution
+      x-fbn-apistatus: Stable
+      x-accepts: application/json
+  /api/SqlBackground/{executionId}/xml:
+    get:
+      description: |-
+        Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)
+        The following error codes are to be anticipated most with standard Problem Detail reports:
+        - 400 BadRequest : Something failed with the execution of your query
+        - 401 Unauthorized
+        - 404 Not Found : The requested query result doesn't (yet) exist.
+        - 429 Too Many Requests : Please try your request again soon
+          1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.
+          1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.
+          1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+      operationId: FetchQueryResultXml
+      parameters:
+      - description: ExecutionId returned when starting the query
+        explode: false
+        in: path
+        name: executionId
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Makes this a file-download request (as opposed to returning the
+          data in the response-body)
+        explode: true
+        in: query
+        name: download
+        required: false
+        schema:
+          default: false
+          type: boolean
+        style: form
+        x-nullable: true
+      - description: "Order the results by these fields.\r\n            Use the `-`\
+          \ sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes\
+          \ may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted\
+          \ by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n\
+          \            Default is null, the sort order specified in the query itself."
+        explode: true
+        in: query
+        name: sortBy
+        required: false
+        schema:
+          maxLength: 16384
+          minLength: 1
+          pattern: ^[\s\S]*$
+          type: string
+        style: form
+      - description: An ODATA filter per Finbourne.Filtering syntax.
+        explode: true
+        in: query
+        name: filter
+        required: false
+        schema:
+          maxLength: 16384
+          minLength: 0
+          pattern: ^[\s\S]*$
+          type: string
+        style: form
+      - description: "Default is null (meaning return all columns in the original\
+          \ query itself).\r\nThe values are in terms of the result column name from\
+          \ the original data set and are comma delimited.\r\nThe power of this comes\
+          \ in that you may aggregate the data if you wish\r\n(that is the main reason\
+          \ for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER\
+          \ (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify,\
+          \ with a nice column name)\r\n- `count(*)` (count the rows for the given\
+          \ group, that would produce a rather ugly column name, but  it works)\r\n\
+          - `count(distinct x) as numOfXs`\r\nIf there was an illegal character in\
+          \ a field you are selecting from, you are responsible for bracketing it\
+          \ with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column\
+          \ with space in name]) as nice_name`\r\n  where you would likely want to\
+          \ pass `1` as the `groupBy` also."
+        explode: true
+        in: query
+        name: select
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: "Groups by the specified fields.\r\n            A comma delimited\
+          \ list of: 1 based numeric indexes (cleaner), or repeats of the select expressions\
+          \ (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\
+          \n            Default is null (meaning no grouping will be performed on\
+          \ the selected columns).\r\n            This applies only over the result\
+          \ set being requested here, meaning indexes into the \"select\" parameter\
+          \ fields.\r\n            Only specify this if you are selecting aggregations\
+          \ in the \"select\" parameter."
+        explode: true
+        in: query
+        name: groupBy
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: When paginating, only return this number of records, page should
+          also be specified.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 0
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      - description: 0-N based on chunk sized determined by the limit, ignored if
+          limit < 1.
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 0
+          format: int32
+          type: integer
+        style: form
+        x-nullable: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: 'FetchQueryResultXml: Fetches the result from a previously started
+        query, in Xml format.'
       tags:
       - Sql Background Execution
       x-fbn-apistatus: Stable
@@ -3353,14 +3669,14 @@ components:
           name: name
           index: 0
           description: description
-          typeId: '{}'
+          typeId: ""
           required: true
         - valuesPath: valuesPath
           displayName: displayName
           name: name
           index: 0
           description: description
-          typeId: '{}'
+          typeId: ""
           required: true
       properties:
         application:
@@ -3391,7 +3707,7 @@ components:
         name: name
         index: 0
         description: description
-        typeId: '{}'
+        typeId: ""
         required: true
       properties:
         index:
@@ -3412,10 +3728,8 @@ components:
           nullable: true
           type: string
         typeId:
-          additionalProperties: false
           nullable: true
           readOnly: true
-          type: object
       type: object
     ActionId:
       additionalProperties: false
@@ -3449,8 +3763,8 @@ components:
           sender: sender
           stateId: 6
           propertyValues:
-          - '{}'
-          - '{}'
+          - ""
+          - ""
           sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
           message: message
           when: 2000-01-23T04:56:07.000+00:00
@@ -3459,8 +3773,8 @@ components:
           sender: sender
           stateId: 6
           propertyValues:
-          - '{}'
-          - '{}'
+          - ""
+          - ""
           sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
           message: message
           when: 2000-01-23T04:56:07.000+00:00
@@ -3472,8 +3786,8 @@ components:
             sender: sender
             stateId: 6
             propertyValues:
-            - '{}'
-            - '{}'
+            - ""
+            - ""
             sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
             message: message
             when: 2000-01-23T04:56:07.000+00:00
@@ -3482,8 +3796,8 @@ components:
             sender: sender
             stateId: 6
             propertyValues:
-            - '{}'
-            - '{}'
+            - ""
+            - ""
             sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
             message: message
             when: 2000-01-23T04:56:07.000+00:00
@@ -3521,8 +3835,8 @@ components:
             sender: sender
             stateId: 6
             propertyValues:
-            - '{}'
-            - '{}'
+            - ""
+            - ""
             sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
             message: message
             when: 2000-01-23T04:56:07.000+00:00
@@ -3531,8 +3845,8 @@ components:
             sender: sender
             stateId: 6
             propertyValues:
-            - '{}'
-            - '{}'
+            - ""
+            - ""
             sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
             message: message
             when: 2000-01-23T04:56:07.000+00:00
@@ -3612,6 +3926,15 @@ components:
           description: description
           href: https://openapi-generator.tech
           relation: relation
+        fetchParquet:
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
         fetchPipe:
         - method: method
           description: description
@@ -3653,6 +3976,15 @@ components:
           description: description
           href: https://openapi-generator.tech
           relation: relation
+        fetchXml:
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        - method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
         fetchCsv:
         - method: method
           description: description
@@ -3681,6 +4013,20 @@ components:
           type: array
         fetchJsonProper:
           description: Json-proper data request links for all of the child queries
+          items:
+            $ref: '#/components/schemas/Link'
+          nullable: true
+          readOnly: true
+          type: array
+        fetchXml:
+          description: Xml data request links for all of the child queries
+          items:
+            $ref: '#/components/schemas/Link'
+          nullable: true
+          readOnly: true
+          type: array
+        fetchParquet:
+          description: Parquet data request links for all of the child queries
           items:
             $ref: '#/components/schemas/Link'
           nullable: true
@@ -3746,8 +4092,8 @@ components:
           sender: sender
           stateId: 6
           propertyValues:
-          - '{}'
-          - '{}'
+          - ""
+          - ""
           sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
           message: message
           when: 2000-01-23T04:56:07.000+00:00
@@ -3756,8 +4102,8 @@ components:
           sender: sender
           stateId: 6
           propertyValues:
-          - '{}'
-          - '{}'
+          - ""
+          - ""
           sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
           message: message
           when: 2000-01-23T04:56:07.000+00:00
@@ -3831,6 +4177,7 @@ components:
       type: object
     BackgroundQueryResponse:
       additionalProperties: false
+      description: Response for Background Query Start requests
       example:
         cancel:
           method: method
@@ -3844,6 +4191,11 @@ components:
           relation: relation
         executionId: executionId
         fetchSqlite:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
+        fetchParquet:
           method: method
           description: description
           href: https://openapi-generator.tech
@@ -3873,6 +4225,11 @@ components:
           description: description
           href: https://openapi-generator.tech
           relation: relation
+        fetchXml:
+          method: method
+          description: description
+          href: https://openapi-generator.tech
+          relation: relation
         fetchCsv:
           method: method
           description: description
@@ -3880,6 +4237,7 @@ components:
           relation: relation
       properties:
         executionId:
+          description: ExecutionId of the started-query
           nullable: true
           type: string
         progress:
@@ -3889,6 +4247,10 @@ components:
         fetchJson:
           $ref: '#/components/schemas/Link'
         fetchJsonProper:
+          $ref: '#/components/schemas/Link'
+        fetchXml:
+          $ref: '#/components/schemas/Link'
+        fetchParquet:
           $ref: '#/components/schemas/Link'
         fetchCsv:
           $ref: '#/components/schemas/Link'
@@ -3908,6 +4270,7 @@ components:
       - Errored
       - Cancelled
       - Executed
+      - ExecutedNoSerializationRequired
       - Serialized
       - SerializationFailed
       - AttemptingToDeserialize
@@ -3972,13 +4335,13 @@ components:
     DataType:
       enum:
       - Boolean
-      - Int
-      - BigInt
-      - Double
-      - Decimal
-      - Text
       - Date
       - DateTime
+      - Decimal
+      - Double
+      - Int
+      - BigInt
+      - Text
       - Table
       type: string
     FeedbackEventArgs:
@@ -3988,8 +4351,8 @@ components:
         sender: sender
         stateId: 6
         propertyValues:
-        - '{}'
-        - '{}'
+        - ""
+        - ""
         sessionId: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
         message: message
         when: 2000-01-23T04:56:07.000+00:00
@@ -4017,9 +4380,7 @@ components:
           nullable: true
           type: string
         propertyValues:
-          items:
-            additionalProperties: false
-            type: object
+          items: {}
           nullable: true
           type: array
         message:
@@ -4035,11 +4396,11 @@ components:
       - Information
       - Warning
       - Error
-      - ExecutionKeepAlive
-      - ProgressAndDebug
-      - ProgressAndInformation
-      - ProgressAndWarning
       - ProgressAndError
+      - ProgressAndWarning
+      - ProgressAndInformation
+      - ProgressAndDebug
+      - ExecutionKeepAlive
       type: string
     IdSelectorDefinition:
       additionalProperties: false
@@ -4064,7 +4425,7 @@ components:
         actions:
           items:
             $ref: '#/components/schemas/ActionId'
-          minLength: 1
+          minItems: 1
           type: array
         name:
           maxLength: 100
@@ -4107,6 +4468,7 @@ components:
       additionalProperties: false
       properties:
         name:
+          minLength: 1
           type: string
         errorDetails:
           items:
@@ -4134,13 +4496,6 @@ components:
         instance:
           nullable: true
           type: string
-        extensions:
-          additionalProperties:
-            additionalProperties: false
-            type: object
-          nullable: true
-          readOnly: true
-          type: object
       required:
       - code
       - name
@@ -4155,6 +4510,8 @@ components:
       - Testing
       - MarketplaceClientLoadHistory
       - InsightsMetricsEntitlement
+      - InstrumentDiscovery
+      - InstrumentUpsert
       type: string
     ResourceListOfAccessControlledResource:
       additionalProperties: false
@@ -4228,14 +4585,14 @@ components:
             name: name
             index: 0
             description: description
-            typeId: '{}'
+            typeId: ""
             required: true
           - valuesPath: valuesPath
             displayName: displayName
             name: name
             index: 0
             description: description
-            typeId: '{}'
+            typeId: ""
             required: true
         - application: application
           name: name
@@ -4303,14 +4660,14 @@ components:
             name: name
             index: 0
             description: description
-            typeId: '{}'
+            typeId: ""
             required: true
           - valuesPath: valuesPath
             displayName: displayName
             name: name
             index: 0
             description: description
-            typeId: '{}'
+            typeId: ""
             required: true
         links:
         - method: method

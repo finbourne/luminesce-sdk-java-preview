@@ -10,8 +10,10 @@ Method | HTTP request | Description
 [**fetchQueryResultHistogram**](SqlBackgroundExecutionApi.md#fetchQueryResultHistogram) | **GET** /api/SqlBackground/{executionId}/histogram | FetchQueryResultHistogram: Fetches the result from a previously started query, converts it to a histogram (counts in buckets).
 [**fetchQueryResultJson**](SqlBackgroundExecutionApi.md#fetchQueryResultJson) | **GET** /api/SqlBackground/{executionId}/json | FetchQueryResultJson: Fetches the result from a previously started query, in JSON string format.  Please move to &#39;/jsonProper&#39; instead.  This may be marked as Deprecated in the future.
 [**fetchQueryResultJsonProper**](SqlBackgroundExecutionApi.md#fetchQueryResultJsonProper) | **GET** /api/SqlBackground/{executionId}/jsonProper | FetchQueryResultJsonProper: Fetches the result from a previously started query, in JSON format.
+[**fetchQueryResultParquet**](SqlBackgroundExecutionApi.md#fetchQueryResultParquet) | **GET** /api/SqlBackground/{executionId}/parquet | FetchQueryResultParquet: Fetches the result from a previously started query, in Parquet format.
 [**fetchQueryResultPipe**](SqlBackgroundExecutionApi.md#fetchQueryResultPipe) | **GET** /api/SqlBackground/{executionId}/pipe | FetchQueryResultPipe: Fetches the result from a previously started query, in pipe-delimited format.
 [**fetchQueryResultSqlite**](SqlBackgroundExecutionApi.md#fetchQueryResultSqlite) | **GET** /api/SqlBackground/{executionId}/sqlite | FetchQueryResultSqlite: Fetches the result from a previously started query, in SqLite format.
+[**fetchQueryResultXml**](SqlBackgroundExecutionApi.md#fetchQueryResultXml) | **GET** /api/SqlBackground/{executionId}/xml | FetchQueryResultXml: Fetches the result from a previously started query, in Xml format.
 [**getProgressOf**](SqlBackgroundExecutionApi.md#getProgressOf) | **GET** /api/SqlBackground/{executionId} | GetProgressOf: View progress information (up until this point)
 [**startQuery**](SqlBackgroundExecutionApi.md#startQuery) | **PUT** /api/SqlBackground | StartQuery: Starts to Execute LuminesceSql in the background.
 
@@ -85,7 +87,7 @@ Name | Type | Description  | Notes
 
 <a name="fetchQueryResultCsv"></a>
 # **fetchQueryResultCsv**
-> String fetchQueryResultCsv(executionId, download, sortBy, filter, select, groupBy, limit, page)
+> String fetchQueryResultCsv(executionId, download, sortBy, filter, select, groupBy, limit, page, delimiter, escape)
 
 FetchQueryResultCsv: Fetches the result from a previously started query, in CSV format.
 
@@ -119,8 +121,10 @@ public class Example {
     String groupBy = "groupBy_example"; // String | Groups by the specified fields.              A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).              e.g. `2,3`, `myColumn`.              Default is null (meaning no grouping will be performed on the selected columns).              This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.              Only specify this if you are selecting aggregations in the \"select\" parameter.
     Integer limit = 0; // Integer | When paginating, only return this number of records, page should also be specified.
     Integer page = 0; // Integer | 0-N based on chunk sized determined by the limit, ignored if limit < 1.
+    String delimiter = "delimiter_example"; // String | Delimiter string to override the default
+    String escape = "escape_example"; // String | Escape character to override the default
     try {
-      String result = apiInstance.fetchQueryResultCsv(executionId, download, sortBy, filter, select, groupBy, limit, page);
+      String result = apiInstance.fetchQueryResultCsv(executionId, download, sortBy, filter, select, groupBy, limit, page, delimiter, escape);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlBackgroundExecutionApi#fetchQueryResultCsv");
@@ -145,6 +149,8 @@ Name | Type | Description  | Notes
  **groupBy** | **String**| Groups by the specified fields.              A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).              e.g. &#x60;2,3&#x60;, &#x60;myColumn&#x60;.              Default is null (meaning no grouping will be performed on the selected columns).              This applies only over the result set being requested here, meaning indexes into the \&quot;select\&quot; parameter fields.              Only specify this if you are selecting aggregations in the \&quot;select\&quot; parameter. | [optional]
  **limit** | **Integer**| When paginating, only return this number of records, page should also be specified. | [optional] [default to 0]
  **page** | **Integer**| 0-N based on chunk sized determined by the limit, ignored if limit &lt; 1. | [optional] [default to 0]
+ **delimiter** | **String**| Delimiter string to override the default | [optional]
+ **escape** | **String**| Escape character to override the default | [optional]
 
 ### Return type
 
@@ -483,6 +489,82 @@ Name | Type | Description  | Notes
 **200** | Success |  -  |
 **400** | Bad Request |  -  |
 
+<a name="fetchQueryResultParquet"></a>
+# **fetchQueryResultParquet**
+> String fetchQueryResultParquet(executionId, sortBy, filter, select, groupBy)
+
+FetchQueryResultParquet: Fetches the result from a previously started query, in Parquet format.
+
+Fetch the data in various formats (if available, or if not simply being informed it is not yet ready) The following error codes are to be anticipated most with standard Problem Detail reports: - 400 BadRequest : Something failed with the execution of your query - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t (yet) exist. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+
+### Example
+```java
+// Import classes:
+import com.finbourne.luminesce.ApiClient;
+import com.finbourne.luminesce.ApiException;
+import com.finbourne.luminesce.Configuration;
+import com.finbourne.luminesce.auth.*;
+import com.finbourne.luminesce.models.*;
+import com.finbourne.luminesce.api.SqlBackgroundExecutionApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    
+    // Configure OAuth2 access token for authorization: oauth2
+    OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+    oauth2.setAccessToken("YOUR ACCESS TOKEN");
+
+    SqlBackgroundExecutionApi apiInstance = new SqlBackgroundExecutionApi(defaultClient);
+    String executionId = "executionId_example"; // String | ExecutionId returned when starting the query
+    String sortBy = "sortBy_example"; // String | Order the results by these fields.              Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.              Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.              Default is null, the sort order specified in the query itself.
+    String filter = "filter_example"; // String | An ODATA filter per Finbourne.Filtering syntax.
+    String select = "select_example"; // String | Default is null (meaning return all columns in the original query itself).  The values are in terms of the result column name from the original data set and are comma delimited.  The power of this comes in that you may aggregate the data if you wish  (that is the main reason for allowing this, in fact).  e.g.:  - `MyField`  - `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)  - `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)  - `count(distinct x) as numOfXs`  If there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ].   e.g.  - `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`    where you would likely want to pass `1` as the `groupBy` also.
+    String groupBy = "groupBy_example"; // String | Groups by the specified fields.              A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).              e.g. `2,3`, `myColumn`.              Default is null (meaning no grouping will be performed on the selected columns).              This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.              Only specify this if you are selecting aggregations in the \"select\" parameter.
+    try {
+      String result = apiInstance.fetchQueryResultParquet(executionId, sortBy, filter, select, groupBy);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling SqlBackgroundExecutionApi#fetchQueryResultParquet");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **executionId** | **String**| ExecutionId returned when starting the query |
+ **sortBy** | **String**| Order the results by these fields.              Use the &#x60;-&#x60; sign to denote descending order, e.g. &#x60;-MyFieldName&#x60;.  Numeric indexes may be used also, e.g. &#x60;2,-3&#x60;.              Multiple fields can be denoted by a comma e.g. &#x60;-MyFieldName,AnotherFieldName,-AFurtherFieldName&#x60;.              Default is null, the sort order specified in the query itself. | [optional]
+ **filter** | **String**| An ODATA filter per Finbourne.Filtering syntax. | [optional]
+ **select** | **String**| Default is null (meaning return all columns in the original query itself).  The values are in terms of the result column name from the original data set and are comma delimited.  The power of this comes in that you may aggregate the data if you wish  (that is the main reason for allowing this, in fact).  e.g.:  - &#x60;MyField&#x60;  - &#x60;Max(x) FILTER (WHERE y &gt; 12) as ABC&#x60; (max of a field, if another field lets it qualify, with a nice column name)  - &#x60;count(*)&#x60; (count the rows for the given group, that would produce a rather ugly column name, but  it works)  - &#x60;count(distinct x) as numOfXs&#x60;  If there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ].   e.g.  - &#x60;some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name&#x60;    where you would likely want to pass &#x60;1&#x60; as the &#x60;groupBy&#x60; also. | [optional]
+ **groupBy** | **String**| Groups by the specified fields.              A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).              e.g. &#x60;2,3&#x60;, &#x60;myColumn&#x60;.              Default is null (meaning no grouping will be performed on the selected columns).              This applies only over the result set being requested here, meaning indexes into the \&quot;select\&quot; parameter fields.              Only specify this if you are selecting aggregations in the \&quot;select\&quot; parameter. | [optional]
+
+### Return type
+
+**String**
+
+### Authorization
+
+[oauth2](../README.md#oauth2)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain, application/json, text/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success |  -  |
+**400** | Bad Request |  -  |
+
 <a name="fetchQueryResultPipe"></a>
 # **fetchQueryResultPipe**
 > String fetchQueryResultPipe(executionId, download, sortBy, filter, select, groupBy, limit, page)
@@ -641,6 +723,88 @@ Name | Type | Description  | Notes
 **200** | Success |  -  |
 **400** | Bad Request |  -  |
 
+<a name="fetchQueryResultXml"></a>
+# **fetchQueryResultXml**
+> String fetchQueryResultXml(executionId, download, sortBy, filter, select, groupBy, limit, page)
+
+FetchQueryResultXml: Fetches the result from a previously started query, in Xml format.
+
+Fetch the data in various formats (if available, or if not simply being informed it is not yet ready) The following error codes are to be anticipated most with standard Problem Detail reports: - 400 BadRequest : Something failed with the execution of your query - 401 Unauthorized - 404 Not Found : The requested query result doesn&#39;t (yet) exist. - 429 Too Many Requests : Please try your request again soon   1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn&#39;t yet have this data available.   1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.   1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.
+
+### Example
+```java
+// Import classes:
+import com.finbourne.luminesce.ApiClient;
+import com.finbourne.luminesce.ApiException;
+import com.finbourne.luminesce.Configuration;
+import com.finbourne.luminesce.auth.*;
+import com.finbourne.luminesce.models.*;
+import com.finbourne.luminesce.api.SqlBackgroundExecutionApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    
+    // Configure OAuth2 access token for authorization: oauth2
+    OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+    oauth2.setAccessToken("YOUR ACCESS TOKEN");
+
+    SqlBackgroundExecutionApi apiInstance = new SqlBackgroundExecutionApi(defaultClient);
+    String executionId = "executionId_example"; // String | ExecutionId returned when starting the query
+    Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
+    String sortBy = "sortBy_example"; // String | Order the results by these fields.              Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.              Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.              Default is null, the sort order specified in the query itself.
+    String filter = "filter_example"; // String | An ODATA filter per Finbourne.Filtering syntax.
+    String select = "select_example"; // String | Default is null (meaning return all columns in the original query itself).  The values are in terms of the result column name from the original data set and are comma delimited.  The power of this comes in that you may aggregate the data if you wish  (that is the main reason for allowing this, in fact).  e.g.:  - `MyField`  - `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)  - `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)  - `count(distinct x) as numOfXs`  If there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ].   e.g.  - `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`    where you would likely want to pass `1` as the `groupBy` also.
+    String groupBy = "groupBy_example"; // String | Groups by the specified fields.              A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).              e.g. `2,3`, `myColumn`.              Default is null (meaning no grouping will be performed on the selected columns).              This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.              Only specify this if you are selecting aggregations in the \"select\" parameter.
+    Integer limit = 0; // Integer | When paginating, only return this number of records, page should also be specified.
+    Integer page = 0; // Integer | 0-N based on chunk sized determined by the limit, ignored if limit < 1.
+    try {
+      String result = apiInstance.fetchQueryResultXml(executionId, download, sortBy, filter, select, groupBy, limit, page);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling SqlBackgroundExecutionApi#fetchQueryResultXml");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **executionId** | **String**| ExecutionId returned when starting the query |
+ **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false]
+ **sortBy** | **String**| Order the results by these fields.              Use the &#x60;-&#x60; sign to denote descending order, e.g. &#x60;-MyFieldName&#x60;.  Numeric indexes may be used also, e.g. &#x60;2,-3&#x60;.              Multiple fields can be denoted by a comma e.g. &#x60;-MyFieldName,AnotherFieldName,-AFurtherFieldName&#x60;.              Default is null, the sort order specified in the query itself. | [optional]
+ **filter** | **String**| An ODATA filter per Finbourne.Filtering syntax. | [optional]
+ **select** | **String**| Default is null (meaning return all columns in the original query itself).  The values are in terms of the result column name from the original data set and are comma delimited.  The power of this comes in that you may aggregate the data if you wish  (that is the main reason for allowing this, in fact).  e.g.:  - &#x60;MyField&#x60;  - &#x60;Max(x) FILTER (WHERE y &gt; 12) as ABC&#x60; (max of a field, if another field lets it qualify, with a nice column name)  - &#x60;count(*)&#x60; (count the rows for the given group, that would produce a rather ugly column name, but  it works)  - &#x60;count(distinct x) as numOfXs&#x60;  If there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ].   e.g.  - &#x60;some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name&#x60;    where you would likely want to pass &#x60;1&#x60; as the &#x60;groupBy&#x60; also. | [optional]
+ **groupBy** | **String**| Groups by the specified fields.              A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).              e.g. &#x60;2,3&#x60;, &#x60;myColumn&#x60;.              Default is null (meaning no grouping will be performed on the selected columns).              This applies only over the result set being requested here, meaning indexes into the \&quot;select\&quot; parameter fields.              Only specify this if you are selecting aggregations in the \&quot;select\&quot; parameter. | [optional]
+ **limit** | **Integer**| When paginating, only return this number of records, page should also be specified. | [optional] [default to 0]
+ **page** | **Integer**| 0-N based on chunk sized determined by the limit, ignored if limit &lt; 1. | [optional] [default to 0]
+
+### Return type
+
+**String**
+
+### Authorization
+
+[oauth2](../README.md#oauth2)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: text/plain, application/json, text/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success |  -  |
+**400** | Bad Request |  -  |
+
 <a name="getProgressOf"></a>
 # **getProgressOf**
 > BackgroundQueryProgressResponse getProgressOf(executionId)
@@ -736,7 +900,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlBackgroundExecutionApi apiInstance = new SqlBackgroundExecutionApi(defaultClient);
-    String body = "body_example"; // String | The LuminesceSql query to kick off.
+    String body = select Str, Takes500Ms from Testing1K where UseLinq = true and [Int] <= 120; // String | The LuminesceSql query to kick off.
     String queryName = "Intentionally slow test query"; // String | A name for this query.  This goes into logs and is available in `Sys.Logs.HcQueryStart`.
     Integer timeoutSeconds = 0; // Integer | Maximum time the query may run for, in seconds: <0 → ∞, 0 → 7200 (2h)
     Integer keepForSeconds = 0; // Integer | Maximum time the result may be kept for, in seconds: <0 → 1200 (20m), 0 → 28800 (8h), max = 2,678,400 (31d)
@@ -779,6 +943,6 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**202** | Success |  -  |
+**202** | Accepted |  -  |
 **400** | Bad Request |  -  |
 

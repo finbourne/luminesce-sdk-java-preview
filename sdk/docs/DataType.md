@@ -7,19 +7,19 @@
 
 * `BOOLEAN` (value: `"Boolean"`)
 
+* `DATE` (value: `"Date"`)
+
+* `DATETIME` (value: `"DateTime"`)
+
+* `DECIMAL` (value: `"Decimal"`)
+
+* `DOUBLE` (value: `"Double"`)
+
 * `INT` (value: `"Int"`)
 
 * `BIGINT` (value: `"BigInt"`)
 
-* `DOUBLE` (value: `"Double"`)
-
-* `DECIMAL` (value: `"Decimal"`)
-
 * `TEXT` (value: `"Text"`)
-
-* `DATE` (value: `"Date"`)
-
-* `DATETIME` (value: `"DateTime"`)
 
 * `TABLE` (value: `"Table"`)
 

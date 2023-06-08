@@ -8,7 +8,7 @@
       "url": "https://www.finbourne.com",
       "email": "info@finbourne.com"
     },
-    "version": "1.11.207",
+    "version": "1.12.897",
     "x-logo": {
       "url": "https://www.lusid.com/app/assets/logo_white.png",
       "backgroundColor": "#415464"
@@ -26,7 +26,7 @@
           "Current Table/Field Catalog"
         ],
         "summary": "GetCatalog: Shows Table and Field level information on Providers that are currently running that you have access to (in Json format)",
-        "description": "\nThe following LuminesceSql is executed to return this information:\n\n```sql\n@reg =\nselect\n    r.Name,\n    min(r.Description) as Description\nfrom\n    Sys.Registration r\nwhere\n    r.Type in ('DirectProvider', 'DataProvider')\n    and \n    r.ShowAll = false\ngroup by\n    1\n    ;\n\n@fld =\nselect\n    f.TableName,\n    f.FieldName,\n    f.DataType,\n    f.FieldType,\n    f.IsPrimaryKey,\n    f.IsMain,\n    f.Description,\n    f.ParamDefaultValue,\n    f.TableParamColumns\nfrom\n    Sys.Field f\n    ;\n\n@x =\nselect\n    coalesce(f.TableName, r.Name) as TableName,\n    coalesce(f.FieldName, 'N/A') as FieldName,\n    f.DataType,\n    f.FieldType,\n    f.IsPrimaryKey,\n    f.IsMain,\n    case \n        when f.TableName is not null \n            then f.Description\n        else\n            r.Name || ' returns a different set of columns depending on use.'\n        end as Description,\n    f.ParamDefaultValue,\n    f.TableParamColumns,\n    r.Description as ProviderDescription\nfrom\n    @reg r\n    left outer join @fld f\n        on r.Name = f.TableName\norder by\n    1, 5 desc, 6 desc, 2\n    ;\n   \n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n",
+        "description": "\nThe following LuminesceSql is executed to return this information:\n\n```sql\n@reg =\nselect\n    Name,\n    min(Description) as Description,\n    min(DocumentationLink) as DocumentationLink,\n    iif(Category = 'View' and Client is not null, true, false) as IsView\nfrom\n    Sys.Registration\nwhere\n    Type in ('DirectProvider', 'DataProvider')\n    and \n    ShowAll = false\ngroup by\n    1\n    ;\n\n@fld =\nselect\n    TableName,\n    FieldName,\n    DataType,\n    FieldType,\n    IsPrimaryKey,\n    IsMain,\n    Description,\n    ParamDefaultValue,\n    TableParamColumns\nfrom\n    Sys.Field\n    ;\n\n@x =\nselect\n    coalesce(f.TableName, r.Name) as TableName,\n    coalesce(f.FieldName, 'N/A') as FieldName,\n    f.DataType,\n    f.FieldType,\n    f.IsPrimaryKey,\n    f.IsMain,\n    case \n        when f.TableName is not null then\n            f.Description\n        else\n            r.Name || ' returns a different set of columns depending on use.'\n        end as Description,\n    f.ParamDefaultValue,\n    f.TableParamColumns,\n    r.Description as ProviderDescription,\n    r.DocumentationLink,\n    r.IsView\nfrom\n    @reg r\n    left outer join @fld f\n        on r.Name = f.TableName\norder by\n    1, 5 desc, 6 desc, 2\n    ;\n   \n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 401 Unauthorized\n",
         "operationId": "GetCatalog",
         "parameters": [
           {
@@ -34,9 +34,7 @@
             "in": "query",
             "description": "Limit the catalog to only things in some way dealing with the passed in text string",
             "schema": {
-              "type": "string",
-              "description": "Limit the catalog to only things in some way dealing with the passed in text string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -45,7 +43,6 @@
             "description": "Should this be text/json (not json-encoded-as-a-string)",
             "schema": {
               "type": "boolean",
-              "description": "Should this be text/json (not json-encoded-as-a-string)",
               "default": false
             },
             "x-nullable": true
@@ -96,9 +93,7 @@
             "description": "Date time to start the search from.  Will default to Now - 1 Day",
             "schema": {
               "type": "string",
-              "description": "Date time to start the search from.  Will default to Now - 1 Day",
-              "format": "date-time",
-              "nullable": true
+              "format": "date-time"
             },
             "x-nullable": true
           },
@@ -108,9 +103,7 @@
             "description": "Date time to end the search at.  Defaults to now.",
             "schema": {
               "type": "string",
-              "description": "Date time to end the search at.  Defaults to now.",
-              "format": "date-time",
-              "nullable": true
+              "format": "date-time"
             },
             "x-nullable": true
           },
@@ -119,9 +112,7 @@
             "in": "query",
             "description": "Some test that must be in at least one field returned.",
             "schema": {
-              "type": "string",
-              "description": "Some test that must be in at least one field returned.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -130,7 +121,6 @@
             "description": "For users with extra permissions, they may optionally see other users' queries.",
             "schema": {
               "type": "boolean",
-              "description": "For users with extra permissions, they may optionally see other users' queries.",
               "default": false
             },
             "x-nullable": true
@@ -138,7 +128,7 @@
         ],
         "responses": {
           "202": {
-            "description": "Success",
+            "description": "Accepted",
             "content": {
               "text/plain": {
                 "schema": {
@@ -181,8 +171,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           }
         ],
@@ -229,8 +218,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           }
         ],
@@ -279,8 +267,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           },
           {
@@ -289,9 +276,7 @@
             "description": "Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated.",
             "schema": {
               "type": "string",
-              "description": "Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated.",
-              "format": "date-span",
-              "nullable": true
+              "format": "date-span"
             }
           },
           {
@@ -299,9 +284,10 @@
             "in": "query",
             "description": "An ODATA filter per Finbourne.Filtering syntax.",
             "schema": {
-              "type": "string",
-              "description": "An ODATA filter per Finbourne.Filtering syntax.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -310,7 +296,6 @@
             "description": "Should this be text/json (not json-encoded-as-a-string)",
             "schema": {
               "type": "boolean",
-              "description": "Should this be text/json (not json-encoded-as-a-string)",
               "default": false
             },
             "x-nullable": true
@@ -381,8 +366,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           },
           {
@@ -390,9 +374,10 @@
             "in": "query",
             "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
             "schema": {
-              "type": "string",
-              "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 1,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -400,9 +385,10 @@
             "in": "query",
             "description": "An ODATA filter per Finbourne.Filtering syntax.",
             "schema": {
-              "type": "string",
-              "description": "An ODATA filter per Finbourne.Filtering syntax.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -410,9 +396,7 @@
             "in": "query",
             "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
             "schema": {
-              "type": "string",
-              "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -420,9 +404,7 @@
             "in": "query",
             "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
             "schema": {
-              "type": "string",
-              "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -431,7 +413,6 @@
             "description": "When paginating, only return this number of records, page should also be specified.",
             "schema": {
               "type": "integer",
-              "description": "When paginating, only return this number of records, page should also be specified.",
               "format": "int32",
               "default": 0
             },
@@ -443,7 +424,6 @@
             "description": "0-N based on chunk sized determined by the limit, ignored if limit < 1.",
             "schema": {
               "type": "integer",
-              "description": "0-N based on chunk sized determined by the limit, ignored if limit < 1.",
               "format": "int32",
               "default": 0
             },
@@ -455,7 +435,6 @@
             "description": "Should this be text/json (not json-encoded-as-a-string)",
             "schema": {
               "type": "boolean",
-              "description": "Should this be text/json (not json-encoded-as-a-string)",
               "default": false
             },
             "x-nullable": true
@@ -565,7 +544,8 @@
             "required": true,
             "schema": {
               "$ref": "#/components/schemas/MultiQueryDefinitionType"
-            }
+            },
+            "example": "Instrument"
           },
           {
             "name": "asAt",
@@ -573,9 +553,7 @@
             "description": "The AsAt time used by any bitemporal provider in the queries.",
             "schema": {
               "type": "string",
-              "description": "The AsAt time used by any bitemporal provider in the queries.",
-              "format": "date-time",
-              "nullable": true
+              "format": "date-time"
             },
             "x-nullable": true
           },
@@ -585,9 +563,7 @@
             "description": "The EffectiveAt time used by any bitemporal provider in the queries.",
             "schema": {
               "type": "string",
-              "description": "The EffectiveAt time used by any bitemporal provider in the queries.",
-              "format": "date-time",
-              "nullable": true
+              "format": "date-time"
             },
             "x-nullable": true
           },
@@ -597,9 +573,7 @@
             "description": "A limit that is applied to first-level queries (e.g. Instruments themselves)",
             "schema": {
               "type": "integer",
-              "description": "A limit that is applied to first-level queries (e.g. Instruments themselves)",
-              "format": "int32",
-              "nullable": true
+              "format": "int32"
             },
             "x-nullable": true
           },
@@ -609,9 +583,7 @@
             "description": "A limit that is applied to second-level queries (e.g. Holdings based on the set of Instruments found)",
             "schema": {
               "type": "integer",
-              "description": "A limit that is applied to second-level queries (e.g. Holdings based on the set of Instruments found)",
-              "format": "int32",
-              "nullable": true
+              "format": "int32"
             },
             "x-nullable": true
           },
@@ -620,9 +592,7 @@
             "in": "query",
             "description": "A value available to queries, these vary by 'type' and are only used by some types at all.\r\ne.g. a start-date of some sort",
             "schema": {
-              "type": "string",
-              "description": "A value available to queries, these vary by 'type' and are only used by some types at all.\r\ne.g. a start-date of some sort",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -630,9 +600,7 @@
             "in": "query",
             "description": "A second value available to queries, these vary by 'type' and are only used by some types at all.",
             "schema": {
-              "type": "string",
-              "description": "A second value available to queries, these vary by 'type' and are only used by some types at all.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -640,9 +608,7 @@
             "in": "query",
             "description": "A third value available to queries, these vary by 'type' and are only used by some types at all.",
             "schema": {
-              "type": "string",
-              "description": "A third value available to queries, these vary by 'type' and are only used by some types at all.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -651,11 +617,10 @@
             "description": "Maximum time the query may run for, in seconds: <0 → ∞, 0 → 1200s (20m)",
             "schema": {
               "type": "integer",
-              "description": "Maximum time the query may run for, in seconds: <0 → ∞, 0 → 1200s (20m)",
               "format": "int32",
-              "default": 0,
-              "example": 1200
+              "default": 0
             },
+            "example": 1200,
             "x-nullable": true
           },
           {
@@ -664,11 +629,10 @@
             "description": "Maximum time the result may be kept for, in seconds: <0 → 1200 (20m), 0 → 28800 (8h), max = 2,678,400 (31d)",
             "schema": {
               "type": "integer",
-              "description": "Maximum time the result may be kept for, in seconds: <0 → 1200 (20m), 0 → 28800 (8h), max = 2,678,400 (31d)",
               "format": "int32",
-              "default": 0,
-              "example": 7200
+              "default": 0
             },
+            "example": 7200,
             "x-nullable": true
           }
         ],
@@ -677,17 +641,16 @@
           "content": {
             "text/plain": {
               "schema": {
-                "type": "string",
-                "description": "A \"search\" value (e.g. 'Apple' on an instrument search, a `Finbourne.Filtering` expression of Insights, etc.)\r\nIn the cases where \"Nothing\" is valid for a `Finbourne.Filtering` expression, pass `True`.",
-                "example": "Apple"
-              }
+                "type": "string"
+              },
+              "example": "Apple"
             }
           },
           "required": true
         },
         "responses": {
           "202": {
-            "description": "Success",
+            "description": "Accepted",
             "content": {
               "text/plain": {
                 "schema": {
@@ -750,8 +713,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           }
         ],
@@ -798,8 +760,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           }
         ],
@@ -847,11 +808,9 @@
             "in": "query",
             "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
             "schema": {
-              "type": "string",
-              "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
-              "nullable": true,
-              "example": "Get tables/fields"
-            }
+              "type": "string"
+            },
+            "example": "Get tables/fields"
           },
           {
             "name": "download",
@@ -859,7 +818,6 @@
             "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
             "schema": {
               "type": "boolean",
-              "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
               "default": false
             },
             "x-nullable": true
@@ -870,12 +828,27 @@
             "description": "In seconds: <0 → ∞, 0 → 120s",
             "schema": {
               "type": "integer",
-              "description": "In seconds: <0 → ∞, 0 → 120s",
               "format": "int32",
-              "default": 0,
-              "example": 120
+              "default": 0
             },
+            "example": 120,
             "x-nullable": true
+          },
+          {
+            "name": "delimiter",
+            "in": "query",
+            "description": "Delimiter string to override the default",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "escape",
+            "in": "query",
+            "description": "Escape character to override the default",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
@@ -883,10 +856,9 @@
           "content": {
             "text/plain": {
               "schema": {
-                "type": "string",
-                "description": "LuminesceSql to Execute (may be multi-line)",
-                "example": "select * from sys.field"
-              }
+                "type": "string"
+              },
+              "example": "select * from sys.field"
             }
           },
           "required": true
@@ -956,21 +928,18 @@
             "description": "LuminesceSql to Execute (must be one line only)",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "LuminesceSql to Execute (must be one line only)",
-              "example": "select ^ from Sys.Field order by 1, 2"
-            }
+              "type": "string"
+            },
+            "example": "select ^ from Sys.Field order by 1, 2"
           },
           {
             "name": "queryName",
             "in": "query",
             "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
             "schema": {
-              "type": "string",
-              "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
-              "nullable": true,
-              "example": "Get tables/fields"
-            }
+              "type": "string"
+            },
+            "example": "Get tables/fields"
           },
           {
             "name": "download",
@@ -978,7 +947,6 @@
             "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
             "schema": {
               "type": "boolean",
-              "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
               "default": false
             },
             "x-nullable": true
@@ -989,12 +957,27 @@
             "description": "In seconds: <0 → ∞, 0 → 120s",
             "schema": {
               "type": "integer",
-              "description": "In seconds: <0 → ∞, 0 → 120s",
               "format": "int32",
-              "default": 0,
-              "example": 120
+              "default": 0
             },
+            "example": 120,
             "x-nullable": true
+          },
+          {
+            "name": "delimiter",
+            "in": "query",
+            "description": "Delimiter string to override the default",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "escape",
+            "in": "query",
+            "description": "Escape character to override the default",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1061,11 +1044,9 @@
             "in": "query",
             "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
             "schema": {
-              "type": "string",
-              "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
-              "nullable": true,
-              "example": "Get tables/fields"
-            }
+              "type": "string"
+            },
+            "example": "Get tables/fields"
           },
           {
             "name": "timeoutSeconds",
@@ -1073,11 +1054,10 @@
             "description": "In seconds: <0 → ∞, 0 → 120s",
             "schema": {
               "type": "integer",
-              "description": "In seconds: <0 → ∞, 0 → 120s",
               "format": "int32",
-              "default": 0,
-              "example": 120
+              "default": 0
             },
+            "example": 120,
             "x-nullable": true
           }
         ],
@@ -1086,10 +1066,9 @@
           "content": {
             "text/plain": {
               "schema": {
-                "type": "string",
-                "description": "LuminesceSql to Execute (may be multi-line)",
-                "example": "select * from sys.field"
-              }
+                "type": "string"
+              },
+              "example": "select * from sys.field"
             }
           },
           "required": true
@@ -1159,21 +1138,18 @@
             "description": "LuminesceSql to Execute (must be one line only)",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "LuminesceSql to Execute (must be one line only)",
-              "example": "select ^ from Sys.Field order by 1, 2"
-            }
+              "type": "string"
+            },
+            "example": "select ^ from Sys.Field order by 1, 2"
           },
           {
             "name": "queryName",
             "in": "query",
             "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
             "schema": {
-              "type": "string",
-              "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
-              "nullable": true,
-              "example": "Get tables/fields"
-            }
+              "type": "string"
+            },
+            "example": "Get tables/fields"
           },
           {
             "name": "timeout",
@@ -1181,11 +1157,10 @@
             "description": "In seconds: <0 → ∞, 0 → 120s",
             "schema": {
               "type": "integer",
-              "description": "In seconds: <0 → ∞, 0 → 120s",
               "format": "int32",
-              "default": 0,
-              "example": 120
+              "default": 0
             },
+            "example": 120,
             "x-nullable": true
           }
         ],
@@ -1253,11 +1228,9 @@
             "in": "query",
             "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
             "schema": {
-              "type": "string",
-              "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
-              "nullable": true,
-              "example": "Get tables/fields"
-            }
+              "type": "string"
+            },
+            "example": "Get tables/fields"
           },
           {
             "name": "timeoutSeconds",
@@ -1265,11 +1238,10 @@
             "description": "In seconds: <0 → ∞, 0 → 120s",
             "schema": {
               "type": "integer",
-              "description": "In seconds: <0 → ∞, 0 → 120s",
               "format": "int32",
-              "default": 0,
-              "example": 120
+              "default": 0
             },
+            "example": 120,
             "x-nullable": true
           },
           {
@@ -1278,7 +1250,6 @@
             "description": "Should this be text/json (not json-encoded-as-a-string)",
             "schema": {
               "type": "boolean",
-              "description": "Should this be text/json (not json-encoded-as-a-string)",
               "default": false
             },
             "x-nullable": true
@@ -1289,10 +1260,9 @@
           "content": {
             "text/plain": {
               "schema": {
-                "type": "string",
-                "description": "LuminesceSql to Execute (may be multi-line)",
-                "example": "select * from sys.field"
-              }
+                "type": "string"
+              },
+              "example": "select * from sys.field"
             }
           },
           "required": true
@@ -1362,21 +1332,18 @@
             "description": "LuminesceSql to Execute (must be one line only)",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "LuminesceSql to Execute (must be one line only)",
-              "example": "select ^ from Sys.Field order by 1, 2"
-            }
+              "type": "string"
+            },
+            "example": "select ^ from Sys.Field order by 1, 2"
           },
           {
             "name": "queryName",
             "in": "query",
             "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
             "schema": {
-              "type": "string",
-              "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
-              "nullable": true,
-              "example": "Get tables/fields"
-            }
+              "type": "string"
+            },
+            "example": "Get tables/fields"
           },
           {
             "name": "timeout",
@@ -1384,11 +1351,10 @@
             "description": "In seconds: <0 → ∞, 0 → 120s",
             "schema": {
               "type": "integer",
-              "description": "In seconds: <0 → ∞, 0 → 120s",
               "format": "int32",
-              "default": 0,
-              "example": 120
+              "default": 0
             },
+            "example": 120,
             "x-nullable": true
           },
           {
@@ -1397,9 +1363,192 @@
             "description": "Should this be text/json (not json-encoded-as-a-string)",
             "schema": {
               "type": "boolean",
-              "description": "Should this be text/json (not json-encoded-as-a-string)",
               "default": false
             },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ],
+        "x-fbn-apistatus": "Stable"
+      }
+    },
+    "/api/Sql/parquet": {
+      "put": {
+        "tags": [
+          "Sql Execution"
+        ],
+        "summary": "PutByQueryParquet: Executes Sql, returned in Parquet format, where the sql is the post-body url.",
+        "description": "\nFor more complex LuminesceSql a PUT will allow for longer Sql.\ne.g.:\n```sql\n@@cutoff = select #2020-02-01#;\n@issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;\n\nselect i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary\nfrom @issues i\ninner join Dev.Jira.Issue.Link li\n    on i.Id = li.IssueId\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
+        "operationId": "PutByQueryParquet",
+        "parameters": [
+          {
+            "name": "queryName",
+            "in": "query",
+            "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Get tables/fields"
+          },
+          {
+            "name": "timeoutSeconds",
+            "in": "query",
+            "description": "In seconds: <0 → ∞, 0 → 120s",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "example": 120,
+            "x-nullable": true
+          }
+        ],
+        "requestBody": {
+          "description": "LuminesceSql to Execute (may be multi-line)",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              },
+              "example": "select * from sys.field"
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ],
+        "x-fbn-apistatus": "Stable"
+      }
+    },
+    "/api/Sql/parquet/{query}": {
+      "get": {
+        "tags": [
+          "Sql Execution"
+        ],
+        "summary": "GetByQueryParquet: Executes Sql, returned in Parquet (.parquet) format (as a file to be downloaded) format, where the sql is simply in the url.",
+        "description": "\nFor simple single-line query execution via the url.\ne.g. `select ^ from Sys.Field order by 1, 2`\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
+        "operationId": "GetByQueryParquet",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "path",
+            "description": "LuminesceSql to Execute (must be one line only)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "select ^ from Sys.Field order by 1, 2"
+          },
+          {
+            "name": "queryName",
+            "in": "query",
+            "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Get tables/fields"
+          },
+          {
+            "name": "timeout",
+            "in": "query",
+            "description": "In seconds: <0 → ∞, 0 → 120s",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "example": 120,
             "x-nullable": true
           }
         ],
@@ -1467,11 +1616,9 @@
             "in": "query",
             "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
             "schema": {
-              "type": "string",
-              "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
-              "nullable": true,
-              "example": "Get tables/fields"
-            }
+              "type": "string"
+            },
+            "example": "Get tables/fields"
           },
           {
             "name": "download",
@@ -1479,7 +1626,6 @@
             "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
             "schema": {
               "type": "boolean",
-              "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
               "default": false
             },
             "x-nullable": true
@@ -1490,11 +1636,10 @@
             "description": "In seconds: <0 → ∞, 0 → 120s",
             "schema": {
               "type": "integer",
-              "description": "In seconds: <0 → ∞, 0 → 120s",
               "format": "int32",
-              "default": 0,
-              "example": 120
+              "default": 0
             },
+            "example": 120,
             "x-nullable": true
           }
         ],
@@ -1503,10 +1648,9 @@
           "content": {
             "text/plain": {
               "schema": {
-                "type": "string",
-                "description": "LuminesceSql to Execute (may be multi-line)",
-                "example": "select * from sys.field"
-              }
+                "type": "string"
+              },
+              "example": "select * from sys.field"
             }
           },
           "required": true
@@ -1576,21 +1720,18 @@
             "description": "LuminesceSql to Execute (must be one line only)",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "LuminesceSql to Execute (must be one line only)",
-              "example": "select ^ from Sys.Field order by 1, 2"
-            }
+              "type": "string"
+            },
+            "example": "select ^ from Sys.Field order by 1, 2"
           },
           {
             "name": "queryName",
             "in": "query",
             "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
             "schema": {
-              "type": "string",
-              "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
-              "nullable": true,
-              "example": "Get tables/fields"
-            }
+              "type": "string"
+            },
+            "example": "Get tables/fields"
           },
           {
             "name": "download",
@@ -1598,7 +1739,6 @@
             "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
             "schema": {
               "type": "boolean",
-              "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
               "default": false
             },
             "x-nullable": true
@@ -1609,11 +1749,10 @@
             "description": "In seconds: <0 → ∞, 0 → 120s",
             "schema": {
               "type": "integer",
-              "description": "In seconds: <0 → ∞, 0 → 120s",
               "format": "int32",
-              "default": 0,
-              "example": 120
+              "default": 0
             },
+            "example": 120,
             "x-nullable": true
           }
         ],
@@ -1682,7 +1821,6 @@
             "description": "Should commas be after an expression (as opposed to before)",
             "schema": {
               "type": "boolean",
-              "description": "Should commas be after an expression (as opposed to before)",
               "default": true
             },
             "x-nullable": true
@@ -1693,7 +1831,6 @@
             "description": "Should key words be capitalized",
             "schema": {
               "type": "boolean",
-              "description": "Should key words be capitalized",
               "default": false
             },
             "x-nullable": true
@@ -1704,7 +1841,6 @@
             "description": "Should clauses on joins be given line breaks?",
             "schema": {
               "type": "boolean",
-              "description": "Should clauses on joins be given line breaks?",
               "default": true
             },
             "x-nullable": true
@@ -1715,7 +1851,6 @@
             "description": "Should comma-lists have spaces after the commas?",
             "schema": {
               "type": "boolean",
-              "description": "Should comma-lists have spaces after the commas?",
               "default": true
             },
             "x-nullable": true
@@ -1726,7 +1861,6 @@
             "description": "Should the \"nicest\" key words be used? (e.g. JOIN -> INNER JOIN)",
             "schema": {
               "type": "boolean",
-              "description": "Should the \"nicest\" key words be used? (e.g. JOIN -> INNER JOIN)",
               "default": true
             },
             "x-nullable": true
@@ -1737,7 +1871,6 @@
             "description": "Should comma-lists (e.g. select a,b,c) have line breaks added?",
             "schema": {
               "type": "boolean",
-              "description": "Should comma-lists (e.g. select a,b,c) have line breaks added?",
               "default": false
             },
             "x-nullable": true
@@ -1748,7 +1881,6 @@
             "description": "Should IN-lists have line breaks added?",
             "schema": {
               "type": "boolean",
-              "description": "Should IN-lists have line breaks added?",
               "default": false
             },
             "x-nullable": true
@@ -1759,7 +1891,6 @@
             "description": "Should boolean expressions have line breaks added?",
             "schema": {
               "type": "boolean",
-              "description": "Should boolean expressions have line breaks added?",
               "default": true
             },
             "x-nullable": true
@@ -1770,7 +1901,6 @@
             "description": "Should between conditions have line breaks added?",
             "schema": {
               "type": "boolean",
-              "description": "Should between conditions have line breaks added?",
               "default": true
             },
             "x-nullable": true
@@ -1781,7 +1911,6 @@
             "description": "Should case-statements have line breaks added?",
             "schema": {
               "type": "boolean",
-              "description": "Should case-statements have line breaks added?",
               "default": true
             },
             "x-nullable": true
@@ -1792,7 +1921,6 @@
             "description": "Maximum number of characters to allow on one line (if possible)",
             "schema": {
               "type": "integer",
-              "description": "Maximum number of characters to allow on one line (if possible)",
               "format": "int32",
               "default": 120
             },
@@ -1804,10 +1932,9 @@
           "content": {
             "text/plain": {
               "schema": {
-                "type": "string",
-                "description": "LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it",
-                "example": "select * from sys.field"
-              }
+                "type": "string"
+              },
+              "example": "select * from sys.field"
             }
           },
           "required": true
@@ -1876,11 +2003,9 @@
             "in": "query",
             "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
             "schema": {
-              "type": "string",
-              "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
-              "nullable": true,
-              "example": "Get tables/fields"
-            }
+              "type": "string"
+            },
+            "example": "Get tables/fields"
           },
           {
             "name": "timeoutSeconds",
@@ -1888,11 +2013,10 @@
             "description": "In seconds: <0 → ∞, 0 → 120s",
             "schema": {
               "type": "integer",
-              "description": "In seconds: <0 → ∞, 0 → 120s",
               "format": "int32",
-              "default": 0,
-              "example": 120
+              "default": 0
             },
+            "example": 120,
             "x-nullable": true
           }
         ],
@@ -1901,10 +2025,9 @@
           "content": {
             "text/plain": {
               "schema": {
-                "type": "string",
-                "description": "LuminesceSql to Execute (may be multi-line)",
-                "example": "select * from sys.field"
-              }
+                "type": "string"
+              },
+              "example": "select * from sys.field"
             }
           },
           "required": true
@@ -1974,21 +2097,18 @@
             "description": "LuminesceSql to Execute (must be one line only)",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "LuminesceSql to Execute (must be one line only)",
-              "example": "select ^ from Sys.Field order by 1, 2"
-            }
+              "type": "string"
+            },
+            "example": "select ^ from Sys.Field order by 1, 2"
           },
           {
             "name": "queryName",
             "in": "query",
             "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
             "schema": {
-              "type": "string",
-              "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
-              "nullable": true,
-              "example": "Get tables/fields"
-            }
+              "type": "string"
+            },
+            "example": "Get tables/fields"
           },
           {
             "name": "timeout",
@@ -1996,11 +2116,214 @@
             "description": "In seconds: <0 → ∞, 0 → 120s",
             "schema": {
               "type": "integer",
-              "description": "In seconds: <0 → ∞, 0 → 120s",
               "format": "int32",
-              "default": 0,
-              "example": 120
+              "default": 0
             },
+            "example": 120,
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ],
+        "x-fbn-apistatus": "Stable"
+      }
+    },
+    "/api/Sql/xml": {
+      "put": {
+        "tags": [
+          "Sql Execution"
+        ],
+        "summary": "PutByQueryXml: Executes Sql, returned in Xml format, where the sql is the post-body url.",
+        "description": "\nFor more complex LuminesceSql a PUT will allow for longer Sql.\ne.g.:\n```sql\n@@cutoff = select #2020-02-01#;\n@issues = select Id, SortId, Summary, Created, Updated from Dev.Jira.Issue where Project='HC' and Created < @@cutoff and Updated > @@cutoff;\n\nselect i.Id, i.SortId, i.Summary, LinkText, LinkedIssueId, LinkedIssueSortId, LinkedIssueSummary\nfrom @issues i\ninner join Dev.Jira.Issue.Link li\n    on i.Id = li.IssueId\n```\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
+        "operationId": "PutByQueryXml",
+        "parameters": [
+          {
+            "name": "queryName",
+            "in": "query",
+            "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Get tables/fields"
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "x-nullable": true
+          },
+          {
+            "name": "timeoutSeconds",
+            "in": "query",
+            "description": "In seconds: <0 → ∞, 0 → 120s",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "example": 120,
+            "x-nullable": true
+          }
+        ],
+        "requestBody": {
+          "description": "LuminesceSql to Execute (may be multi-line)",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              },
+              "example": "select * from sys.field"
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ],
+        "x-fbn-apistatus": "Stable"
+      }
+    },
+    "/api/Sql/xml/{query}": {
+      "get": {
+        "tags": [
+          "Sql Execution"
+        ],
+        "summary": "GetByQueryXml: Executes Sql, returned in Xml format, where the sql is simply in the url.",
+        "description": "\nFor simple single-line query execution via the url.\ne.g. `select ^ from Sys.Field order by 1, 2`\n\nThe following error codes are to be anticipated with standard Problem Detail reports:\n- 400 BadRequest - something failed with the execution or parsing of your query\n- 401 Unauthorized\n",
+        "operationId": "GetByQueryXml",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "path",
+            "description": "LuminesceSql to Execute (must be one line only)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "select ^ from Sys.Field order by 1, 2"
+          },
+          {
+            "name": "queryName",
+            "in": "query",
+            "description": "Name to apply to the query in logs and `Sys.Logs.HcQueryStart`",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Get tables/fields"
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "x-nullable": true
+          },
+          {
+            "name": "timeout",
+            "in": "query",
+            "description": "In seconds: <0 → ∞, 0 → 120s",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "example": 120,
             "x-nullable": true
           }
         ],
@@ -2068,11 +2391,9 @@
             "in": "query",
             "description": "A name for this query.  This goes into logs and is available in `Sys.Logs.HcQueryStart`.",
             "schema": {
-              "type": "string",
-              "description": "A name for this query.  This goes into logs and is available in `Sys.Logs.HcQueryStart`.",
-              "nullable": true,
-              "example": "Intentionally slow test query"
-            }
+              "type": "string"
+            },
+            "example": "Intentionally slow test query"
           },
           {
             "name": "timeoutSeconds",
@@ -2080,11 +2401,10 @@
             "description": "Maximum time the query may run for, in seconds: <0 → ∞, 0 → 7200 (2h)",
             "schema": {
               "type": "integer",
-              "description": "Maximum time the query may run for, in seconds: <0 → ∞, 0 → 7200 (2h)",
               "format": "int32",
-              "default": 0,
-              "example": 1200
+              "default": 0
             },
+            "example": 1200,
             "x-nullable": true
           },
           {
@@ -2093,11 +2413,10 @@
             "description": "Maximum time the result may be kept for, in seconds: <0 → 1200 (20m), 0 → 28800 (8h), max = 2,678,400 (31d)",
             "schema": {
               "type": "integer",
-              "description": "Maximum time the result may be kept for, in seconds: <0 → 1200 (20m), 0 → 28800 (8h), max = 2,678,400 (31d)",
               "format": "int32",
-              "default": 0,
-              "example": 7200
+              "default": 0
             },
+            "example": 7200,
             "x-nullable": true
           }
         ],
@@ -2106,17 +2425,16 @@
           "content": {
             "text/plain": {
               "schema": {
-                "type": "string",
-                "description": "The LuminesceSql query to kick off.",
-                "example": "select Str, Takes500Ms from Testing1K where UseLinq = true and [Int] <= 120"
-              }
+                "type": "string"
+              },
+              "example": "select Str, Takes500Ms from Testing1K where UseLinq = true and [Int] <= 120"
             }
           },
           "required": true
         },
         "responses": {
           "202": {
-            "description": "Success",
+            "description": "Accepted",
             "content": {
               "text/plain": {
                 "schema": {
@@ -2179,8 +2497,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           }
         ],
@@ -2227,8 +2544,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           }
         ],
@@ -2277,8 +2593,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           },
           {
@@ -2287,7 +2602,6 @@
             "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
             "schema": {
               "type": "boolean",
-              "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
               "default": false
             },
             "x-nullable": true
@@ -2297,9 +2611,10 @@
             "in": "query",
             "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
             "schema": {
-              "type": "string",
-              "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 1,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -2307,9 +2622,10 @@
             "in": "query",
             "description": "An ODATA filter per Finbourne.Filtering syntax.",
             "schema": {
-              "type": "string",
-              "description": "An ODATA filter per Finbourne.Filtering syntax.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -2317,9 +2633,7 @@
             "in": "query",
             "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
             "schema": {
-              "type": "string",
-              "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -2327,9 +2641,7 @@
             "in": "query",
             "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
             "schema": {
-              "type": "string",
-              "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -2338,7 +2650,6 @@
             "description": "When paginating, only return this number of records, page should also be specified.",
             "schema": {
               "type": "integer",
-              "description": "When paginating, only return this number of records, page should also be specified.",
               "format": "int32",
               "default": 0
             },
@@ -2350,11 +2661,26 @@
             "description": "0-N based on chunk sized determined by the limit, ignored if limit < 1.",
             "schema": {
               "type": "integer",
-              "description": "0-N based on chunk sized determined by the limit, ignored if limit < 1.",
               "format": "int32",
               "default": 0
             },
             "x-nullable": true
+          },
+          {
+            "name": "delimiter",
+            "in": "query",
+            "description": "Delimiter string to override the default",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "escape",
+            "in": "query",
+            "description": "Escape character to override the default",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -2422,8 +2748,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           },
           {
@@ -2431,9 +2756,10 @@
             "in": "query",
             "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
             "schema": {
-              "type": "string",
-              "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 1,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -2441,9 +2767,10 @@
             "in": "query",
             "description": "An ODATA filter per Finbourne.Filtering syntax.",
             "schema": {
-              "type": "string",
-              "description": "An ODATA filter per Finbourne.Filtering syntax.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -2451,9 +2778,7 @@
             "in": "query",
             "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
             "schema": {
-              "type": "string",
-              "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -2461,9 +2786,7 @@
             "in": "query",
             "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
             "schema": {
-              "type": "string",
-              "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
-              "nullable": true
+              "type": "string"
             }
           }
         ],
@@ -2532,8 +2855,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           },
           {
@@ -2542,8 +2864,7 @@
             "description": "Name of the timestamp field used in building the histogram",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "Name of the timestamp field used in building the histogram"
+              "type": "string"
             }
           },
           {
@@ -2552,9 +2873,7 @@
             "description": "Start point (of the timestampFieldName field) for the histogram",
             "schema": {
               "type": "string",
-              "description": "Start point (of the timestampFieldName field) for the histogram",
-              "format": "date-time",
-              "nullable": true
+              "format": "date-time"
             },
             "x-nullable": true
           },
@@ -2564,9 +2883,7 @@
             "description": "End point (of the timestampFieldName field) for the histogram",
             "schema": {
               "type": "string",
-              "description": "End point (of the timestampFieldName field) for the histogram",
-              "format": "date-time",
-              "nullable": true
+              "format": "date-time"
             },
             "x-nullable": true
           },
@@ -2576,9 +2893,7 @@
             "description": "Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated.",
             "schema": {
               "type": "string",
-              "description": "Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated.",
-              "format": "date-span",
-              "nullable": true
+              "format": "date-span"
             }
           },
           {
@@ -2586,9 +2901,10 @@
             "in": "query",
             "description": "An ODATA filter per Finbourne.Filtering syntax.",
             "schema": {
-              "type": "string",
-              "description": "An ODATA filter per Finbourne.Filtering syntax.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -2597,7 +2913,6 @@
             "description": "Should this be text/json (not json-encoded-as-a-string)",
             "schema": {
               "type": "boolean",
-              "description": "Should this be text/json (not json-encoded-as-a-string)",
               "default": false
             },
             "x-nullable": true
@@ -2668,8 +2983,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           },
           {
@@ -2677,9 +2991,10 @@
             "in": "query",
             "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
             "schema": {
-              "type": "string",
-              "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 1,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -2687,9 +3002,10 @@
             "in": "query",
             "description": "An ODATA filter per Finbourne.Filtering syntax.",
             "schema": {
-              "type": "string",
-              "description": "An ODATA filter per Finbourne.Filtering syntax.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -2697,9 +3013,7 @@
             "in": "query",
             "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
             "schema": {
-              "type": "string",
-              "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -2707,9 +3021,7 @@
             "in": "query",
             "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
             "schema": {
-              "type": "string",
-              "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -2718,7 +3030,6 @@
             "description": "When paginating, only return this number of records, page should also be specified.",
             "schema": {
               "type": "integer",
-              "description": "When paginating, only return this number of records, page should also be specified.",
               "format": "int32",
               "default": 0
             },
@@ -2730,7 +3041,6 @@
             "description": "0-N based on chunk sized determined by the limit, ignored if limit < 1.",
             "schema": {
               "type": "integer",
-              "description": "0-N based on chunk sized determined by the limit, ignored if limit < 1.",
               "format": "int32",
               "default": 0
             },
@@ -2802,8 +3112,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           },
           {
@@ -2812,7 +3121,6 @@
             "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
             "schema": {
               "type": "boolean",
-              "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
               "default": false
             },
             "x-nullable": true
@@ -2822,9 +3130,10 @@
             "in": "query",
             "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
             "schema": {
-              "type": "string",
-              "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 1,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -2832,9 +3141,10 @@
             "in": "query",
             "description": "An ODATA filter per Finbourne.Filtering syntax.",
             "schema": {
-              "type": "string",
-              "description": "An ODATA filter per Finbourne.Filtering syntax.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -2842,9 +3152,7 @@
             "in": "query",
             "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
             "schema": {
-              "type": "string",
-              "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -2852,9 +3160,7 @@
             "in": "query",
             "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
             "schema": {
-              "type": "string",
-              "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -2863,7 +3169,6 @@
             "description": "When paginating, only return this number of records, page should also be specified.",
             "schema": {
               "type": "integer",
-              "description": "When paginating, only return this number of records, page should also be specified.",
               "format": "int32",
               "default": 0
             },
@@ -2875,11 +3180,117 @@
             "description": "0-N based on chunk sized determined by the limit, ignored if limit < 1.",
             "schema": {
               "type": "integer",
-              "description": "0-N based on chunk sized determined by the limit, ignored if limit < 1.",
               "format": "int32",
               "default": 0
             },
             "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ],
+        "x-fbn-apistatus": "Stable"
+      }
+    },
+    "/api/SqlBackground/{executionId}/parquet": {
+      "get": {
+        "tags": [
+          "Sql Background Execution"
+        ],
+        "summary": "FetchQueryResultParquet: Fetches the result from a previously started query, in Parquet format.",
+        "description": "Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)\nThe following error codes are to be anticipated most with standard Problem Detail reports:\n- 400 BadRequest : Something failed with the execution of your query\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't (yet) exist.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
+        "operationId": "FetchQueryResultParquet",
+        "parameters": [
+          {
+            "name": "executionId",
+            "in": "path",
+            "description": "ExecutionId returned when starting the query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
+            "schema": {
+              "maxLength": 16384,
+              "minLength": 1,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "An ODATA filter per Finbourne.Filtering syntax.",
+            "schema": {
+              "maxLength": 16384,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "groupBy",
+            "in": "query",
+            "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -2947,8 +3358,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           },
           {
@@ -2957,7 +3367,6 @@
             "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
             "schema": {
               "type": "boolean",
-              "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
               "default": false
             },
             "x-nullable": true
@@ -2967,9 +3376,10 @@
             "in": "query",
             "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
             "schema": {
-              "type": "string",
-              "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 1,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -2977,9 +3387,10 @@
             "in": "query",
             "description": "An ODATA filter per Finbourne.Filtering syntax.",
             "schema": {
-              "type": "string",
-              "description": "An ODATA filter per Finbourne.Filtering syntax.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -2987,9 +3398,7 @@
             "in": "query",
             "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
             "schema": {
-              "type": "string",
-              "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -2997,9 +3406,7 @@
             "in": "query",
             "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
             "schema": {
-              "type": "string",
-              "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -3008,7 +3415,6 @@
             "description": "When paginating, only return this number of records, page should also be specified.",
             "schema": {
               "type": "integer",
-              "description": "When paginating, only return this number of records, page should also be specified.",
               "format": "int32",
               "default": 0
             },
@@ -3020,7 +3426,6 @@
             "description": "0-N based on chunk sized determined by the limit, ignored if limit < 1.",
             "schema": {
               "type": "integer",
-              "description": "0-N based on chunk sized determined by the limit, ignored if limit < 1.",
               "format": "int32",
               "default": 0
             },
@@ -3092,8 +3497,7 @@
             "description": "ExecutionId returned when starting the query",
             "required": true,
             "schema": {
-              "type": "string",
-              "description": "ExecutionId returned when starting the query"
+              "type": "string"
             }
           },
           {
@@ -3101,9 +3505,10 @@
             "in": "query",
             "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
             "schema": {
-              "type": "string",
-              "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 1,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -3111,9 +3516,10 @@
             "in": "query",
             "description": "An ODATA filter per Finbourne.Filtering syntax.",
             "schema": {
-              "type": "string",
-              "description": "An ODATA filter per Finbourne.Filtering syntax.",
-              "nullable": true
+              "maxLength": 16384,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
             }
           },
           {
@@ -3121,9 +3527,7 @@
             "in": "query",
             "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
             "schema": {
-              "type": "string",
-              "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -3131,10 +3535,147 @@
             "in": "query",
             "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
             "schema": {
-              "type": "string",
-              "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
-              "nullable": true
+              "type": "string"
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LusidProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oauth2": [ ]
+          }
+        ],
+        "x-fbn-apistatus": "Stable"
+      }
+    },
+    "/api/SqlBackground/{executionId}/xml": {
+      "get": {
+        "tags": [
+          "Sql Background Execution"
+        ],
+        "summary": "FetchQueryResultXml: Fetches the result from a previously started query, in Xml format.",
+        "description": "Fetch the data in various formats (if available, or if not simply being informed it is not yet ready)\nThe following error codes are to be anticipated most with standard Problem Detail reports:\n- 400 BadRequest : Something failed with the execution of your query\n- 401 Unauthorized\n- 404 Not Found : The requested query result doesn't (yet) exist.\n- 429 Too Many Requests : Please try your request again soon\n  1. The query has been executed successfully in the past yet the server-instance receiving this request (e.g. from a load balancer) doesn't yet have this data available.\n  1. By virtue of the request you have just placed this will have started to load from the persisted cache and will soon be available.\n  1. It is also the case that the original server-instance to process the original query is likely to already be able to service this request.",
+        "operationId": "FetchQueryResultXml",
+        "parameters": [
+          {
+            "name": "executionId",
+            "in": "path",
+            "description": "ExecutionId returned when starting the query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "description": "Makes this a file-download request (as opposed to returning the data in the response-body)",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "x-nullable": true
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Order the results by these fields.\r\n            Use the `-` sign to denote descending order, e.g. `-MyFieldName`.  Numeric indexes may be used also, e.g. `2,-3`.\r\n            Multiple fields can be denoted by a comma e.g. `-MyFieldName,AnotherFieldName,-AFurtherFieldName`.\r\n            Default is null, the sort order specified in the query itself.",
+            "schema": {
+              "maxLength": 16384,
+              "minLength": 1,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "An ODATA filter per Finbourne.Filtering syntax.",
+            "schema": {
+              "maxLength": 16384,
+              "minLength": 0,
+              "pattern": "^[\\s\\S]*$",
+              "type": "string"
+            }
+          },
+          {
+            "name": "select",
+            "in": "query",
+            "description": "Default is null (meaning return all columns in the original query itself).\r\nThe values are in terms of the result column name from the original data set and are comma delimited.\r\nThe power of this comes in that you may aggregate the data if you wish\r\n(that is the main reason for allowing this, in fact).\r\ne.g.:\r\n- `MyField`\r\n- `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)\r\n- `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)\r\n- `count(distinct x) as numOfXs`\r\nIf there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ]. \r\ne.g.\r\n- `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`\r\n  where you would likely want to pass `1` as the `groupBy` also.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "groupBy",
+            "in": "query",
+            "description": "Groups by the specified fields.\r\n            A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).\r\n            e.g. `2,3`, `myColumn`.\r\n            Default is null (meaning no grouping will be performed on the selected columns).\r\n            This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.\r\n            Only specify this if you are selecting aggregations in the \"select\" parameter.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "When paginating, only return this number of records, page should also be specified.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-nullable": true
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "0-N based on chunk sized determined by the limit, ignored if limit < 1.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-nullable": true
           }
         ],
         "responses": {
@@ -3269,8 +3810,6 @@
             "nullable": true
           },
           "typeId": {
-            "type": "object",
-            "additionalProperties": false,
             "nullable": true,
             "readOnly": true
           }
@@ -3361,6 +3900,24 @@
               "$ref": "#/components/schemas/Link"
             },
             "description": "Json-proper data request links for all of the child queries",
+            "nullable": true,
+            "readOnly": true
+          },
+          "fetchXml": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Link"
+            },
+            "description": "Xml data request links for all of the child queries",
+            "nullable": true,
+            "readOnly": true
+          },
+          "fetchParquet": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Link"
+            },
+            "description": "Parquet data request links for all of the child queries",
             "nullable": true,
             "readOnly": true
           },
@@ -3488,6 +4045,7 @@
         "properties": {
           "executionId": {
             "type": "string",
+            "description": "ExecutionId of the started-query",
             "nullable": true
           },
           "progress": {
@@ -3500,6 +4058,12 @@
             "$ref": "#/components/schemas/Link"
           },
           "fetchJsonProper": {
+            "$ref": "#/components/schemas/Link"
+          },
+          "fetchXml": {
+            "$ref": "#/components/schemas/Link"
+          },
+          "fetchParquet": {
             "$ref": "#/components/schemas/Link"
           },
           "fetchCsv": {
@@ -3518,7 +4082,8 @@
             "$ref": "#/components/schemas/Link"
           }
         },
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Response for Background Query Start requests"
       },
       "BackgroundQueryState": {
         "enum": [
@@ -3527,6 +4092,7 @@
           "Errored",
           "Cancelled",
           "Executed",
+          "ExecutedNoSerializationRequired",
           "Serialized",
           "SerializationFailed",
           "AttemptingToDeserialize",
@@ -3597,13 +4163,13 @@
       "DataType": {
         "enum": [
           "Boolean",
-          "Int",
-          "BigInt",
-          "Double",
-          "Decimal",
-          "Text",
           "Date",
           "DateTime",
+          "Decimal",
+          "Double",
+          "Int",
+          "BigInt",
+          "Text",
           "Table"
         ],
         "type": "string"
@@ -3641,10 +4207,7 @@
           },
           "propertyValues": {
             "type": "array",
-            "items": {
-              "type": "object",
-              "additionalProperties": false
-            },
+            "items": { },
             "nullable": true
           },
           "message": {
@@ -3663,11 +4226,11 @@
           "Information",
           "Warning",
           "Error",
-          "ExecutionKeepAlive",
-          "ProgressAndDebug",
-          "ProgressAndInformation",
+          "ProgressAndError",
           "ProgressAndWarning",
-          "ProgressAndError"
+          "ProgressAndInformation",
+          "ProgressAndDebug",
+          "ExecutionKeepAlive"
         ],
         "type": "string"
       },
@@ -3686,7 +4249,7 @@
             }
           },
           "actions": {
-            "minLength": 1,
+            "minItems": 1,
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ActionId"
@@ -3740,6 +4303,7 @@
         "type": "object",
         "properties": {
           "name": {
+            "minLength": 1,
             "type": "string"
           },
           "errorDetails": {
@@ -3776,15 +4340,6 @@
           "instance": {
             "type": "string",
             "nullable": true
-          },
-          "extensions": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object",
-              "additionalProperties": false
-            },
-            "nullable": true,
-            "readOnly": true
           }
         },
         "additionalProperties": false
@@ -3798,7 +4353,9 @@
           "EdiInstrumentWriter",
           "Testing",
           "MarketplaceClientLoadHistory",
-          "InsightsMetricsEntitlement"
+          "InsightsMetricsEntitlement",
+          "InstrumentDiscovery",
+          "InstrumentUpsert"
         ],
         "type": "string"
       },

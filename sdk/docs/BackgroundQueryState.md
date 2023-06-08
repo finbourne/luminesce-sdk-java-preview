@@ -15,6 +15,8 @@
 
 * `EXECUTED` (value: `"Executed"`)
 
+* `EXECUTEDNOSERIALIZATIONREQUIRED` (value: `"ExecutedNoSerializationRequired"`)
+
 * `SERIALIZED` (value: `"Serialized"`)
 
 * `SERIALIZATIONFAILED` (value: `"SerializationFailed"`)

@@ -900,7 +900,19 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlBackgroundExecutionApi apiInstance = new SqlBackgroundExecutionApi(defaultClient);
-    String body = select Str, Takes500Ms from Testing1K where UseLinq = true and [Int] <= 120; // String | The LuminesceSql query to kick off.
+    String body = 
+SELECT
+   [TableName],
+   Count(distinct [FieldName]) as [NumberOfFields]
+FROM
+   [Sys.Field]
+WHERE
+   ([TableName] = 'Sys.Registration')
+GROUP BY
+   [TableName]
+ORDER BY
+   [DataType]
+LIMIT 42; // String | The LuminesceSql query to kick off.
     String queryName = "Intentionally slow test query"; // String | A name for this query.  This goes into logs and is available in `Sys.Logs.HcQueryStart`.
     Integer timeoutSeconds = 0; // Integer | Maximum time the query may run for, in seconds: <0 → ∞, 0 → 7200 (2h)
     Integer keepForSeconds = 0; // Integer | Maximum time the result may be kept for, in seconds: <0 → 1200 (20m), 0 → 28800 (8h), max = 2,678,400 (31d)

@@ -15,6 +15,7 @@ package com.finbourne.luminesce.model;
 
 import java.util.Objects;
 import java.util.Arrays;
+import com.finbourne.luminesce.model.OrderByDirection;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
@@ -25,77 +26,55 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * ActionId
+ * A single clause within an Order BY
  */
+@ApiModel(description = "A single clause within an Order BY")
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
-public class ActionId {
-  public static final String SERIALIZED_NAME_SCOPE = "scope";
-  @SerializedName(SERIALIZED_NAME_SCOPE)
-  private String scope;
+public class OrderByTermDesign {
+  public static final String SERIALIZED_NAME_FIELD = "field";
+  @SerializedName(SERIALIZED_NAME_FIELD)
+  private String field;
 
-  public static final String SERIALIZED_NAME_ACTIVITY = "activity";
-  @SerializedName(SERIALIZED_NAME_ACTIVITY)
-  private String activity;
-
-  public static final String SERIALIZED_NAME_ENTITY = "entity";
-  @SerializedName(SERIALIZED_NAME_ENTITY)
-  private String entity;
+  public static final String SERIALIZED_NAME_DIRECTION = "direction";
+  @SerializedName(SERIALIZED_NAME_DIRECTION)
+  private OrderByDirection direction;
 
 
-  public ActionId scope(String scope) {
-    this.scope = scope; 
+  public OrderByTermDesign field(String field) {
+    this.field = field; 
     return this;
   }
 
    /**
-   * Get scope
-   * @return scope
+   * Name of the field to order by
+   * @return field
   **/
-  @ApiModelProperty(required = true, value = "")
-  public String getScope() {
-    return scope;
+  @ApiModelProperty(required = true, value = "Name of the field to order by")
+  public String getField() {
+    return field;
   }
 
-  public void setScope(String scope) {
-    this.scope = scope;
+  public void setField(String field) {
+    this.field = field;
   }
 
 
-  public ActionId activity(String activity) {
-    this.activity = activity; 
+  public OrderByTermDesign direction(OrderByDirection direction) {
+    this.direction = direction; 
     return this;
   }
 
    /**
-   * Get activity
-   * @return activity
+   * Get direction
+   * @return direction
   **/
-  @ApiModelProperty(required = true, value = "")
-  public String getActivity() {
-    return activity;
+  @ApiModelProperty(value = "")
+  public OrderByDirection getDirection() {
+    return direction;
   }
 
-  public void setActivity(String activity) {
-    this.activity = activity;
-  }
-
-
-  public ActionId entity(String entity) {
-    this.entity = entity; 
-    return this;
-  }
-
-   /**
-   * Get entity
-   * @return entity
-  **/
-  @ApiModelProperty(required = true, value = "")
-  public String getEntity() {
-    return entity;
-  }
-
-  public void setEntity(String entity) {
-    this.entity = entity;
+  public void setDirection(OrderByDirection direction) {
+    this.direction = direction;
   }
 
 
@@ -118,10 +97,9 @@ public class ActionId {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ActionId {\n");
-    sb.append("    scope: ").append(toIndentedString(scope)).append("\n");
-    sb.append("    activity: ").append(toIndentedString(activity)).append("\n");
-    sb.append("    entity: ").append(toIndentedString(entity)).append("\n");
+    sb.append("class OrderByTermDesign {\n");
+    sb.append("    field: ").append(toIndentedString(field)).append("\n");
+    sb.append("    direction: ").append(toIndentedString(direction)).append("\n");
     sb.append("}");
     return sb.toString();
   }

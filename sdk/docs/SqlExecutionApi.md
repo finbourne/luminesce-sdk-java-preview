@@ -18,7 +18,9 @@ Method | HTTP request | Description
 [**putByQueryPipe**](SqlExecutionApi.md#putByQueryPipe) | **PUT** /api/Sql/pipe | PutByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is the post-body url.
 [**putByQuerySqlite**](SqlExecutionApi.md#putByQuerySqlite) | **PUT** /api/Sql/sqlite | PutByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body url.
 [**putByQueryXml**](SqlExecutionApi.md#putByQueryXml) | **PUT** /api/Sql/xml | PutByQueryXml: Executes Sql, returned in Xml format, where the sql is the post-body url.
+[**putQueryDesignToSql**](SqlExecutionApi.md#putQueryDesignToSql) | **PUT** /api/Sql/fromdesign | [EXPERIMENTAL] PutQueryDesignToSql: Generates SQL from a structured query design
 [**putQueryToFormat**](SqlExecutionApi.md#putQueryToFormat) | **PUT** /api/Sql/pretty | PutQueryToFormat: Executes Sql, returned in JSON format, where the sql is the post-body url.
+[**putSqlToQueryDesign**](SqlExecutionApi.md#putSqlToQueryDesign) | **PUT** /api/Sql/todesign | [EXPERIMENTAL] PutSqlToQueryDesign: Generates a SQL-design object from SQL string, if possible.
 
 
 <a name="getByQueryCsv"></a>
@@ -565,7 +567,19 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
+    String body = 
+SELECT
+   [TableName],
+   Count(distinct [FieldName]) as [NumberOfFields]
+FROM
+   [Sys.Field]
+WHERE
+   ([TableName] = 'Sys.Registration')
+GROUP BY
+   [TableName]
+ORDER BY
+   [DataType]
+LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -643,7 +657,19 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
+    String body = 
+SELECT
+   [TableName],
+   Count(distinct [FieldName]) as [NumberOfFields]
+FROM
+   [Sys.Field]
+WHERE
+   ([TableName] = 'Sys.Registration')
+GROUP BY
+   [TableName]
+ORDER BY
+   [DataType]
+LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
@@ -715,7 +741,19 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
+    String body = 
+SELECT
+   [TableName],
+   Count(distinct [FieldName]) as [NumberOfFields]
+FROM
+   [Sys.Field]
+WHERE
+   ([TableName] = 'Sys.Registration')
+GROUP BY
+   [TableName]
+ORDER BY
+   [DataType]
+LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     Boolean jsonProper = false; // Boolean | Should this be text/json (not json-encoded-as-a-string)
@@ -789,7 +827,19 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
+    String body = 
+SELECT
+   [TableName],
+   Count(distinct [FieldName]) as [NumberOfFields]
+FROM
+   [Sys.Field]
+WHERE
+   ([TableName] = 'Sys.Registration')
+GROUP BY
+   [TableName]
+ORDER BY
+   [DataType]
+LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
@@ -861,7 +911,19 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
+    String body = 
+SELECT
+   [TableName],
+   Count(distinct [FieldName]) as [NumberOfFields]
+FROM
+   [Sys.Field]
+WHERE
+   ([TableName] = 'Sys.Registration')
+GROUP BY
+   [TableName]
+ORDER BY
+   [DataType]
+LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -935,7 +997,19 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
+    String body = 
+SELECT
+   [TableName],
+   Count(distinct [FieldName]) as [NumberOfFields]
+FROM
+   [Sys.Field]
+WHERE
+   ([TableName] = 'Sys.Registration')
+GROUP BY
+   [TableName]
+ORDER BY
+   [DataType]
+LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
@@ -1007,7 +1081,19 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
+    String body = 
+SELECT
+   [TableName],
+   Count(distinct [FieldName]) as [NumberOfFields]
+FROM
+   [Sys.Field]
+WHERE
+   ([TableName] = 'Sys.Registration')
+GROUP BY
+   [TableName]
+ORDER BY
+   [DataType]
+LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -1053,6 +1139,74 @@ Name | Type | Description  | Notes
 **200** | Success |  -  |
 **400** | Bad Request |  -  |
 
+<a name="putQueryDesignToSql"></a>
+# **putQueryDesignToSql**
+> String putQueryDesignToSql(queryDesign)
+
+[EXPERIMENTAL] PutQueryDesignToSql: Generates SQL from a structured query design
+
+SQL Designer specification to generate SQL from
+
+### Example
+```java
+// Import classes:
+import com.finbourne.luminesce.ApiClient;
+import com.finbourne.luminesce.ApiException;
+import com.finbourne.luminesce.Configuration;
+import com.finbourne.luminesce.auth.*;
+import com.finbourne.luminesce.models.*;
+import com.finbourne.luminesce.api.SqlExecutionApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    
+    // Configure OAuth2 access token for authorization: oauth2
+    OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+    oauth2.setAccessToken("YOUR ACCESS TOKEN");
+
+    SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
+    QueryDesign queryDesign = new QueryDesign(); // QueryDesign | Structured Query design object to generate SQL from
+    try {
+      String result = apiInstance.putQueryDesignToSql(queryDesign);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling SqlExecutionApi#putQueryDesignToSql");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **queryDesign** | [**QueryDesign**](QueryDesign.md)| Structured Query design object to generate SQL from |
+
+### Return type
+
+**String**
+
+### Authorization
+
+[oauth2](../README.md#oauth2)
+
+### HTTP request headers
+
+ - **Content-Type**: application/json-patch+json, application/json, text/json, application/_*+json
+ - **Accept**: text/plain, application/json, text/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success |  -  |
+**400** | Bad Request |  -  |
+
 <a name="putQueryToFormat"></a>
 # **putQueryToFormat**
 > String putQueryToFormat(body, trailingCommas, uppercaseKeywords, breakJoinOnSections, spaceAfterExpandedComma, keywordStandardization, expandCommaLists, expandInLists, expandBooleanExpressions, expandBetweenConditions, expandCaseStatements, maxLineWidth)
@@ -1081,7 +1235,19 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = select * from sys.field; // String | LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it
+    String body = 
+SELECT
+   [TableName],
+   Count(distinct [FieldName]) as [NumberOfFields]
+FROM
+   [Sys.Field]
+WHERE
+   ([TableName] = 'Sys.Registration')
+GROUP BY
+   [TableName]
+ORDER BY
+   [DataType]
+LIMIT 42; // String | LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it
     Boolean trailingCommas = true; // Boolean | Should commas be after an expression (as opposed to before)
     Boolean uppercaseKeywords = false; // Boolean | Should key words be capitalized
     Boolean breakJoinOnSections = true; // Boolean | Should clauses on joins be given line breaks?
@@ -1123,6 +1289,88 @@ Name | Type | Description  | Notes
  **expandBetweenConditions** | **Boolean**| Should between conditions have line breaks added? | [optional] [default to true]
  **expandCaseStatements** | **Boolean**| Should case-statements have line breaks added? | [optional] [default to true]
  **maxLineWidth** | **Integer**| Maximum number of characters to allow on one line (if possible) | [optional] [default to 120]
+
+### Return type
+
+**String**
+
+### Authorization
+
+[oauth2](../README.md#oauth2)
+
+### HTTP request headers
+
+ - **Content-Type**: text/plain
+ - **Accept**: text/plain, application/json, text/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Success |  -  |
+**400** | Bad Request |  -  |
+
+<a name="putSqlToQueryDesign"></a>
+# **putSqlToQueryDesign**
+> String putSqlToQueryDesign(body, validateWithMetadata)
+
+[EXPERIMENTAL] PutSqlToQueryDesign: Generates a SQL-design object from SQL string, if possible.
+
+SQL to attempt to create a Design object from
+
+### Example
+```java
+// Import classes:
+import com.finbourne.luminesce.ApiClient;
+import com.finbourne.luminesce.ApiException;
+import com.finbourne.luminesce.Configuration;
+import com.finbourne.luminesce.auth.*;
+import com.finbourne.luminesce.models.*;
+import com.finbourne.luminesce.api.SqlExecutionApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    
+    // Configure OAuth2 access token for authorization: oauth2
+    OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
+    oauth2.setAccessToken("YOUR ACCESS TOKEN");
+
+    SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
+    String body = 
+SELECT
+   [TableName],
+   Count(distinct [FieldName]) as [NumberOfFields]
+FROM
+   [Sys.Field]
+WHERE
+   ([TableName] = 'Sys.Registration')
+GROUP BY
+   [TableName]
+ORDER BY
+   [DataType]
+LIMIT 42; // String | SQL query to generate the design object from
+    Boolean validateWithMetadata = true; // Boolean | Should the table be validated against the users' view of Sys.Field to fill in DataTypes, etc.?
+    try {
+      String result = apiInstance.putSqlToQueryDesign(body, validateWithMetadata);
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling SqlExecutionApi#putSqlToQueryDesign");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **body** | **String**| SQL query to generate the design object from |
+ **validateWithMetadata** | **Boolean**| Should the table be validated against the users&#39; view of Sys.Field to fill in DataTypes, etc.? | [optional] [default to true]
 
 ### Return type
 

@@ -15,6 +15,7 @@ package com.finbourne.luminesce.model;
 
 import java.util.Objects;
 import java.util.Arrays;
+import io.swagger.annotations.ApiModel;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.IOException;
@@ -24,38 +25,30 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * Gets or Sets BackgroundQueryState
+ * Aggregation function type
  */
-@JsonAdapter(BackgroundQueryState.Adapter.class)
-public enum BackgroundQueryState {
+@JsonAdapter(AggregateFunction.Adapter.class)
+public enum AggregateFunction {
   
-  NEW("New"),
+  COUNT("count"),
   
-  RUNNING("Running"),
+  COUNT_DISTINCT("count_distinct"),
   
-  ERRORED("Errored"),
+  SUM("sum"),
   
-  CANCELLED("Cancelled"),
+  TOTAL("total"),
   
-  EXECUTED("Executed"),
+  AVG("avg"),
   
-  EXECUTEDNOSERIALIZATIONREQUIRED("ExecutedNoSerializationRequired"),
+  MIN("min"),
   
-  SERIALIZED("Serialized"),
+  MAX("max"),
   
-  SERIALIZATIONFAILED("SerializationFailed"),
-  
-  ATTEMPTINGTODESERIALIZE("AttemptingToDeserialize"),
-  
-  LOADED("Loaded"),
-  
-  CLEARED("Cleared"),
-  
-  DISPOSED("Disposed");
+  GROUP_CONCAT("group_concat");
 
   private String value;
 
-  BackgroundQueryState(String value) {
+  AggregateFunction(String value) {
     this.value = value;
   }
 
@@ -68,8 +61,8 @@ public enum BackgroundQueryState {
     return String.valueOf(value);
   }
 
-  public static BackgroundQueryState fromValue(String value) {
-    for (BackgroundQueryState b : BackgroundQueryState.values()) {
+  public static AggregateFunction fromValue(String value) {
+    for (AggregateFunction b : AggregateFunction.values()) {
       if (b.value.equals(value)) {
         return b;
       }
@@ -77,16 +70,16 @@ public enum BackgroundQueryState {
     throw new IllegalArgumentException("Unexpected value '" + value + "'");
   }
 
-  public static class Adapter extends TypeAdapter<BackgroundQueryState> {
+  public static class Adapter extends TypeAdapter<AggregateFunction> {
     @Override
-    public void write(final JsonWriter jsonWriter, final BackgroundQueryState enumeration) throws IOException {
+    public void write(final JsonWriter jsonWriter, final AggregateFunction enumeration) throws IOException {
       jsonWriter.value(enumeration.getValue());
     }
 
     @Override
-    public BackgroundQueryState read(final JsonReader jsonReader) throws IOException {
+    public AggregateFunction read(final JsonReader jsonReader) throws IOException {
       String value = jsonReader.nextString();
-      return BackgroundQueryState.fromValue(value);
+      return AggregateFunction.fromValue(value);
     }
   }
 }

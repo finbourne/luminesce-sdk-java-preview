@@ -24,38 +24,18 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * Gets or Sets BackgroundQueryState
+ * Gets or Sets FieldType
  */
-@JsonAdapter(BackgroundQueryState.Adapter.class)
-public enum BackgroundQueryState {
+@JsonAdapter(FieldType.Adapter.class)
+public enum FieldType {
   
-  NEW("New"),
+  COLUMN("Column"),
   
-  RUNNING("Running"),
-  
-  ERRORED("Errored"),
-  
-  CANCELLED("Cancelled"),
-  
-  EXECUTED("Executed"),
-  
-  EXECUTEDNOSERIALIZATIONREQUIRED("ExecutedNoSerializationRequired"),
-  
-  SERIALIZED("Serialized"),
-  
-  SERIALIZATIONFAILED("SerializationFailed"),
-  
-  ATTEMPTINGTODESERIALIZE("AttemptingToDeserialize"),
-  
-  LOADED("Loaded"),
-  
-  CLEARED("Cleared"),
-  
-  DISPOSED("Disposed");
+  PARAMETER("Parameter");
 
   private String value;
 
-  BackgroundQueryState(String value) {
+  FieldType(String value) {
     this.value = value;
   }
 
@@ -68,8 +48,8 @@ public enum BackgroundQueryState {
     return String.valueOf(value);
   }
 
-  public static BackgroundQueryState fromValue(String value) {
-    for (BackgroundQueryState b : BackgroundQueryState.values()) {
+  public static FieldType fromValue(String value) {
+    for (FieldType b : FieldType.values()) {
       if (b.value.equals(value)) {
         return b;
       }
@@ -77,16 +57,16 @@ public enum BackgroundQueryState {
     throw new IllegalArgumentException("Unexpected value '" + value + "'");
   }
 
-  public static class Adapter extends TypeAdapter<BackgroundQueryState> {
+  public static class Adapter extends TypeAdapter<FieldType> {
     @Override
-    public void write(final JsonWriter jsonWriter, final BackgroundQueryState enumeration) throws IOException {
+    public void write(final JsonWriter jsonWriter, final FieldType enumeration) throws IOException {
       jsonWriter.value(enumeration.getValue());
     }
 
     @Override
-    public BackgroundQueryState read(final JsonReader jsonReader) throws IOException {
+    public FieldType read(final JsonReader jsonReader) throws IOException {
       String value = jsonReader.nextString();
-      return BackgroundQueryState.fromValue(value);
+      return FieldType.fromValue(value);
     }
   }
 }

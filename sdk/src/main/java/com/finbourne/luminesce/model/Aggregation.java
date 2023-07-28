@@ -15,6 +15,7 @@ package com.finbourne.luminesce.model;
 
 import java.util.Objects;
 import java.util.Arrays;
+import com.finbourne.luminesce.model.AggregateFunction;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
@@ -25,77 +26,55 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * ActionId
+ * How to aggregate over a field
  */
+@ApiModel(description = "How to aggregate over a field")
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
-public class ActionId {
-  public static final String SERIALIZED_NAME_SCOPE = "scope";
-  @SerializedName(SERIALIZED_NAME_SCOPE)
-  private String scope;
+public class Aggregation {
+  public static final String SERIALIZED_NAME_TYPE = "type";
+  @SerializedName(SERIALIZED_NAME_TYPE)
+  private AggregateFunction type;
 
-  public static final String SERIALIZED_NAME_ACTIVITY = "activity";
-  @SerializedName(SERIALIZED_NAME_ACTIVITY)
-  private String activity;
-
-  public static final String SERIALIZED_NAME_ENTITY = "entity";
-  @SerializedName(SERIALIZED_NAME_ENTITY)
-  private String entity;
+  public static final String SERIALIZED_NAME_ALIAS = "alias";
+  @SerializedName(SERIALIZED_NAME_ALIAS)
+  private String alias;
 
 
-  public ActionId scope(String scope) {
-    this.scope = scope; 
+  public Aggregation type(AggregateFunction type) {
+    this.type = type; 
     return this;
   }
 
    /**
-   * Get scope
-   * @return scope
+   * Get type
+   * @return type
   **/
   @ApiModelProperty(required = true, value = "")
-  public String getScope() {
-    return scope;
+  public AggregateFunction getType() {
+    return type;
   }
 
-  public void setScope(String scope) {
-    this.scope = scope;
+  public void setType(AggregateFunction type) {
+    this.type = type;
   }
 
 
-  public ActionId activity(String activity) {
-    this.activity = activity; 
+  public Aggregation alias(String alias) {
+    this.alias = alias; 
     return this;
   }
 
    /**
-   * Get activity
-   * @return activity
+   * Alias, if any, for the Aggregate expression when selected
+   * @return alias
   **/
-  @ApiModelProperty(required = true, value = "")
-  public String getActivity() {
-    return activity;
+  @ApiModelProperty(value = "Alias, if any, for the Aggregate expression when selected")
+  public String getAlias() {
+    return alias;
   }
 
-  public void setActivity(String activity) {
-    this.activity = activity;
-  }
-
-
-  public ActionId entity(String entity) {
-    this.entity = entity; 
-    return this;
-  }
-
-   /**
-   * Get entity
-   * @return entity
-  **/
-  @ApiModelProperty(required = true, value = "")
-  public String getEntity() {
-    return entity;
-  }
-
-  public void setEntity(String entity) {
-    this.entity = entity;
+  public void setAlias(String alias) {
+    this.alias = alias;
   }
 
 
@@ -118,10 +97,9 @@ public class ActionId {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ActionId {\n");
-    sb.append("    scope: ").append(toIndentedString(scope)).append("\n");
-    sb.append("    activity: ").append(toIndentedString(activity)).append("\n");
-    sb.append("    entity: ").append(toIndentedString(entity)).append("\n");
+    sb.append("class Aggregation {\n");
+    sb.append("    type: ").append(toIndentedString(type)).append("\n");
+    sb.append("    alias: ").append(toIndentedString(alias)).append("\n");
     sb.append("}");
     return sb.toString();
   }

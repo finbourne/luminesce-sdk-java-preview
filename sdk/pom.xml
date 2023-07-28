@@ -5,7 +5,7 @@
     <artifactId>luminesce-sdk-preview</artifactId>
     <packaging>jar</packaging>
     <name>luminesce-sdk-preview</name>
-    <version>1.12.906</version>
+    <version>1.13.202</version>
     <url>https://github.com/finbourne/luminesce-sdk-java-preview/</url>
     <description>Luminesce SDK Java Preview</description>
     <scm>

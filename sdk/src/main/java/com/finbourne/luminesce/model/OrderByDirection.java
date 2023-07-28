@@ -15,6 +15,7 @@ package com.finbourne.luminesce.model;
 
 import java.util.Objects;
 import java.util.Arrays;
+import io.swagger.annotations.ApiModel;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.IOException;
@@ -24,38 +25,18 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * Gets or Sets BackgroundQueryState
+ * Direction of Order By terms in the Order By clause
  */
-@JsonAdapter(BackgroundQueryState.Adapter.class)
-public enum BackgroundQueryState {
+@JsonAdapter(OrderByDirection.Adapter.class)
+public enum OrderByDirection {
   
-  NEW("New"),
+  ASC("asc"),
   
-  RUNNING("Running"),
-  
-  ERRORED("Errored"),
-  
-  CANCELLED("Cancelled"),
-  
-  EXECUTED("Executed"),
-  
-  EXECUTEDNOSERIALIZATIONREQUIRED("ExecutedNoSerializationRequired"),
-  
-  SERIALIZED("Serialized"),
-  
-  SERIALIZATIONFAILED("SerializationFailed"),
-  
-  ATTEMPTINGTODESERIALIZE("AttemptingToDeserialize"),
-  
-  LOADED("Loaded"),
-  
-  CLEARED("Cleared"),
-  
-  DISPOSED("Disposed");
+  DESC("desc");
 
   private String value;
 
-  BackgroundQueryState(String value) {
+  OrderByDirection(String value) {
     this.value = value;
   }
 
@@ -68,8 +49,8 @@ public enum BackgroundQueryState {
     return String.valueOf(value);
   }
 
-  public static BackgroundQueryState fromValue(String value) {
-    for (BackgroundQueryState b : BackgroundQueryState.values()) {
+  public static OrderByDirection fromValue(String value) {
+    for (OrderByDirection b : OrderByDirection.values()) {
       if (b.value.equals(value)) {
         return b;
       }
@@ -77,16 +58,16 @@ public enum BackgroundQueryState {
     throw new IllegalArgumentException("Unexpected value '" + value + "'");
   }
 
-  public static class Adapter extends TypeAdapter<BackgroundQueryState> {
+  public static class Adapter extends TypeAdapter<OrderByDirection> {
     @Override
-    public void write(final JsonWriter jsonWriter, final BackgroundQueryState enumeration) throws IOException {
+    public void write(final JsonWriter jsonWriter, final OrderByDirection enumeration) throws IOException {
       jsonWriter.value(enumeration.getValue());
     }
 
     @Override
-    public BackgroundQueryState read(final JsonReader jsonReader) throws IOException {
+    public OrderByDirection read(final JsonReader jsonReader) throws IOException {
       String value = jsonReader.nextString();
-      return BackgroundQueryState.fromValue(value);
+      return OrderByDirection.fromValue(value);
     }
   }
 }

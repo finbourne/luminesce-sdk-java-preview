@@ -6,7 +6,7 @@ info:
     url: https://www.finbourne.com
   termsOfService: https://www.finbourne.com/legal/terms-conditions
   title: FINBOURNE Luminesce Web API
-  version: 1.12.906
+  version: 1.13.202
   x-logo:
     url: https://www.lusid.com/app/assets/logo_white.png
     backgroundColor: '#415464'
@@ -76,12 +76,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -299,12 +341,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -448,12 +532,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -629,7 +755,20 @@ paths:
       requestBody:
         content:
           text/plain:
-            example: Apple
+            example: |2-
+
+              SELECT
+                 [TableName],
+                 Count(distinct [FieldName]) as [NumberOfFields]
+              FROM
+                 [Sys.Field]
+              WHERE
+                 ([TableName] = 'Sys.Registration')
+              GROUP BY
+                 [TableName]
+              ORDER BY
+                 [DataType]
+              LIMIT 42
             schema:
               type: string
         description: "A \"search\" value (e.g. 'Apple' on an instrument search, a\
@@ -821,7 +960,20 @@ paths:
       requestBody:
         content:
           text/plain:
-            example: select * from sys.field
+            example: |2-
+
+              SELECT
+                 [TableName],
+                 Count(distinct [FieldName]) as [NumberOfFields]
+              FROM
+                 [Sys.Field]
+              WHERE
+                 ([TableName] = 'Sys.Registration')
+              GROUP BY
+                 [TableName]
+              ORDER BY
+                 [DataType]
+              LIMIT 42
             schema:
               type: string
         description: LuminesceSql to Execute (may be multi-line)
@@ -830,12 +982,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -933,12 +1127,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -1007,7 +1243,20 @@ paths:
       requestBody:
         content:
           text/plain:
-            example: select * from sys.field
+            example: |2-
+
+              SELECT
+                 [TableName],
+                 Count(distinct [FieldName]) as [NumberOfFields]
+              FROM
+                 [Sys.Field]
+              WHERE
+                 ([TableName] = 'Sys.Registration')
+              GROUP BY
+                 [TableName]
+              ORDER BY
+                 [DataType]
+              LIMIT 42
             schema:
               type: string
         description: LuminesceSql to Execute (may be multi-line)
@@ -1016,12 +1265,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -1092,12 +1383,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -1120,6 +1453,194 @@ paths:
       tags:
       - Sql Execution
       x-fbn-apistatus: Stable
+      x-accepts: application/json
+  /api/Sql/fromdesign:
+    put:
+      description: SQL Designer specification to generate SQL from
+      operationId: PutQueryDesignToSql
+      requestBody:
+        content:
+          application/json-patch+json:
+            example:
+              tableName: Sys.Field
+              fields:
+              - name: TableName
+                dataType: Text
+                shouldSelect: true
+                filters:
+                - operator: Eq
+                  value: Sys.Registration
+                aggregations: []
+              - name: FieldName
+                dataType: Text
+                shouldSelect: true
+                filters: []
+                aggregations:
+                - type: count_distinct
+                  alias: NumberOfFields
+              orderBy:
+              - field: DataType
+                direction: asc
+              limit: 42
+              warnings: []
+              availableFields: []
+            schema:
+              $ref: '#/components/schemas/QueryDesign'
+          application/json:
+            example:
+              tableName: Sys.Field
+              fields:
+              - name: TableName
+                dataType: Text
+                shouldSelect: true
+                filters:
+                - operator: Eq
+                  value: Sys.Registration
+                aggregations: []
+              - name: FieldName
+                dataType: Text
+                shouldSelect: true
+                filters: []
+                aggregations:
+                - type: count_distinct
+                  alias: NumberOfFields
+              orderBy:
+              - field: DataType
+                direction: asc
+              limit: 42
+              warnings: []
+              availableFields: []
+            schema:
+              $ref: '#/components/schemas/QueryDesign'
+          text/json:
+            example:
+              tableName: Sys.Field
+              fields:
+              - name: TableName
+                dataType: Text
+                shouldSelect: true
+                filters:
+                - operator: Eq
+                  value: Sys.Registration
+                aggregations: []
+              - name: FieldName
+                dataType: Text
+                shouldSelect: true
+                filters: []
+                aggregations:
+                - type: count_distinct
+                  alias: NumberOfFields
+              orderBy:
+              - field: DataType
+                direction: asc
+              limit: 42
+              warnings: []
+              availableFields: []
+            schema:
+              $ref: '#/components/schemas/QueryDesign'
+          application/*+json:
+            example:
+              tableName: Sys.Field
+              fields:
+              - name: TableName
+                dataType: Text
+                shouldSelect: true
+                filters:
+                - operator: Eq
+                  value: Sys.Registration
+                aggregations: []
+              - name: FieldName
+                dataType: Text
+                shouldSelect: true
+                filters: []
+                aggregations:
+                - type: count_distinct
+                  alias: NumberOfFields
+              orderBy:
+              - field: DataType
+                direction: asc
+              limit: 42
+              warnings: []
+              availableFields: []
+            schema:
+              $ref: '#/components/schemas/QueryDesign'
+        description: Structured Query design object to generate SQL from
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
+              schema:
+                type: string
+            application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
+              schema:
+                type: string
+            text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] PutQueryDesignToSql: Generates SQL from a structured
+        query design'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-contentType: application/json-patch+json
       x-accepts: application/json
   /api/Sql/json:
     put:
@@ -1176,7 +1697,20 @@ paths:
       requestBody:
         content:
           text/plain:
-            example: select * from sys.field
+            example: |2-
+
+              SELECT
+                 [TableName],
+                 Count(distinct [FieldName]) as [NumberOfFields]
+              FROM
+                 [Sys.Field]
+              WHERE
+                 ([TableName] = 'Sys.Registration')
+              GROUP BY
+                 [TableName]
+              ORDER BY
+                 [DataType]
+              LIMIT 42
             schema:
               type: string
         description: LuminesceSql to Execute (may be multi-line)
@@ -1185,12 +1719,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -1271,12 +1847,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -1345,7 +1963,20 @@ paths:
       requestBody:
         content:
           text/plain:
-            example: select * from sys.field
+            example: |2-
+
+              SELECT
+                 [TableName],
+                 Count(distinct [FieldName]) as [NumberOfFields]
+              FROM
+                 [Sys.Field]
+              WHERE
+                 ([TableName] = 'Sys.Registration')
+              GROUP BY
+                 [TableName]
+              ORDER BY
+                 [DataType]
+              LIMIT 42
             schema:
               type: string
         description: LuminesceSql to Execute (may be multi-line)
@@ -1354,12 +1985,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -1430,12 +2103,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -1515,7 +2230,20 @@ paths:
       requestBody:
         content:
           text/plain:
-            example: select * from sys.field
+            example: |2-
+
+              SELECT
+                 [TableName],
+                 Count(distinct [FieldName]) as [NumberOfFields]
+              FROM
+                 [Sys.Field]
+              WHERE
+                 ([TableName] = 'Sys.Registration')
+              GROUP BY
+                 [TableName]
+              ORDER BY
+                 [DataType]
+              LIMIT 42
             schema:
               type: string
         description: LuminesceSql to Execute (may be multi-line)
@@ -1524,12 +2252,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -1611,12 +2381,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -1776,7 +2588,20 @@ paths:
       requestBody:
         content:
           text/plain:
-            example: select * from sys.field
+            example: |2-
+
+              SELECT
+                 [TableName],
+                 Count(distinct [FieldName]) as [NumberOfFields]
+              FROM
+                 [Sys.Field]
+              WHERE
+                 ([TableName] = 'Sys.Registration')
+              GROUP BY
+                 [TableName]
+              ORDER BY
+                 [DataType]
+              LIMIT 42
             schema:
               type: string
         description: LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt
@@ -1786,12 +2611,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -1861,7 +2728,20 @@ paths:
       requestBody:
         content:
           text/plain:
-            example: select * from sys.field
+            example: |2-
+
+              SELECT
+                 [TableName],
+                 Count(distinct [FieldName]) as [NumberOfFields]
+              FROM
+                 [Sys.Field]
+              WHERE
+                 ([TableName] = 'Sys.Registration')
+              GROUP BY
+                 [TableName]
+              ORDER BY
+                 [DataType]
+              LIMIT 42
             schema:
               type: string
         description: LuminesceSql to Execute (may be multi-line)
@@ -1870,12 +2750,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -1946,12 +2868,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -1974,6 +2938,146 @@ paths:
       tags:
       - Sql Execution
       x-fbn-apistatus: Stable
+      x-accepts: application/json
+  /api/Sql/todesign:
+    put:
+      description: SQL to attempt to create a Design object from
+      operationId: PutSqlToQueryDesign
+      parameters:
+      - description: Should the table be validated against the users' view of Sys.Field
+          to fill in DataTypes, etc.?
+        explode: true
+        in: query
+        name: validateWithMetadata
+        required: false
+        schema:
+          default: true
+          type: boolean
+        style: form
+        x-nullable: true
+      requestBody:
+        content:
+          text/plain:
+            example: |2-
+
+              SELECT
+                 [TableName],
+                 Count(distinct [FieldName]) as [NumberOfFields]
+              FROM
+                 [Sys.Field]
+              WHERE
+                 ([TableName] = 'Sys.Registration')
+              GROUP BY
+                 [TableName]
+              ORDER BY
+                 [DataType]
+              LIMIT 42
+            schema:
+              type: string
+        description: SQL query to generate the design object from
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              example:
+                tableName: Sys.Field
+                fields:
+                - name: TableName
+                  dataType: Text
+                  shouldSelect: true
+                  filters:
+                  - operator: Eq
+                    value: Sys.Registration
+                  aggregations: []
+                - name: FieldName
+                  dataType: Text
+                  shouldSelect: true
+                  filters: []
+                  aggregations:
+                  - type: count_distinct
+                    alias: NumberOfFields
+                orderBy:
+                - field: DataType
+                  direction: asc
+                limit: 42
+                warnings: []
+                availableFields: []
+              schema:
+                type: string
+            application/json:
+              example:
+                tableName: Sys.Field
+                fields:
+                - name: TableName
+                  dataType: Text
+                  shouldSelect: true
+                  filters:
+                  - operator: Eq
+                    value: Sys.Registration
+                  aggregations: []
+                - name: FieldName
+                  dataType: Text
+                  shouldSelect: true
+                  filters: []
+                  aggregations:
+                  - type: count_distinct
+                    alias: NumberOfFields
+                orderBy:
+                - field: DataType
+                  direction: asc
+                limit: 42
+                warnings: []
+                availableFields: []
+              schema:
+                type: string
+            text/json:
+              example:
+                tableName: Sys.Field
+                fields:
+                - name: TableName
+                  dataType: Text
+                  shouldSelect: true
+                  filters:
+                  - operator: Eq
+                    value: Sys.Registration
+                  aggregations: []
+                - name: FieldName
+                  dataType: Text
+                  shouldSelect: true
+                  filters: []
+                  aggregations:
+                  - type: count_distinct
+                    alias: NumberOfFields
+                orderBy:
+                - field: DataType
+                  direction: asc
+                limit: 42
+                warnings: []
+                availableFields: []
+              schema:
+                type: string
+          description: Success
+        "400":
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LusidProblemDetails'
+          description: Bad Request
+      security:
+      - oauth2: []
+      summary: '[EXPERIMENTAL] PutSqlToQueryDesign: Generates a SQL-design object
+        from SQL string, if possible.'
+      tags:
+      - Sql Execution
+      x-fbn-apistatus: Experimental
+      x-contentType: text/plain
       x-accepts: application/json
   /api/Sql/xml:
     put:
@@ -2031,7 +3135,20 @@ paths:
       requestBody:
         content:
           text/plain:
-            example: select * from sys.field
+            example: |2-
+
+              SELECT
+                 [TableName],
+                 Count(distinct [FieldName]) as [NumberOfFields]
+              FROM
+                 [Sys.Field]
+              WHERE
+                 ([TableName] = 'Sys.Registration')
+              GROUP BY
+                 [TableName]
+              ORDER BY
+                 [DataType]
+              LIMIT 42
             schema:
               type: string
         description: LuminesceSql to Execute (may be multi-line)
@@ -2040,12 +3157,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -2127,12 +3286,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -2216,8 +3417,20 @@ paths:
       requestBody:
         content:
           text/plain:
-            example: select Str, Takes500Ms from Testing1K where UseLinq = true and
-              [Int] <= 120
+            example: |2-
+
+              SELECT
+                 [TableName],
+                 Count(distinct [FieldName]) as [NumberOfFields]
+              FROM
+                 [Sys.Field]
+              WHERE
+                 ([TableName] = 'Sys.Registration')
+              GROUP BY
+                 [TableName]
+              ORDER BY
+                 [DataType]
+              LIMIT 42
             schema:
               type: string
         description: The LuminesceSql query to kick off.
@@ -2471,12 +3684,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -2587,12 +3842,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -2700,12 +3997,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -2840,12 +4179,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -2992,12 +4373,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -3108,12 +4531,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -3259,12 +4724,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -3375,12 +4882,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -3526,12 +5075,54 @@ paths:
         "200":
           content:
             text/plain:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             application/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
             text/json:
+              example: |2-
+
+                SELECT
+                   [TableName],
+                   Count(distinct [FieldName]) as [NumberOfFields]
+                FROM
+                   [Sys.Field]
+                WHERE
+                   ([TableName] = 'Sys.Registration')
+                GROUP BY
+                   [TableName]
+                ORDER BY
+                   [DataType]
+                LIMIT 42
               schema:
                 type: string
           description: Success
@@ -3754,6 +5345,65 @@ components:
       - activity
       - entity
       - scope
+      type: object
+    AggregateFunction:
+      description: Aggregation function type
+      enum:
+      - count
+      - count_distinct
+      - sum
+      - total
+      - avg
+      - min
+      - max
+      - group_concat
+      type: string
+    Aggregation:
+      additionalProperties: false
+      description: How to aggregate over a field
+      example:
+        alias: alias
+      properties:
+        type:
+          $ref: '#/components/schemas/AggregateFunction'
+        alias:
+          description: Alias, if any, for the Aggregate expression when selected
+          maxLength: 256
+          minLength: 0
+          nullable: true
+          type: string
+      required:
+      - type
+      type: object
+    AvailableField:
+      additionalProperties: false
+      description: "Information about a field that can be designed on (regardless\
+        \ if it currently is)\r\nKind of a \"mini-available catalog entry\""
+      example:
+        isMain: true
+        name: name
+        isPrimaryKey: true
+      properties:
+        name:
+          description: Name of the Field
+          maxLength: 256
+          minLength: 0
+          type: string
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        fieldType:
+          $ref: '#/components/schemas/FieldType'
+        isMain:
+          description: Is this a Main Field within the Provider
+          nullable: true
+          type: boolean
+        isPrimaryKey:
+          description: Is this a member of the PrimaryKey of the Provider
+          nullable: true
+          type: boolean
+      required:
+      - fieldType
+      - name
       type: object
     BackgroundMultiQueryProgressResponse:
       additionalProperties: false
@@ -4278,6 +5928,37 @@ components:
       - Cleared
       - Disposed
       type: string
+    BinaryOperator:
+      enum:
+      - And
+      - Or
+      - Add
+      - Subtract
+      - Multiply
+      - Divide
+      - Mod
+      - Lt
+      - Lte
+      - Gt
+      - Gte
+      - Eq
+      - Neq
+      - In
+      - NotIn
+      - Is
+      - IsNot
+      - BitShiftLeft
+      - BitShiftRight
+      - BitwiseAnd
+      - BitwiseOr
+      - Concatenate
+      - Like
+      - NotLike
+      - Glob
+      - NotGlob
+      - Regexp
+      - NotRegexp
+      type: string
     Column:
       additionalProperties: false
       example:
@@ -4402,6 +6083,75 @@ components:
       - ProgressAndDebug
       - ExecutionKeepAlive
       type: string
+    FieldDesign:
+      additionalProperties: false
+      description: Treatment of a single field within a QueryDesign
+      example:
+        name: name
+        alias: alias
+        shouldSelect: true
+        filters:
+        - value: value
+        - value: value
+        aggregations:
+        - alias: alias
+        - alias: alias
+      properties:
+        name:
+          description: Name of the Field
+          maxLength: 256
+          minLength: 0
+          type: string
+        alias:
+          description: Alias if any (if none the Name is used)
+          maxLength: 256
+          minLength: 0
+          nullable: true
+          type: string
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        shouldSelect:
+          description: "Should this be selected? False would imply it is only being\
+            \ filtered on.\r\nIgnored when Aggregations are present"
+          type: boolean
+        filters:
+          description: Filter clauses to apply to this field (And'ed together)
+          items:
+            $ref: '#/components/schemas/FilterTermDesign'
+          nullable: true
+          type: array
+        aggregations:
+          description: Aggregations to apply (as opposed to simply selecting)
+          items:
+            $ref: '#/components/schemas/Aggregation'
+          nullable: true
+          type: array
+      required:
+      - name
+      type: object
+    FieldType:
+      enum:
+      - Column
+      - Parameter
+      type: string
+    FilterTermDesign:
+      additionalProperties: false
+      description: A single filter clause
+      example:
+        value: value
+      properties:
+        operator:
+          $ref: '#/components/schemas/BinaryOperator'
+        value:
+          description: The value to compare against (always as a string, but will
+            be formatted to the correct type)
+          maxLength: 2048
+          minLength: 0
+          type: string
+      required:
+      - operator
+      - value
+      type: object
     IdSelectorDefinition:
       additionalProperties: false
       example:
@@ -4513,6 +6263,114 @@ components:
       - InstrumentDiscovery
       - InstrumentUpsert
       type: string
+    OrderByDirection:
+      description: Direction of Order By terms in the Order By clause
+      enum:
+      - asc
+      - desc
+      type: string
+    OrderByTermDesign:
+      additionalProperties: false
+      description: A single clause within an Order BY
+      example:
+        field: field
+      properties:
+        field:
+          description: Name of the field to order by
+          maxLength: 256
+          minLength: 0
+          type: string
+        direction:
+          $ref: '#/components/schemas/OrderByDirection'
+      required:
+      - field
+      type: object
+    QueryDesign:
+      additionalProperties: false
+      description: Representation of a "designable Query" suitable for formatting
+        to SQL or being built from compliant SQL.
+      example:
+        availableFields:
+        - isMain: true
+          name: name
+          isPrimaryKey: true
+        - isMain: true
+          name: name
+          isPrimaryKey: true
+        warnings:
+        - warnings
+        - warnings
+        limit: 0
+        alias: alias
+        orderBy:
+        - field: field
+        - field: field
+        fields:
+        - name: name
+          alias: alias
+          shouldSelect: true
+          filters:
+          - value: value
+          - value: value
+          aggregations:
+          - alias: alias
+          - alias: alias
+        - name: name
+          alias: alias
+          shouldSelect: true
+          filters:
+          - value: value
+          - value: value
+          aggregations:
+          - alias: alias
+          - alias: alias
+        tableName: tableName
+      properties:
+        tableName:
+          description: Name of the table being designed
+          maxLength: 256
+          minLength: 0
+          type: string
+        alias:
+          description: Alias for the table in the generated SQL, if any
+          maxLength: 256
+          minLength: 0
+          nullable: true
+          type: string
+        fields:
+          description: Fields to be selected, aggregated over and/or filtered on
+          items:
+            $ref: '#/components/schemas/FieldDesign'
+          type: array
+        orderBy:
+          description: Order By clauses to apply
+          items:
+            $ref: '#/components/schemas/OrderByTermDesign'
+          nullable: true
+          type: array
+        limit:
+          description: Row limit to apply, if any
+          format: int32
+          nullable: true
+          type: integer
+        warnings:
+          description: Any warnings to show the user when converting from SQL to this
+            representation
+          items:
+            type: string
+          nullable: true
+          type: array
+        availableFields:
+          description: Fields that are known to be available for design when parsing
+            SQL
+          items:
+            $ref: '#/components/schemas/AvailableField'
+          nullable: true
+          type: array
+      required:
+      - fields
+      - tableName
+      type: object
     ResourceListOfAccessControlledResource:
       additionalProperties: false
       example:

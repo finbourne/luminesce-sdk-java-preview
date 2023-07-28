@@ -15,6 +15,7 @@ package com.finbourne.luminesce.model;
 
 import java.util.Objects;
 import java.util.Arrays;
+import com.finbourne.luminesce.model.BinaryOperator;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
@@ -25,77 +26,55 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 
 /**
- * ActionId
+ * A single filter clause
  */
+@ApiModel(description = "A single filter clause")
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
-public class ActionId {
-  public static final String SERIALIZED_NAME_SCOPE = "scope";
-  @SerializedName(SERIALIZED_NAME_SCOPE)
-  private String scope;
+public class FilterTermDesign {
+  public static final String SERIALIZED_NAME_OPERATOR = "operator";
+  @SerializedName(SERIALIZED_NAME_OPERATOR)
+  private BinaryOperator operator;
 
-  public static final String SERIALIZED_NAME_ACTIVITY = "activity";
-  @SerializedName(SERIALIZED_NAME_ACTIVITY)
-  private String activity;
-
-  public static final String SERIALIZED_NAME_ENTITY = "entity";
-  @SerializedName(SERIALIZED_NAME_ENTITY)
-  private String entity;
+  public static final String SERIALIZED_NAME_VALUE = "value";
+  @SerializedName(SERIALIZED_NAME_VALUE)
+  private String value;
 
 
-  public ActionId scope(String scope) {
-    this.scope = scope; 
+  public FilterTermDesign operator(BinaryOperator operator) {
+    this.operator = operator; 
     return this;
   }
 
    /**
-   * Get scope
-   * @return scope
+   * Get operator
+   * @return operator
   **/
   @ApiModelProperty(required = true, value = "")
-  public String getScope() {
-    return scope;
+  public BinaryOperator getOperator() {
+    return operator;
   }
 
-  public void setScope(String scope) {
-    this.scope = scope;
+  public void setOperator(BinaryOperator operator) {
+    this.operator = operator;
   }
 
 
-  public ActionId activity(String activity) {
-    this.activity = activity; 
+  public FilterTermDesign value(String value) {
+    this.value = value; 
     return this;
   }
 
    /**
-   * Get activity
-   * @return activity
+   * The value to compare against (always as a string, but will be formatted to the correct type)
+   * @return value
   **/
-  @ApiModelProperty(required = true, value = "")
-  public String getActivity() {
-    return activity;
+  @ApiModelProperty(required = true, value = "The value to compare against (always as a string, but will be formatted to the correct type)")
+  public String getValue() {
+    return value;
   }
 
-  public void setActivity(String activity) {
-    this.activity = activity;
-  }
-
-
-  public ActionId entity(String entity) {
-    this.entity = entity; 
-    return this;
-  }
-
-   /**
-   * Get entity
-   * @return entity
-  **/
-  @ApiModelProperty(required = true, value = "")
-  public String getEntity() {
-    return entity;
-  }
-
-  public void setEntity(String entity) {
-    this.entity = entity;
+  public void setValue(String value) {
+    this.value = value;
   }
 
 
@@ -118,10 +97,9 @@ public class ActionId {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ActionId {\n");
-    sb.append("    scope: ").append(toIndentedString(scope)).append("\n");
-    sb.append("    activity: ").append(toIndentedString(activity)).append("\n");
-    sb.append("    entity: ").append(toIndentedString(entity)).append("\n");
+    sb.append("class FilterTermDesign {\n");
+    sb.append("    operator: ").append(toIndentedString(operator)).append("\n");
+    sb.append("    value: ").append(toIndentedString(value)).append("\n");
     sb.append("}");
     return sb.toString();
   }

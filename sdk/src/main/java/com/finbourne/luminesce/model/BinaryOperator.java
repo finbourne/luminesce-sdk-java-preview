@@ -24,38 +24,70 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 /**
- * Gets or Sets BackgroundQueryState
+ * Gets or Sets BinaryOperator
  */
-@JsonAdapter(BackgroundQueryState.Adapter.class)
-public enum BackgroundQueryState {
+@JsonAdapter(BinaryOperator.Adapter.class)
+public enum BinaryOperator {
   
-  NEW("New"),
+  AND("And"),
   
-  RUNNING("Running"),
+  OR("Or"),
   
-  ERRORED("Errored"),
+  ADD("Add"),
   
-  CANCELLED("Cancelled"),
+  SUBTRACT("Subtract"),
   
-  EXECUTED("Executed"),
+  MULTIPLY("Multiply"),
   
-  EXECUTEDNOSERIALIZATIONREQUIRED("ExecutedNoSerializationRequired"),
+  DIVIDE("Divide"),
   
-  SERIALIZED("Serialized"),
+  MOD("Mod"),
   
-  SERIALIZATIONFAILED("SerializationFailed"),
+  LT("Lt"),
   
-  ATTEMPTINGTODESERIALIZE("AttemptingToDeserialize"),
+  LTE("Lte"),
   
-  LOADED("Loaded"),
+  GT("Gt"),
   
-  CLEARED("Cleared"),
+  GTE("Gte"),
   
-  DISPOSED("Disposed");
+  EQ("Eq"),
+  
+  NEQ("Neq"),
+  
+  IN("In"),
+  
+  NOTIN("NotIn"),
+  
+  IS("Is"),
+  
+  ISNOT("IsNot"),
+  
+  BITSHIFTLEFT("BitShiftLeft"),
+  
+  BITSHIFTRIGHT("BitShiftRight"),
+  
+  BITWISEAND("BitwiseAnd"),
+  
+  BITWISEOR("BitwiseOr"),
+  
+  CONCATENATE("Concatenate"),
+  
+  LIKE("Like"),
+  
+  NOTLIKE("NotLike"),
+  
+  GLOB("Glob"),
+  
+  NOTGLOB("NotGlob"),
+  
+  REGEXP("Regexp"),
+  
+  NOTREGEXP("NotRegexp");
 
   private String value;
 
-  BackgroundQueryState(String value) {
+  BinaryOperator(String value) {
     this.value = value;
   }
 
@@ -68,8 +100,8 @@ public enum BackgroundQueryState {
     return String.valueOf(value);
   }
 
-  public static BackgroundQueryState fromValue(String value) {
-    for (BackgroundQueryState b : BackgroundQueryState.values()) {
+  public static BinaryOperator fromValue(String value) {
+    for (BinaryOperator b : BinaryOperator.values()) {
       if (b.value.equals(value)) {
         return b;
       }
@@ -77,16 +109,16 @@ public enum BackgroundQueryState {
     throw new IllegalArgumentException("Unexpected value '" + value + "'");
   }
 
-  public static class Adapter extends TypeAdapter<BackgroundQueryState> {
+  public static class Adapter extends TypeAdapter<BinaryOperator> {
     @Override
-    public void write(final JsonWriter jsonWriter, final BackgroundQueryState enumeration) throws IOException {
+    public void write(final JsonWriter jsonWriter, final BinaryOperator enumeration) throws IOException {
       jsonWriter.value(enumeration.getValue());
     }
 
     @Override
-    public BackgroundQueryState read(final JsonReader jsonReader) throws IOException {
+    public BinaryOperator read(final JsonReader jsonReader) throws IOException {
       String value = jsonReader.nextString();
-      return BackgroundQueryState.fromValue(value);
+      return BinaryOperator.fromValue(value);
     }
   }
 }

@@ -173,7 +173,7 @@ Name | Type | Description  | Notes
 
 <a name="fetchQueryResultExcel"></a>
 # **fetchQueryResultExcel**
-> String fetchQueryResultExcel(executionId, sortBy, filter, select, groupBy)
+> File fetchQueryResultExcel(executionId, sortBy, filter, select, groupBy)
 
 FetchQueryResultExcel: Fetches the result from a previously started query, in Excel format.
 
@@ -205,7 +205,7 @@ public class Example {
     String select = "select_example"; // String | Default is null (meaning return all columns in the original query itself).  The values are in terms of the result column name from the original data set and are comma delimited.  The power of this comes in that you may aggregate the data if you wish  (that is the main reason for allowing this, in fact).  e.g.:  - `MyField`  - `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)  - `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)  - `count(distinct x) as numOfXs`  If there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ].   e.g.  - `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`    where you would likely want to pass `1` as the `groupBy` also.
     String groupBy = "groupBy_example"; // String | Groups by the specified fields.              A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).              e.g. `2,3`, `myColumn`.              Default is null (meaning no grouping will be performed on the selected columns).              This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.              Only specify this if you are selecting aggregations in the \"select\" parameter.
     try {
-      String result = apiInstance.fetchQueryResultExcel(executionId, sortBy, filter, select, groupBy);
+      File result = apiInstance.fetchQueryResultExcel(executionId, sortBy, filter, select, groupBy);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlBackgroundExecutionApi#fetchQueryResultExcel");
@@ -230,7 +230,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -491,7 +491,7 @@ Name | Type | Description  | Notes
 
 <a name="fetchQueryResultParquet"></a>
 # **fetchQueryResultParquet**
-> String fetchQueryResultParquet(executionId, sortBy, filter, select, groupBy)
+> File fetchQueryResultParquet(executionId, sortBy, filter, select, groupBy)
 
 FetchQueryResultParquet: Fetches the result from a previously started query, in Parquet format.
 
@@ -523,7 +523,7 @@ public class Example {
     String select = "select_example"; // String | Default is null (meaning return all columns in the original query itself).  The values are in terms of the result column name from the original data set and are comma delimited.  The power of this comes in that you may aggregate the data if you wish  (that is the main reason for allowing this, in fact).  e.g.:  - `MyField`  - `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)  - `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)  - `count(distinct x) as numOfXs`  If there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ].   e.g.  - `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`    where you would likely want to pass `1` as the `groupBy` also.
     String groupBy = "groupBy_example"; // String | Groups by the specified fields.              A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).              e.g. `2,3`, `myColumn`.              Default is null (meaning no grouping will be performed on the selected columns).              This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.              Only specify this if you are selecting aggregations in the \"select\" parameter.
     try {
-      String result = apiInstance.fetchQueryResultParquet(executionId, sortBy, filter, select, groupBy);
+      File result = apiInstance.fetchQueryResultParquet(executionId, sortBy, filter, select, groupBy);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlBackgroundExecutionApi#fetchQueryResultParquet");
@@ -548,7 +548,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -649,7 +649,7 @@ Name | Type | Description  | Notes
 
 <a name="fetchQueryResultSqlite"></a>
 # **fetchQueryResultSqlite**
-> String fetchQueryResultSqlite(executionId, sortBy, filter, select, groupBy)
+> File fetchQueryResultSqlite(executionId, sortBy, filter, select, groupBy)
 
 FetchQueryResultSqlite: Fetches the result from a previously started query, in SqLite format.
 
@@ -681,7 +681,7 @@ public class Example {
     String select = "select_example"; // String | Default is null (meaning return all columns in the original query itself).  The values are in terms of the result column name from the original data set and are comma delimited.  The power of this comes in that you may aggregate the data if you wish  (that is the main reason for allowing this, in fact).  e.g.:  - `MyField`  - `Max(x) FILTER (WHERE y > 12) as ABC` (max of a field, if another field lets it qualify, with a nice column name)  - `count(*)` (count the rows for the given group, that would produce a rather ugly column name, but  it works)  - `count(distinct x) as numOfXs`  If there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ].   e.g.  - `some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name`    where you would likely want to pass `1` as the `groupBy` also.
     String groupBy = "groupBy_example"; // String | Groups by the specified fields.              A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).              e.g. `2,3`, `myColumn`.              Default is null (meaning no grouping will be performed on the selected columns).              This applies only over the result set being requested here, meaning indexes into the \"select\" parameter fields.              Only specify this if you are selecting aggregations in the \"select\" parameter.
     try {
-      String result = apiInstance.fetchQueryResultSqlite(executionId, sortBy, filter, select, groupBy);
+      File result = apiInstance.fetchQueryResultSqlite(executionId, sortBy, filter, select, groupBy);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlBackgroundExecutionApi#fetchQueryResultSqlite");
@@ -706,7 +706,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -900,19 +900,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlBackgroundExecutionApi apiInstance = new SqlBackgroundExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | The LuminesceSql query to kick off.
+    String body = select Str, Takes500Ms from Testing1K where UseLinq = true and [Int] <= 120; // String | The LuminesceSql query to kick off.
     String queryName = "Intentionally slow test query"; // String | A name for this query.  This goes into logs and is available in `Sys.Logs.HcQueryStart`.
     Integer timeoutSeconds = 0; // Integer | Maximum time the query may run for, in seconds: <0 → ∞, 0 → 7200 (2h)
     Integer keepForSeconds = 0; // Integer | Maximum time the result may be kept for, in seconds: <0 → 1200 (20m), 0 → 28800 (8h), max = 2,678,400 (31d)

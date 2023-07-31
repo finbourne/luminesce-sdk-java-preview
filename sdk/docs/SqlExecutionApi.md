@@ -103,7 +103,7 @@ Name | Type | Description  | Notes
 
 <a name="getByQueryExcel"></a>
 # **getByQueryExcel**
-> String getByQueryExcel(query, queryName, timeout)
+> File getByQueryExcel(query, queryName, timeout)
 
 GetByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded) format, where the sql is simply in the url.
 
@@ -133,7 +133,7 @@ public class Example {
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeout = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
-      String result = apiInstance.getByQueryExcel(query, queryName, timeout);
+      File result = apiInstance.getByQueryExcel(query, queryName, timeout);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlExecutionApi#getByQueryExcel");
@@ -156,7 +156,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -249,7 +249,7 @@ Name | Type | Description  | Notes
 
 <a name="getByQueryParquet"></a>
 # **getByQueryParquet**
-> String getByQueryParquet(query, queryName, timeout)
+> File getByQueryParquet(query, queryName, timeout)
 
 GetByQueryParquet: Executes Sql, returned in Parquet (.parquet) format (as a file to be downloaded) format, where the sql is simply in the url.
 
@@ -279,7 +279,7 @@ public class Example {
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeout = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
-      String result = apiInstance.getByQueryParquet(query, queryName, timeout);
+      File result = apiInstance.getByQueryParquet(query, queryName, timeout);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlExecutionApi#getByQueryParquet");
@@ -302,7 +302,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -395,7 +395,7 @@ Name | Type | Description  | Notes
 
 <a name="getByQuerySqlite"></a>
 # **getByQuerySqlite**
-> String getByQuerySqlite(query, queryName, timeout)
+> File getByQuerySqlite(query, queryName, timeout)
 
 GetByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded) format, where the sql is simply in the url.
 
@@ -425,7 +425,7 @@ public class Example {
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeout = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
-      String result = apiInstance.getByQuerySqlite(query, queryName, timeout);
+      File result = apiInstance.getByQuerySqlite(query, queryName, timeout);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlExecutionApi#getByQuerySqlite");
@@ -448,7 +448,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -567,19 +567,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -631,7 +619,7 @@ Name | Type | Description  | Notes
 
 <a name="putByQueryExcel"></a>
 # **putByQueryExcel**
-> String putByQueryExcel(body, queryName, timeoutSeconds)
+> File putByQueryExcel(body, queryName, timeoutSeconds)
 
 PutByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded), where the sql is the post-body url.
 
@@ -657,23 +645,11 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
-      String result = apiInstance.putByQueryExcel(body, queryName, timeoutSeconds);
+      File result = apiInstance.putByQueryExcel(body, queryName, timeoutSeconds);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlExecutionApi#putByQueryExcel");
@@ -696,7 +672,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -741,19 +717,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     Boolean jsonProper = false; // Boolean | Should this be text/json (not json-encoded-as-a-string)
@@ -801,7 +765,7 @@ Name | Type | Description  | Notes
 
 <a name="putByQueryParquet"></a>
 # **putByQueryParquet**
-> String putByQueryParquet(body, queryName, timeoutSeconds)
+> File putByQueryParquet(body, queryName, timeoutSeconds)
 
 PutByQueryParquet: Executes Sql, returned in Parquet format, where the sql is the post-body url.
 
@@ -827,23 +791,11 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
-      String result = apiInstance.putByQueryParquet(body, queryName, timeoutSeconds);
+      File result = apiInstance.putByQueryParquet(body, queryName, timeoutSeconds);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlExecutionApi#putByQueryParquet");
@@ -866,7 +818,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -911,19 +863,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -971,7 +911,7 @@ Name | Type | Description  | Notes
 
 <a name="putByQuerySqlite"></a>
 # **putByQuerySqlite**
-> String putByQuerySqlite(body, queryName, timeoutSeconds)
+> File putByQuerySqlite(body, queryName, timeoutSeconds)
 
 PutByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body url.
 
@@ -997,23 +937,11 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
-      String result = apiInstance.putByQuerySqlite(body, queryName, timeoutSeconds);
+      File result = apiInstance.putByQuerySqlite(body, queryName, timeoutSeconds);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlExecutionApi#putByQuerySqlite");
@@ -1036,7 +964,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -1081,19 +1009,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -1235,19 +1151,7 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it
+    String body = select * from sys.field; // String | LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it
     Boolean trailingCommas = true; // Boolean | Should commas be after an expression (as opposed to before)
     Boolean uppercaseKeywords = false; // Boolean | Should key words be capitalized
     Boolean breakJoinOnSections = true; // Boolean | Should clauses on joins be given line breaks?
@@ -1337,18 +1241,17 @@ public class Example {
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
+    String body = SELECT
+    [TableName],
+    Count(distinct [FieldName]) as [NumberOfFields]
 FROM
-   [Sys.Field]
+    [Sys.Field]
 WHERE
-   ([TableName] = 'Sys.Registration')
+    ([TableName] = 'Sys.Registration')
 GROUP BY
-   [TableName]
+    [TableName]
 ORDER BY
-   [DataType]
+    [DataType]
 LIMIT 42; // String | SQL query to generate the design object from
     Boolean validateWithMetadata = true; // Boolean | Should the table be validated against the users' view of Sys.Field to fill in DataTypes, etc.?
     try {

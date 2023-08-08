@@ -1,17 +1,17 @@
 # HistoricallyExecutedQueriesApi
 
-All URIs are relative to *https://www.lusid.com/honeycomb*
+All URIs are relative to *https://fbn-prd.lusid.com/honeycomb*
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**cancelHistory**](HistoricallyExecutedQueriesApi.md#cancelHistory) | **DELETE** /api/History/{executionId} | CancelHistory: Cancels (if running) or clears the data from (if completed) a previously started History query
-[**fetchHistoryResultHistogram**](HistoricallyExecutedQueriesApi.md#fetchHistoryResultHistogram) | **GET** /api/History/{executionId}/histogram | FetchHistoryResultHistogram: Fetches the result from a previously started query, converts it to a histogram (counts in buckets).
-[**fetchHistoryResultJson**](HistoricallyExecutedQueriesApi.md#fetchHistoryResultJson) | **GET** /api/History/{executionId}/json | FetchHistoryResultJson: Fetches the result from a previously started query, in JSON format.
-[**getHistory**](HistoricallyExecutedQueriesApi.md#getHistory) | **GET** /api/History | GetHistory: Shows queries executed in a given historical time window (in Json format).
-[**getProgressOfHistory**](HistoricallyExecutedQueriesApi.md#getProgressOfHistory) | **GET** /api/History/{executionId} | GetProgressOfHistory: View progress information (up until this point) of a history query
+| Method | HTTP request | Description |
+|------------- | ------------- | -------------|
+| [**cancelHistory**](HistoricallyExecutedQueriesApi.md#cancelHistory) | **DELETE** /api/History/{executionId} | CancelHistory: Cancels (if running) or clears the data from (if completed) a previously started History query |
+| [**fetchHistoryResultHistogram**](HistoricallyExecutedQueriesApi.md#fetchHistoryResultHistogram) | **GET** /api/History/{executionId}/histogram | FetchHistoryResultHistogram: Fetches the result from a previously started query, converts it to a histogram (counts in buckets). |
+| [**fetchHistoryResultJson**](HistoricallyExecutedQueriesApi.md#fetchHistoryResultJson) | **GET** /api/History/{executionId}/json | FetchHistoryResultJson: Fetches the result from a previously started query, in JSON format. |
+| [**getHistory**](HistoricallyExecutedQueriesApi.md#getHistory) | **GET** /api/History | GetHistory: Shows queries executed in a given historical time window (in Json format). |
+| [**getProgressOfHistory**](HistoricallyExecutedQueriesApi.md#getProgressOfHistory) | **GET** /api/History/{executionId} | GetProgressOfHistory: View progress information (up until this point) of a history query |
 
 
-<a name="cancelHistory"></a>
+<a id="cancelHistory"></a>
 # **cancelHistory**
 > BackgroundQueryCancelResponse cancelHistory(executionId)
 
@@ -32,7 +32,7 @@ import com.finbourne.luminesce.api.HistoricallyExecutedQueriesApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -56,9 +56,9 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **executionId** | **String**| ExecutionId returned when starting the query |
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **executionId** | **String**| ExecutionId returned when starting the query | |
 
 ### Return type
 
@@ -76,9 +76,9 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
+| **200** | Success |  -  |
 
-<a name="fetchHistoryResultHistogram"></a>
+<a id="fetchHistoryResultHistogram"></a>
 # **fetchHistoryResultHistogram**
 > String fetchHistoryResultHistogram(executionId, bucketSize, filter, jsonProper)
 
@@ -99,7 +99,7 @@ import com.finbourne.luminesce.api.HistoricallyExecutedQueriesApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -126,12 +126,12 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **executionId** | **String**| ExecutionId returned when starting the query |
- **bucketSize** | **String**| Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated. | [optional]
- **filter** | **String**| An ODATA filter per Finbourne.Filtering syntax. | [optional]
- **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **executionId** | **String**| ExecutionId returned when starting the query | |
+| **bucketSize** | **String**| Optional histogram bucket width.  If not provided a set number of buckets between start/end range will be generated. | [optional] |
+| **filter** | **String**| An ODATA filter per Finbourne.Filtering syntax. | [optional] |
+| **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false] |
 
 ### Return type
 
@@ -149,10 +149,10 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="fetchHistoryResultJson"></a>
+<a id="fetchHistoryResultJson"></a>
 # **fetchHistoryResultJson**
 > String fetchHistoryResultJson(executionId, sortBy, filter, select, groupBy, limit, page, jsonProper)
 
@@ -173,7 +173,7 @@ import com.finbourne.luminesce.api.HistoricallyExecutedQueriesApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -204,16 +204,16 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **executionId** | **String**| ExecutionId returned when starting the query |
- **sortBy** | **String**| Order the results by these fields.              Use the &#x60;-&#x60; sign to denote descending order, e.g. &#x60;-MyFieldName&#x60;.  Numeric indexes may be used also, e.g. &#x60;2,-3&#x60;.              Multiple fields can be denoted by a comma e.g. &#x60;-MyFieldName,AnotherFieldName,-AFurtherFieldName&#x60;.              Default is null, the sort order specified in the query itself. | [optional]
- **filter** | **String**| An ODATA filter per Finbourne.Filtering syntax. | [optional]
- **select** | **String**| Default is null (meaning return all columns in the original query itself).  The values are in terms of the result column name from the original data set and are comma delimited.  The power of this comes in that you may aggregate the data if you wish  (that is the main reason for allowing this, in fact).  e.g.:  - &#x60;MyField&#x60;  - &#x60;Max(x) FILTER (WHERE y &gt; 12) as ABC&#x60; (max of a field, if another field lets it qualify, with a nice column name)  - &#x60;count(*)&#x60; (count the rows for the given group, that would produce a rather ugly column name, but  it works)  - &#x60;count(distinct x) as numOfXs&#x60;  If there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ].   e.g.  - &#x60;some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name&#x60;    where you would likely want to pass &#x60;1&#x60; as the &#x60;groupBy&#x60; also. | [optional]
- **groupBy** | **String**| Groups by the specified fields.              A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).              e.g. &#x60;2,3&#x60;, &#x60;myColumn&#x60;.              Default is null (meaning no grouping will be performed on the selected columns).              This applies only over the result set being requested here, meaning indexes into the \&quot;select\&quot; parameter fields.              Only specify this if you are selecting aggregations in the \&quot;select\&quot; parameter. | [optional]
- **limit** | **Integer**| When paginating, only return this number of records, page should also be specified. | [optional] [default to 0]
- **page** | **Integer**| 0-N based on chunk sized determined by the limit, ignored if limit &lt; 1. | [optional] [default to 0]
- **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **executionId** | **String**| ExecutionId returned when starting the query | |
+| **sortBy** | **String**| Order the results by these fields.              Use the &#x60;-&#x60; sign to denote descending order, e.g. &#x60;-MyFieldName&#x60;.  Numeric indexes may be used also, e.g. &#x60;2,-3&#x60;.              Multiple fields can be denoted by a comma e.g. &#x60;-MyFieldName,AnotherFieldName,-AFurtherFieldName&#x60;.              Default is null, the sort order specified in the query itself. | [optional] |
+| **filter** | **String**| An ODATA filter per Finbourne.Filtering syntax. | [optional] |
+| **select** | **String**| Default is null (meaning return all columns in the original query itself).  The values are in terms of the result column name from the original data set and are comma delimited.  The power of this comes in that you may aggregate the data if you wish  (that is the main reason for allowing this, in fact).  e.g.:  - &#x60;MyField&#x60;  - &#x60;Max(x) FILTER (WHERE y &gt; 12) as ABC&#x60; (max of a field, if another field lets it qualify, with a nice column name)  - &#x60;count(*)&#x60; (count the rows for the given group, that would produce a rather ugly column name, but  it works)  - &#x60;count(distinct x) as numOfXs&#x60;  If there was an illegal character in a field you are selecting from, you are responsible for bracketing it with [ ].   e.g.  - &#x60;some_field, count(*) as a, max(x) as b, min([column with space in name]) as nice_name&#x60;    where you would likely want to pass &#x60;1&#x60; as the &#x60;groupBy&#x60; also. | [optional] |
+| **groupBy** | **String**| Groups by the specified fields.              A comma delimited list of: 1 based numeric indexes (cleaner), or repeats of the select expressions (a bit verbose and must match exactly).              e.g. &#x60;2,3&#x60;, &#x60;myColumn&#x60;.              Default is null (meaning no grouping will be performed on the selected columns).              This applies only over the result set being requested here, meaning indexes into the \&quot;select\&quot; parameter fields.              Only specify this if you are selecting aggregations in the \&quot;select\&quot; parameter. | [optional] |
+| **limit** | **Integer**| When paginating, only return this number of records, page should also be specified. | [optional] [default to 0] |
+| **page** | **Integer**| 0-N based on chunk sized determined by the limit, ignored if limit &lt; 1. | [optional] [default to 0] |
+| **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false] |
 
 ### Return type
 
@@ -231,10 +231,10 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="getHistory"></a>
+<a id="getHistory"></a>
 # **getHistory**
 > BackgroundQueryResponse getHistory(startAt, endAt, freeTextSearch, showAll)
 
@@ -255,7 +255,7 @@ import com.finbourne.luminesce.api.HistoricallyExecutedQueriesApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -282,12 +282,12 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **startAt** | **OffsetDateTime**| Date time to start the search from.  Will default to Now - 1 Day | [optional]
- **endAt** | **OffsetDateTime**| Date time to end the search at.  Defaults to now. | [optional]
- **freeTextSearch** | **String**| Some test that must be in at least one field returned. | [optional]
- **showAll** | **Boolean**| For users with extra permissions, they may optionally see other users&#39; queries. | [optional] [default to false]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **startAt** | **OffsetDateTime**| Date time to start the search from.  Will default to Now - 1 Day | [optional] |
+| **endAt** | **OffsetDateTime**| Date time to end the search at.  Defaults to now. | [optional] |
+| **freeTextSearch** | **String**| Some test that must be in at least one field returned. | [optional] |
+| **showAll** | **Boolean**| For users with extra permissions, they may optionally see other users&#39; queries. | [optional] [default to false] |
 
 ### Return type
 
@@ -305,9 +305,9 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**202** | Accepted |  -  |
+| **202** | Accepted |  -  |
 
-<a name="getProgressOfHistory"></a>
+<a id="getProgressOfHistory"></a>
 # **getProgressOfHistory**
 > BackgroundQueryProgressResponse getProgressOfHistory(executionId)
 
@@ -328,7 +328,7 @@ import com.finbourne.luminesce.api.HistoricallyExecutedQueriesApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -352,9 +352,9 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **executionId** | **String**| ExecutionId returned when starting the query |
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **executionId** | **String**| ExecutionId returned when starting the query | |
 
 ### Return type
 
@@ -372,5 +372,5 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
+| **200** | Success |  -  |
 

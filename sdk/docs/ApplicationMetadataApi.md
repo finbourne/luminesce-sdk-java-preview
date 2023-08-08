@@ -1,13 +1,13 @@
 # ApplicationMetadataApi
 
-All URIs are relative to *https://www.lusid.com/honeycomb*
+All URIs are relative to *https://fbn-prd.lusid.com/honeycomb*
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**getServicesAsAccessControlledResources**](ApplicationMetadataApi.md#getServicesAsAccessControlledResources) | **GET** /api/metadata/access/resources | GetServicesAsAccessControlledResources: Get resources available for access control
+| Method | HTTP request | Description |
+|------------- | ------------- | -------------|
+| [**getServicesAsAccessControlledResources**](ApplicationMetadataApi.md#getServicesAsAccessControlledResources) | **GET** /api/metadata/access/resources | GetServicesAsAccessControlledResources: Get resources available for access control |
 
 
-<a name="getServicesAsAccessControlledResources"></a>
+<a id="getServicesAsAccessControlledResources"></a>
 # **getServicesAsAccessControlledResources**
 > ResourceListOfAccessControlledResource getServicesAsAccessControlledResources()
 
@@ -28,7 +28,7 @@ import com.finbourne.luminesce.api.ApplicationMetadataApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -68,5 +68,5 @@ This endpoint does not need any parameter.
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
+| **200** | Success |  -  |
 

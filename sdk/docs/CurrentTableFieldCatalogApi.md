@@ -1,13 +1,13 @@
 # CurrentTableFieldCatalogApi
 
-All URIs are relative to *https://www.lusid.com/honeycomb*
+All URIs are relative to *https://fbn-prd.lusid.com/honeycomb*
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**getCatalog**](CurrentTableFieldCatalogApi.md#getCatalog) | **GET** /api/Catalog | GetCatalog: Shows Table and Field level information on Providers that are currently running that you have access to (in Json format)
+| Method | HTTP request | Description |
+|------------- | ------------- | -------------|
+| [**getCatalog**](CurrentTableFieldCatalogApi.md#getCatalog) | **GET** /api/Catalog | GetCatalog: Shows Table and Field level information on Providers that are currently running that you have access to (in Json format) |
 
 
-<a name="getCatalog"></a>
+<a id="getCatalog"></a>
 # **getCatalog**
 > String getCatalog(freeTextSearch, jsonProper)
 
@@ -28,7 +28,7 @@ import com.finbourne.luminesce.api.CurrentTableFieldCatalogApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -53,10 +53,10 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **freeTextSearch** | **String**| Limit the catalog to only things in some way dealing with the passed in text string | [optional]
- **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **freeTextSearch** | **String**| Limit the catalog to only things in some way dealing with the passed in text string | [optional] |
+| **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false] |
 
 ### Return type
 
@@ -74,5 +74,5 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
+| **200** | Success |  -  |
 

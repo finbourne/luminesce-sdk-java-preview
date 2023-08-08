@@ -1,29 +1,29 @@
 # SqlExecutionApi
 
-All URIs are relative to *https://www.lusid.com/honeycomb*
+All URIs are relative to *https://fbn-prd.lusid.com/honeycomb*
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**getByQueryCsv**](SqlExecutionApi.md#getByQueryCsv) | **GET** /api/Sql/csv/{query} | GetByQueryCsv: Executes Sql, returned in CSV format, where the sql is simply in the url.
-[**getByQueryExcel**](SqlExecutionApi.md#getByQueryExcel) | **GET** /api/Sql/excel/{query} | GetByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded) format, where the sql is simply in the url.
-[**getByQueryJson**](SqlExecutionApi.md#getByQueryJson) | **GET** /api/Sql/json/{query} | GetByQueryJson: Executes Sql, returned in JSON format, where the sql is simply in the url.
-[**getByQueryParquet**](SqlExecutionApi.md#getByQueryParquet) | **GET** /api/Sql/parquet/{query} | GetByQueryParquet: Executes Sql, returned in Parquet (.parquet) format (as a file to be downloaded) format, where the sql is simply in the url.
-[**getByQueryPipe**](SqlExecutionApi.md#getByQueryPipe) | **GET** /api/Sql/pipe/{query} | GetByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is simply in the url.
-[**getByQuerySqlite**](SqlExecutionApi.md#getByQuerySqlite) | **GET** /api/Sql/sqlite/{query} | GetByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded) format, where the sql is simply in the url.
-[**getByQueryXml**](SqlExecutionApi.md#getByQueryXml) | **GET** /api/Sql/xml/{query} | GetByQueryXml: Executes Sql, returned in Xml format, where the sql is simply in the url.
-[**putByQueryCsv**](SqlExecutionApi.md#putByQueryCsv) | **PUT** /api/Sql/csv | PutByQueryCsv: Executes Sql, returned in CSV format, where the sql is the post-body url.
-[**putByQueryExcel**](SqlExecutionApi.md#putByQueryExcel) | **PUT** /api/Sql/excel | PutByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded), where the sql is the post-body url.
-[**putByQueryJson**](SqlExecutionApi.md#putByQueryJson) | **PUT** /api/Sql/json | PutByQueryJson: Executes Sql, returned in JSON format, where the sql is the post-body url.
-[**putByQueryParquet**](SqlExecutionApi.md#putByQueryParquet) | **PUT** /api/Sql/parquet | PutByQueryParquet: Executes Sql, returned in Parquet format, where the sql is the post-body url.
-[**putByQueryPipe**](SqlExecutionApi.md#putByQueryPipe) | **PUT** /api/Sql/pipe | PutByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is the post-body url.
-[**putByQuerySqlite**](SqlExecutionApi.md#putByQuerySqlite) | **PUT** /api/Sql/sqlite | PutByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body url.
-[**putByQueryXml**](SqlExecutionApi.md#putByQueryXml) | **PUT** /api/Sql/xml | PutByQueryXml: Executes Sql, returned in Xml format, where the sql is the post-body url.
-[**putQueryDesignToSql**](SqlExecutionApi.md#putQueryDesignToSql) | **PUT** /api/Sql/fromdesign | [EXPERIMENTAL] PutQueryDesignToSql: Generates SQL from a structured query design
-[**putQueryToFormat**](SqlExecutionApi.md#putQueryToFormat) | **PUT** /api/Sql/pretty | PutQueryToFormat: Executes Sql, returned in JSON format, where the sql is the post-body url.
-[**putSqlToQueryDesign**](SqlExecutionApi.md#putSqlToQueryDesign) | **PUT** /api/Sql/todesign | [EXPERIMENTAL] PutSqlToQueryDesign: Generates a SQL-design object from SQL string, if possible.
+| Method | HTTP request | Description |
+|------------- | ------------- | -------------|
+| [**getByQueryCsv**](SqlExecutionApi.md#getByQueryCsv) | **GET** /api/Sql/csv/{query} | GetByQueryCsv: Executes Sql, returned in CSV format, where the sql is simply in the url. |
+| [**getByQueryExcel**](SqlExecutionApi.md#getByQueryExcel) | **GET** /api/Sql/excel/{query} | GetByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded) format, where the sql is simply in the url. |
+| [**getByQueryJson**](SqlExecutionApi.md#getByQueryJson) | **GET** /api/Sql/json/{query} | GetByQueryJson: Executes Sql, returned in JSON format, where the sql is simply in the url. |
+| [**getByQueryParquet**](SqlExecutionApi.md#getByQueryParquet) | **GET** /api/Sql/parquet/{query} | GetByQueryParquet: Executes Sql, returned in Parquet (.parquet) format (as a file to be downloaded) format, where the sql is simply in the url. |
+| [**getByQueryPipe**](SqlExecutionApi.md#getByQueryPipe) | **GET** /api/Sql/pipe/{query} | GetByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is simply in the url. |
+| [**getByQuerySqlite**](SqlExecutionApi.md#getByQuerySqlite) | **GET** /api/Sql/sqlite/{query} | GetByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded) format, where the sql is simply in the url. |
+| [**getByQueryXml**](SqlExecutionApi.md#getByQueryXml) | **GET** /api/Sql/xml/{query} | GetByQueryXml: Executes Sql, returned in Xml format, where the sql is simply in the url. |
+| [**putByQueryCsv**](SqlExecutionApi.md#putByQueryCsv) | **PUT** /api/Sql/csv | PutByQueryCsv: Executes Sql, returned in CSV format, where the sql is the post-body url. |
+| [**putByQueryExcel**](SqlExecutionApi.md#putByQueryExcel) | **PUT** /api/Sql/excel | PutByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded), where the sql is the post-body url. |
+| [**putByQueryJson**](SqlExecutionApi.md#putByQueryJson) | **PUT** /api/Sql/json | PutByQueryJson: Executes Sql, returned in JSON format, where the sql is the post-body url. |
+| [**putByQueryParquet**](SqlExecutionApi.md#putByQueryParquet) | **PUT** /api/Sql/parquet | PutByQueryParquet: Executes Sql, returned in Parquet format, where the sql is the post-body url. |
+| [**putByQueryPipe**](SqlExecutionApi.md#putByQueryPipe) | **PUT** /api/Sql/pipe | PutByQueryPipe: Executes Sql, returned in pipe-delimited format, where the sql is the post-body url. |
+| [**putByQuerySqlite**](SqlExecutionApi.md#putByQuerySqlite) | **PUT** /api/Sql/sqlite | PutByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body url. |
+| [**putByQueryXml**](SqlExecutionApi.md#putByQueryXml) | **PUT** /api/Sql/xml | PutByQueryXml: Executes Sql, returned in Xml format, where the sql is the post-body url. |
+| [**putQueryDesignToSql**](SqlExecutionApi.md#putQueryDesignToSql) | **PUT** /api/Sql/fromdesign | [EXPERIMENTAL] PutQueryDesignToSql: Generates SQL from a structured query design |
+| [**putQueryToFormat**](SqlExecutionApi.md#putQueryToFormat) | **PUT** /api/Sql/pretty | PutQueryToFormat: Executes Sql, returned in JSON format, where the sql is the post-body url. |
+| [**putSqlToQueryDesign**](SqlExecutionApi.md#putSqlToQueryDesign) | **PUT** /api/Sql/todesign | [EXPERIMENTAL] PutSqlToQueryDesign: Generates a SQL-design object from SQL string, if possible. |
 
 
-<a name="getByQueryCsv"></a>
+<a id="getByQueryCsv"></a>
 # **getByQueryCsv**
 > String getByQueryCsv(query, queryName, download, timeout, delimiter, escape)
 
@@ -44,7 +44,7 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -73,14 +73,14 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **query** | **String**| LuminesceSql to Execute (must be one line only) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false]
- **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
- **delimiter** | **String**| Delimiter string to override the default | [optional]
- **escape** | **String**| Escape character to override the default | [optional]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **query** | **String**| LuminesceSql to Execute (must be one line only) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false] |
+| **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
+| **delimiter** | **String**| Delimiter string to override the default | [optional] |
+| **escape** | **String**| Escape character to override the default | [optional] |
 
 ### Return type
 
@@ -98,12 +98,12 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="getByQueryExcel"></a>
+<a id="getByQueryExcel"></a>
 # **getByQueryExcel**
-> String getByQueryExcel(query, queryName, timeout)
+> File getByQueryExcel(query, queryName, timeout)
 
 GetByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded) format, where the sql is simply in the url.
 
@@ -122,7 +122,7 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -133,7 +133,7 @@ public class Example {
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeout = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
-      String result = apiInstance.getByQueryExcel(query, queryName, timeout);
+      File result = apiInstance.getByQueryExcel(query, queryName, timeout);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlExecutionApi#getByQueryExcel");
@@ -148,15 +148,15 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **query** | **String**| LuminesceSql to Execute (must be one line only) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **query** | **String**| LuminesceSql to Execute (must be one line only) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -170,10 +170,10 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="getByQueryJson"></a>
+<a id="getByQueryJson"></a>
 # **getByQueryJson**
 > String getByQueryJson(query, queryName, timeout, jsonProper)
 
@@ -194,7 +194,7 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -221,12 +221,12 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **query** | **String**| LuminesceSql to Execute (must be one line only) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
- **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **query** | **String**| LuminesceSql to Execute (must be one line only) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
+| **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false] |
 
 ### Return type
 
@@ -244,12 +244,12 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="getByQueryParquet"></a>
+<a id="getByQueryParquet"></a>
 # **getByQueryParquet**
-> String getByQueryParquet(query, queryName, timeout)
+> File getByQueryParquet(query, queryName, timeout)
 
 GetByQueryParquet: Executes Sql, returned in Parquet (.parquet) format (as a file to be downloaded) format, where the sql is simply in the url.
 
@@ -268,7 +268,7 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -279,7 +279,7 @@ public class Example {
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeout = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
-      String result = apiInstance.getByQueryParquet(query, queryName, timeout);
+      File result = apiInstance.getByQueryParquet(query, queryName, timeout);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlExecutionApi#getByQueryParquet");
@@ -294,15 +294,15 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **query** | **String**| LuminesceSql to Execute (must be one line only) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **query** | **String**| LuminesceSql to Execute (must be one line only) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -316,10 +316,10 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="getByQueryPipe"></a>
+<a id="getByQueryPipe"></a>
 # **getByQueryPipe**
 > String getByQueryPipe(query, queryName, download, timeout)
 
@@ -340,7 +340,7 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -367,12 +367,12 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **query** | **String**| LuminesceSql to Execute (must be one line only) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false]
- **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **query** | **String**| LuminesceSql to Execute (must be one line only) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false] |
+| **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
 
 ### Return type
 
@@ -390,12 +390,12 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="getByQuerySqlite"></a>
+<a id="getByQuerySqlite"></a>
 # **getByQuerySqlite**
-> String getByQuerySqlite(query, queryName, timeout)
+> File getByQuerySqlite(query, queryName, timeout)
 
 GetByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded) format, where the sql is simply in the url.
 
@@ -414,7 +414,7 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -425,7 +425,7 @@ public class Example {
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeout = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
-      String result = apiInstance.getByQuerySqlite(query, queryName, timeout);
+      File result = apiInstance.getByQuerySqlite(query, queryName, timeout);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlExecutionApi#getByQuerySqlite");
@@ -440,15 +440,15 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **query** | **String**| LuminesceSql to Execute (must be one line only) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **query** | **String**| LuminesceSql to Execute (must be one line only) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -462,10 +462,10 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="getByQueryXml"></a>
+<a id="getByQueryXml"></a>
 # **getByQueryXml**
 > String getByQueryXml(query, queryName, download, timeout)
 
@@ -486,7 +486,7 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -513,12 +513,12 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **query** | **String**| LuminesceSql to Execute (must be one line only) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false]
- **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **query** | **String**| LuminesceSql to Execute (must be one line only) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false] |
+| **timeout** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
 
 ### Return type
 
@@ -536,10 +536,10 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="putByQueryCsv"></a>
+<a id="putByQueryCsv"></a>
 # **putByQueryCsv**
 > String putByQueryCsv(body, queryName, download, timeoutSeconds, delimiter, escape)
 
@@ -560,26 +560,14 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -601,14 +589,14 @@ LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | **String**| LuminesceSql to Execute (may be multi-line) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false]
- **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
- **delimiter** | **String**| Delimiter string to override the default | [optional]
- **escape** | **String**| Escape character to override the default | [optional]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **body** | **String**| LuminesceSql to Execute (may be multi-line) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false] |
+| **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
+| **delimiter** | **String**| Delimiter string to override the default | [optional] |
+| **escape** | **String**| Escape character to override the default | [optional] |
 
 ### Return type
 
@@ -626,12 +614,12 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="putByQueryExcel"></a>
+<a id="putByQueryExcel"></a>
 # **putByQueryExcel**
-> String putByQueryExcel(body, queryName, timeoutSeconds)
+> File putByQueryExcel(body, queryName, timeoutSeconds)
 
 PutByQueryExcel: Executes Sql, returned in Excel (xlsx) format (as a file to be downloaded), where the sql is the post-body url.
 
@@ -650,30 +638,18 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
-      String result = apiInstance.putByQueryExcel(body, queryName, timeoutSeconds);
+      File result = apiInstance.putByQueryExcel(body, queryName, timeoutSeconds);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlExecutionApi#putByQueryExcel");
@@ -688,15 +664,15 @@ LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | **String**| LuminesceSql to Execute (may be multi-line) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **body** | **String**| LuminesceSql to Execute (may be multi-line) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -710,10 +686,10 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="putByQueryJson"></a>
+<a id="putByQueryJson"></a>
 # **putByQueryJson**
 > String putByQueryJson(body, queryName, timeoutSeconds, jsonProper)
 
@@ -734,26 +710,14 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     Boolean jsonProper = false; // Boolean | Should this be text/json (not json-encoded-as-a-string)
@@ -773,12 +737,12 @@ LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | **String**| LuminesceSql to Execute (may be multi-line) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
- **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **body** | **String**| LuminesceSql to Execute (may be multi-line) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
+| **jsonProper** | **Boolean**| Should this be text/json (not json-encoded-as-a-string) | [optional] [default to false] |
 
 ### Return type
 
@@ -796,12 +760,12 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="putByQueryParquet"></a>
+<a id="putByQueryParquet"></a>
 # **putByQueryParquet**
-> String putByQueryParquet(body, queryName, timeoutSeconds)
+> File putByQueryParquet(body, queryName, timeoutSeconds)
 
 PutByQueryParquet: Executes Sql, returned in Parquet format, where the sql is the post-body url.
 
@@ -820,30 +784,18 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
-      String result = apiInstance.putByQueryParquet(body, queryName, timeoutSeconds);
+      File result = apiInstance.putByQueryParquet(body, queryName, timeoutSeconds);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlExecutionApi#putByQueryParquet");
@@ -858,15 +810,15 @@ LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | **String**| LuminesceSql to Execute (may be multi-line) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **body** | **String**| LuminesceSql to Execute (may be multi-line) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -880,10 +832,10 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="putByQueryPipe"></a>
+<a id="putByQueryPipe"></a>
 # **putByQueryPipe**
 > String putByQueryPipe(body, queryName, download, timeoutSeconds)
 
@@ -904,26 +856,14 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -943,12 +883,12 @@ LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | **String**| LuminesceSql to Execute (may be multi-line) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false]
- **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **body** | **String**| LuminesceSql to Execute (may be multi-line) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false] |
+| **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
 
 ### Return type
 
@@ -966,12 +906,12 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="putByQuerySqlite"></a>
+<a id="putByQuerySqlite"></a>
 # **putByQuerySqlite**
-> String putByQuerySqlite(body, queryName, timeoutSeconds)
+> File putByQuerySqlite(body, queryName, timeoutSeconds)
 
 PutByQuerySqlite: Executes Sql, returned in SqLite DB (sqlite3) format (as a file to be downloaded), where the sql is the post-body url.
 
@@ -990,30 +930,18 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
     try {
-      String result = apiInstance.putByQuerySqlite(body, queryName, timeoutSeconds);
+      File result = apiInstance.putByQuerySqlite(body, queryName, timeoutSeconds);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling SqlExecutionApi#putByQuerySqlite");
@@ -1028,15 +956,15 @@ LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | **String**| LuminesceSql to Execute (may be multi-line) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **body** | **String**| LuminesceSql to Execute (may be multi-line) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
 
 ### Return type
 
-**String**
+[**File**](File.md)
 
 ### Authorization
 
@@ -1050,10 +978,10 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="putByQueryXml"></a>
+<a id="putByQueryXml"></a>
 # **putByQueryXml**
 > String putByQueryXml(body, queryName, download, timeoutSeconds)
 
@@ -1074,26 +1002,14 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
+    String body = select * from sys.field; // String | LuminesceSql to Execute (may be multi-line)
     String queryName = "Get tables/fields"; // String | Name to apply to the query in logs and `Sys.Logs.HcQueryStart`
     Boolean download = false; // Boolean | Makes this a file-download request (as opposed to returning the data in the response-body)
     Integer timeoutSeconds = 0; // Integer | In seconds: <0 → ∞, 0 → 120s
@@ -1113,12 +1029,12 @@ LIMIT 42; // String | LuminesceSql to Execute (may be multi-line)
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | **String**| LuminesceSql to Execute (may be multi-line) |
- **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional]
- **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false]
- **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **body** | **String**| LuminesceSql to Execute (may be multi-line) | |
+| **queryName** | **String**| Name to apply to the query in logs and &#x60;Sys.Logs.HcQueryStart&#x60; | [optional] |
+| **download** | **Boolean**| Makes this a file-download request (as opposed to returning the data in the response-body) | [optional] [default to false] |
+| **timeoutSeconds** | **Integer**| In seconds: &lt;0 → ∞, 0 → 120s | [optional] [default to 0] |
 
 ### Return type
 
@@ -1136,10 +1052,10 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="putQueryDesignToSql"></a>
+<a id="putQueryDesignToSql"></a>
 # **putQueryDesignToSql**
 > String putQueryDesignToSql(queryDesign)
 
@@ -1160,7 +1076,7 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
@@ -1184,9 +1100,9 @@ public class Example {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **queryDesign** | [**QueryDesign**](QueryDesign.md)| Structured Query design object to generate SQL from |
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **queryDesign** | [**QueryDesign**](QueryDesign.md)| Structured Query design object to generate SQL from | |
 
 ### Return type
 
@@ -1198,16 +1114,16 @@ Name | Type | Description  | Notes
 
 ### HTTP request headers
 
- - **Content-Type**: application/json-patch+json, application/json, text/json, application/_*+json
+ - **Content-Type**: application/json-patch+json, application/json, text/json, application/*+json
  - **Accept**: text/plain, application/json, text/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="putQueryToFormat"></a>
+<a id="putQueryToFormat"></a>
 # **putQueryToFormat**
 > String putQueryToFormat(body, trailingCommas, uppercaseKeywords, breakJoinOnSections, spaceAfterExpandedComma, keywordStandardization, expandCommaLists, expandInLists, expandBooleanExpressions, expandBetweenConditions, expandCaseStatements, maxLineWidth)
 
@@ -1228,26 +1144,14 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
-FROM
-   [Sys.Field]
-WHERE
-   ([TableName] = 'Sys.Registration')
-GROUP BY
-   [TableName]
-ORDER BY
-   [DataType]
-LIMIT 42; // String | LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it
+    String body = select * from sys.field; // String | LuminesceSql to Pretty-Print. Even if it doesn't parse an attempt will be made to format it
     Boolean trailingCommas = true; // Boolean | Should commas be after an expression (as opposed to before)
     Boolean uppercaseKeywords = false; // Boolean | Should key words be capitalized
     Boolean breakJoinOnSections = true; // Boolean | Should clauses on joins be given line breaks?
@@ -1275,20 +1179,20 @@ LIMIT 42; // String | LuminesceSql to Pretty-Print. Even if it doesn't parse an 
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | **String**| LuminesceSql to Pretty-Print. Even if it doesn&#39;t parse an attempt will be made to format it |
- **trailingCommas** | **Boolean**| Should commas be after an expression (as opposed to before) | [optional] [default to true]
- **uppercaseKeywords** | **Boolean**| Should key words be capitalized | [optional] [default to false]
- **breakJoinOnSections** | **Boolean**| Should clauses on joins be given line breaks? | [optional] [default to true]
- **spaceAfterExpandedComma** | **Boolean**| Should comma-lists have spaces after the commas? | [optional] [default to true]
- **keywordStandardization** | **Boolean**| Should the \&quot;nicest\&quot; key words be used? (e.g. JOIN -&gt; INNER JOIN) | [optional] [default to true]
- **expandCommaLists** | **Boolean**| Should comma-lists (e.g. select a,b,c) have line breaks added? | [optional] [default to false]
- **expandInLists** | **Boolean**| Should IN-lists have line breaks added? | [optional] [default to false]
- **expandBooleanExpressions** | **Boolean**| Should boolean expressions have line breaks added? | [optional] [default to true]
- **expandBetweenConditions** | **Boolean**| Should between conditions have line breaks added? | [optional] [default to true]
- **expandCaseStatements** | **Boolean**| Should case-statements have line breaks added? | [optional] [default to true]
- **maxLineWidth** | **Integer**| Maximum number of characters to allow on one line (if possible) | [optional] [default to 120]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **body** | **String**| LuminesceSql to Pretty-Print. Even if it doesn&#39;t parse an attempt will be made to format it | |
+| **trailingCommas** | **Boolean**| Should commas be after an expression (as opposed to before) | [optional] [default to true] |
+| **uppercaseKeywords** | **Boolean**| Should key words be capitalized | [optional] [default to false] |
+| **breakJoinOnSections** | **Boolean**| Should clauses on joins be given line breaks? | [optional] [default to true] |
+| **spaceAfterExpandedComma** | **Boolean**| Should comma-lists have spaces after the commas? | [optional] [default to true] |
+| **keywordStandardization** | **Boolean**| Should the \&quot;nicest\&quot; key words be used? (e.g. JOIN -&gt; INNER JOIN) | [optional] [default to true] |
+| **expandCommaLists** | **Boolean**| Should comma-lists (e.g. select a,b,c) have line breaks added? | [optional] [default to false] |
+| **expandInLists** | **Boolean**| Should IN-lists have line breaks added? | [optional] [default to false] |
+| **expandBooleanExpressions** | **Boolean**| Should boolean expressions have line breaks added? | [optional] [default to true] |
+| **expandBetweenConditions** | **Boolean**| Should between conditions have line breaks added? | [optional] [default to true] |
+| **expandCaseStatements** | **Boolean**| Should case-statements have line breaks added? | [optional] [default to true] |
+| **maxLineWidth** | **Integer**| Maximum number of characters to allow on one line (if possible) | [optional] [default to 120] |
 
 ### Return type
 
@@ -1306,10 +1210,10 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
-<a name="putSqlToQueryDesign"></a>
+<a id="putSqlToQueryDesign"></a>
 # **putSqlToQueryDesign**
 > String putSqlToQueryDesign(body, validateWithMetadata)
 
@@ -1330,25 +1234,24 @@ import com.finbourne.luminesce.api.SqlExecutionApi;
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("https://www.lusid.com/honeycomb");
+    defaultClient.setBasePath("https://fbn-prd.lusid.com/honeycomb");
     
     // Configure OAuth2 access token for authorization: oauth2
     OAuth oauth2 = (OAuth) defaultClient.getAuthentication("oauth2");
     oauth2.setAccessToken("YOUR ACCESS TOKEN");
 
     SqlExecutionApi apiInstance = new SqlExecutionApi(defaultClient);
-    String body = 
-SELECT
-   [TableName],
-   Count(distinct [FieldName]) as [NumberOfFields]
+    String body = SELECT
+    [TableName],
+    Count(distinct [FieldName]) as [NumberOfFields]
 FROM
-   [Sys.Field]
+    [Sys.Field]
 WHERE
-   ([TableName] = 'Sys.Registration')
+    ([TableName] = 'Sys.Registration')
 GROUP BY
-   [TableName]
+    [TableName]
 ORDER BY
-   [DataType]
+    [DataType]
 LIMIT 42; // String | SQL query to generate the design object from
     Boolean validateWithMetadata = true; // Boolean | Should the table be validated against the users' view of Sys.Field to fill in DataTypes, etc.?
     try {
@@ -1367,10 +1270,10 @@ LIMIT 42; // String | SQL query to generate the design object from
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | **String**| SQL query to generate the design object from |
- **validateWithMetadata** | **Boolean**| Should the table be validated against the users&#39; view of Sys.Field to fill in DataTypes, etc.? | [optional] [default to true]
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **body** | **String**| SQL query to generate the design object from | |
+| **validateWithMetadata** | **Boolean**| Should the table be validated against the users&#39; view of Sys.Field to fill in DataTypes, etc.? | [optional] [default to true] |
 
 ### Return type
 
@@ -1388,6 +1291,6 @@ Name | Type | Description  | Notes
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Success |  -  |
-**400** | Bad Request |  -  |
+| **200** | Success |  -  |
+| **400** | Bad Request |  -  |
 
